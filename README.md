@@ -16,3 +16,30 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
   * Docs: https://hexdocs.pm/phoenix
   * Forum: https://elixirforum.com/c/phoenix-forum
   * Source: https://github.com/phoenixframework/phoenix
+
+
+### Setup
+create app with ```mix phx.new seaty_app --database sqlite3```
+
+create and migrate to schema with
+```
+
+```
+mix phx.gen.html Events Event events \
+    datetime:naive_datetime \
+    seats:integer \
+    active:boolean
+
+mix phx.gen.html Reservations Reservation reservations \
+    prio:integer \
+    order_date:datetime \
+    code:string \
+    name:string \
+    contact:string \
+    group:integer \
+    preferred_row:string \
+    event_id:references:events \
+    comment:text
+
+mix ecto.migrate
+```

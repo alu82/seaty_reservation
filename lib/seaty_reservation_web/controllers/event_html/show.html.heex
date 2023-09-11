@@ -1,0 +1,17 @@
+<.header>
+  Event <%= @event.id %>
+  <:subtitle>This is a event record from your database.</:subtitle>
+  <:actions>
+    <.link href={~p"/events/#{@event}/edit"}>
+      <.button>Edit event</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.list>
+  <:item title="Datetime"><%= @event.datetime %></:item>
+  <:item title="Seats"><%= @event.seats %></:item>
+  <:item title="Active"><%= @event.active %></:item>
+</.list>
+
+<.back navigate={~p"/events"}>Back to events</.back>

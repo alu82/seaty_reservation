@@ -1,0 +1,16 @@
+<.simple_form :let={f} for={@changeset} action={@action}>
+  <.error :if={@changeset.action}>
+    Oops, something went wrong! Please check the errors below.
+  </.error>
+  <.input field={f[:prio]} type="number" label="Prio" />
+  <.input field={f[:order_date]} type="datetime-local" label="Order date" />
+  <.input field={f[:code]} type="text" label="Code" />
+  <.input field={f[:name]} type="text" label="Name" />
+  <.input field={f[:contact]} type="text" label="Contact" />
+  <.input field={f[:group]} type="number" label="Group" />
+  <.input field={f[:preferred_row]} type="text" label="Preferred row" />
+  <.input field={f[:comment]} type="text" label="Comment" />
+  <:actions>
+    <.button>Save Reservation</.button>
+  </:actions>
+</.simple_form>

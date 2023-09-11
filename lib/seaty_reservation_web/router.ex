@@ -17,7 +17,9 @@ defmodule SeatyReservationWeb.Router do
   scope "/", SeatyReservationWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    get "/", ReservationController , :new
+    resources "/reservations", ReservationController
+    resources "/events", EventController
   end
 
   # Other scopes may use custom stacks.
