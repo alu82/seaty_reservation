@@ -1,7 +1,12 @@
 defmodule SeatyReservationWeb.Router do
   use SeatyReservationWeb, :router
 
+  import Plug.BasicAuth
+
   pipeline :browser do
+    plug :basic_auth,
+      username: Application.compile_env(:seaty_reservation, :basic_auth)[:username],
+      password: Application.compile_env(:seaty_reservation, :basic_auth)[:password]
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
