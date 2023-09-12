@@ -3,6 +3,7 @@ defmodule SeatyReservationWeb.ReservationController do
 
   alias SeatyReservation.Reservations
   alias SeatyReservation.Reservations.Reservation
+  alias SeatyReservation.Events
 
   def index(conn, _params) do
     reservations = Reservations.list_reservations()
@@ -10,10 +11,15 @@ defmodule SeatyReservationWeb.ReservationController do
   end
 
   def new(conn, _params) do
+    events = Enum.map(
+      Events.get_all_active(),
+      fn ev-> {ev.datetime, ev.id} end
+    )
     changeset = Reservations.change_reservation(%Reservation{})
-    render(conn, :new, changeset: changeset)
+    render(conn, :new, changeset: changeset, events: events)
   end
 
+  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
   def create(conn, %{"reservation" => reservation_params}) do
     case Reservations.create_reservation(reservation_params) do
       {:ok, reservation} ->
@@ -32,9 +38,13 @@ defmodule SeatyReservationWeb.ReservationController do
   end
 
   def edit(conn, %{"id" => id}) do
+    events = Enum.map(
+      Events.get_all_active(),
+      fn ev-> {ev.datetime, ev.id} end
+    )
     reservation = Reservations.get_reservation!(id)
     changeset = Reservations.change_reservation(reservation)
-    render(conn, :edit, reservation: reservation, changeset: changeset)
+    render(conn, :edit, reservation: reservation, changeset: changeset, events: events)
   end
 
   def update(conn, %{"id" => id, "reservation" => reservation_params}) do

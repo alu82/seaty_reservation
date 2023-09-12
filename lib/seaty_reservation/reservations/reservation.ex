@@ -5,6 +5,7 @@ defmodule SeatyReservation.Reservations.Reservation do
   schema "reservations" do
     field :code, :string
     field :name, :string
+    field :seats, :integer
     field :group, :integer
     field :comment, :string
     field :prio, :integer
@@ -19,7 +20,7 @@ defmodule SeatyReservation.Reservations.Reservation do
   @doc false
   def changeset(reservation, attrs) do
     reservation
-    |> cast(attrs, [:prio, :order_date, :code, :name, :contact, :group, :preferred_row, :comment])
-    |> validate_required([:prio, :order_date, :code, :name, :contact, :group, :preferred_row, :comment])
+    |> cast(attrs, [:prio, :order_date, :code, :name, :contact, :group, :preferred_row, :comment, :event_id, :seats])
+    |> validate_required([:prio, :order_date, :code, :name, :contact, :group, :preferred_row, :comment, :event_id, :seats])
   end
 end

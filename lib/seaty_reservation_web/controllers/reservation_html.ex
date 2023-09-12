@@ -7,6 +7,7 @@ defmodule SeatyReservationWeb.ReservationHTML do
   Renders a reservation form.
   """
   attr :changeset, Ecto.Changeset, required: true
+  attr :events, :list, default: []
   attr :action, :string, required: true
 
   def reservation_form(assigns)

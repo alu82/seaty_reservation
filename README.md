@@ -33,6 +33,7 @@ mix phx.gen.html Events Event events \
 mix phx.gen.html Reservations Reservation reservations \
     prio:integer \
     order_date:datetime \
+    seats:integer \
     code:string \
     name:string \
     contact:string \

@@ -2,7 +2,9 @@
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
+  <.input field={f[:event_id]} type="select" label="Event" options={@events}/>
   <.input field={f[:prio]} type="number" label="Prio" />
+  <.input field={f[:seats]} type="number" label="Anzahl Sitze" />
   <.input field={f[:order_date]} type="datetime-local" label="Order date" />
   <.input field={f[:code]} type="text" label="Code" />
   <.input field={f[:name]} type="text" label="Name" />

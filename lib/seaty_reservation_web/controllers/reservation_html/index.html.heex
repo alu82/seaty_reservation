@@ -8,7 +8,9 @@
 </.header>
 
 <.table id="reservations" rows={@reservations} row_click={&JS.navigate(~p"/reservations/#{&1}")}>
+  <:col :let={reservation} label="Event"><%= reservation.event_id %></:col>
   <:col :let={reservation} label="Prio"><%= reservation.prio %></:col>
+  <:col :let={reservation} label="Sitze"><%= reservation.seats %></:col>
   <:col :let={reservation} label="Order date"><%= reservation.order_date %></:col>
   <:col :let={reservation} label="Code"><%= reservation.code %></:col>
   <:col :let={reservation} label="Name"><%= reservation.name %></:col>

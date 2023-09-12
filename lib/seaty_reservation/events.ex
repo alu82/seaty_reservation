@@ -101,4 +101,12 @@ defmodule SeatyReservation.Events do
   def change_event(%Event{} = event, attrs \\ %{}) do
     Event.changeset(event, attrs)
   end
+
+  def get_all_active do
+    query =
+      from e in Event,
+      where: e.active == true,
+      order_by: e.datetime
+    Repo.all(query)
+  end
 end
