@@ -64,8 +64,21 @@ config :seaty_reservation, SeatyReservationWeb.Gettext, locales: ~w(de en)
 
 # basic auth setup
 config :seaty_reservation, :basic_auth,
-  username: System.get_env("BASIC_AUTH_USER") || "user",
-  password: System.get_env("BASIC_AUTH_PASSWORD") || "password"
+  username: System.get_env("SY_BASIC_AUTH_USER") || "seaty",
+  password: System.get_env("SY_BASIC_AUTH_PASSWORD") || "password"
+
+config :seaty_reservation, SeatyReservation.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "smtp.ionos.de",
+  port: 587,
+  username: System.get_env("SY_SMTP_USER"),
+  password: System.get_env("SY_SMTP_PASSWORD"),
+  ssl: :false,
+  tls: :if_available,
+  auth: :always,
+  tls_options: [
+    verify: :verify_none
+  ]
 
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.

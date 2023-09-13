@@ -23,8 +23,6 @@ create app with ```mix phx.new seaty_app --database sqlite3```
 
 create and migrate to schema with
 ```
-
-```
 mix phx.gen.html Events Event events \
     datetime:naive_datetime \
     seats:integer \
@@ -44,3 +42,12 @@ mix phx.gen.html Reservations Reservation reservations \
 
 mix ecto.migrate
 ```
+
+### Backlog
+- [x] setup base project
+- [x] create form for reservation creation (:new)
+- [x] implement :create
+- [ ] send confirmation mail
+- [ ] deployment
+- [ ] implement validation when creating reservation (incl. sold out message)
+- [ ] layout
