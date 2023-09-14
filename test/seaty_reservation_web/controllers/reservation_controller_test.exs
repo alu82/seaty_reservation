@@ -3,9 +3,9 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
 
   import SeatyReservation.ReservationsFixtures
 
-  @create_attrs %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, order_date: ~N[2023-09-10 21:24:00], contact: "some contact", preferred_row: "some preferred_row"}
-  @update_attrs %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, order_date: ~N[2023-09-11 21:24:00], contact: "some updated contact", preferred_row: "some updated preferred_row"}
-  @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, order_date: nil, contact: nil, preferred_row: nil}
+  @create_attrs %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, contact: "some contact", preferred_row: "some preferred_row"}
+  @update_attrs %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, contact: "some updated contact", preferred_row: "some updated preferred_row"}
+  @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, contact: nil, preferred_row: nil}
 
   describe "index" do
     test "lists all reservations", %{conn: conn} do

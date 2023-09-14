@@ -5,16 +5,16 @@ defmodule SeatyReservation.ReservationEmail do
 
   def confirmation(reservation, event) do
     mail_params = %{
-      :name => reservation["name"],
-      :seats => reservation["seats"],
+      :name => reservation.name,
+      :seats => reservation.seats,
       :event_date => event.datetime,
-      :reservation_code => reservation["code"]
+      :reservation_code => reservation.code
     }
 
     new()
-    |> to({reservation["name"], reservation["contact"]})
+    |> to({reservation.name, reservation.contact})
     |> from({"Südtiroler Volksbühne Kartenreservierung", "kartenreservierung@suedtiroler-volksbuehne.de"})
-    |> subject("Reservierung erfolgreich - Reservierungsnummer #{reservation["code"]}")
+    |> subject("Reservierung erfolgreich - Reservierungsnummer #{reservation.code}")
     |> render_body("confirmation_mail.html", mail_params)
   end
 end

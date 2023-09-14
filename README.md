@@ -30,7 +30,6 @@ mix phx.gen.html Events Event events \
 
 mix phx.gen.html Reservations Reservation reservations \
     prio:integer \
-    order_date:datetime \
     seats:integer \
     code:string \
     name:string \
@@ -43,12 +42,19 @@ mix phx.gen.html Reservations Reservation reservations \
 mix ecto.migrate
 ```
 
+### DB Migration
+```
+mix ecto.gen.migration <name>
+
+mix ecto.migrate
+```
+
 ### Backlog
 - [x] setup base project
 - [x] create form for reservation creation (:new)
 - [x] implement :create
-- [ ] send confirmation mail
-- [ ] create some fields of reservation automatically (code, time, ...)
+- [x] send confirmation mail
+- [x] create some fields of reservation automatically (code, time, ...)
 - [ ] deployment
 - [ ] implement validation when creating reservation (incl. sold out message)
 - [ ] layout

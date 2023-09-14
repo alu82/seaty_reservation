@@ -8,7 +8,7 @@ defmodule SeatyReservation.EventsTest do
 
     import SeatyReservation.EventsFixtures
 
-    @invalid_attrs %{active: nil, datetime: nil, seats: nil}
+    @invalid_attrs %{active: nil, datetime: nil, total_seats: nil}
 
     test "list_events/0 returns all events" do
       event = event_fixture()
@@ -21,12 +21,12 @@ defmodule SeatyReservation.EventsTest do
     end
 
     test "create_event/1 with valid data creates a event" do
-      valid_attrs = %{active: true, datetime: ~N[2023-09-10 21:17:00], seats: 42}
+      valid_attrs = %{active: true, datetime: ~N[2023-09-10 21:17:00], total_seats: 42}
 
       assert {:ok, %Event{} = event} = Events.create_event(valid_attrs)
       assert event.active == true
       assert event.datetime == ~N[2023-09-10 21:17:00]
-      assert event.seats == 42
+      assert event.total_seats == 42
     end
 
     test "create_event/1 with invalid data returns error changeset" do
@@ -35,12 +35,12 @@ defmodule SeatyReservation.EventsTest do
 
     test "update_event/2 with valid data updates the event" do
       event = event_fixture()
-      update_attrs = %{active: false, datetime: ~N[2023-09-11 21:17:00], seats: 43}
+      update_attrs = %{active: false, datetime: ~N[2023-09-11 21:17:00], total_seats: 43}
 
       assert {:ok, %Event{} = event} = Events.update_event(event, update_attrs)
       assert event.active == false
       assert event.datetime == ~N[2023-09-11 21:17:00]
-      assert event.seats == 43
+      assert event.total_seats == 43
     end
 
     test "update_event/2 with invalid data returns error changeset" do

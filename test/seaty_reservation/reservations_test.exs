@@ -8,7 +8,7 @@ defmodule SeatyReservation.ReservationsTest do
 
     import SeatyReservation.ReservationsFixtures
 
-    @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, order_date: nil, contact: nil, preferred_row: nil}
+    @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, contact: nil, preferred_row: nil}
 
     test "list_reservations/0 returns all reservations" do
       reservation = reservation_fixture()
@@ -21,7 +21,7 @@ defmodule SeatyReservation.ReservationsTest do
     end
 
     test "create_reservation/1 with valid data creates a reservation" do
-      valid_attrs = %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, order_date: ~N[2023-09-10 21:16:00], contact: "some contact", preferred_row: "some preferred_row"}
+      valid_attrs = %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, contact: "some contact", preferred_row: "some preferred_row"}
 
       assert {:ok, %Reservation{} = reservation} = Reservations.create_reservation(valid_attrs)
       assert reservation.code == "some code"
@@ -29,7 +29,6 @@ defmodule SeatyReservation.ReservationsTest do
       assert reservation.group == 42
       assert reservation.comment == "some comment"
       assert reservation.prio == 42
-      assert reservation.order_date == ~N[2023-09-10 21:16:00]
       assert reservation.contact == "some contact"
       assert reservation.preferred_row == "some preferred_row"
     end
@@ -40,7 +39,7 @@ defmodule SeatyReservation.ReservationsTest do
 
     test "update_reservation/2 with valid data updates the reservation" do
       reservation = reservation_fixture()
-      update_attrs = %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, order_date: ~N[2023-09-11 21:16:00], contact: "some updated contact", preferred_row: "some updated preferred_row"}
+      update_attrs = %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, contact: "some updated contact", preferred_row: "some updated preferred_row"}
 
       assert {:ok, %Reservation{} = reservation} = Reservations.update_reservation(reservation, update_attrs)
       assert reservation.code == "some updated code"
@@ -48,7 +47,6 @@ defmodule SeatyReservation.ReservationsTest do
       assert reservation.group == 43
       assert reservation.comment == "some updated comment"
       assert reservation.prio == 43
-      assert reservation.order_date == ~N[2023-09-11 21:16:00]
       assert reservation.contact == "some updated contact"
       assert reservation.preferred_row == "some updated preferred_row"
     end
@@ -76,7 +74,7 @@ defmodule SeatyReservation.ReservationsTest do
 
     import SeatyReservation.ReservationsFixtures
 
-    @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, order_date: nil, contact: nil, preferred_row: nil}
+    @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, contact: nil, preferred_row: nil}
 
     test "list_reservations/0 returns all reservations" do
       reservation = reservation_fixture()
@@ -89,7 +87,7 @@ defmodule SeatyReservation.ReservationsTest do
     end
 
     test "create_reservation/1 with valid data creates a reservation" do
-      valid_attrs = %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, order_date: ~N[2023-09-10 21:24:00], contact: "some contact", preferred_row: "some preferred_row"}
+      valid_attrs = %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, contact: "some contact", preferred_row: "some preferred_row"}
 
       assert {:ok, %Reservation{} = reservation} = Reservations.create_reservation(valid_attrs)
       assert reservation.code == "some code"
@@ -97,7 +95,6 @@ defmodule SeatyReservation.ReservationsTest do
       assert reservation.group == 42
       assert reservation.comment == "some comment"
       assert reservation.prio == 42
-      assert reservation.order_date == ~N[2023-09-10 21:24:00]
       assert reservation.contact == "some contact"
       assert reservation.preferred_row == "some preferred_row"
     end
@@ -108,7 +105,7 @@ defmodule SeatyReservation.ReservationsTest do
 
     test "update_reservation/2 with valid data updates the reservation" do
       reservation = reservation_fixture()
-      update_attrs = %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, order_date: ~N[2023-09-11 21:24:00], contact: "some updated contact", preferred_row: "some updated preferred_row"}
+      update_attrs = %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, contact: "some updated contact", preferred_row: "some updated preferred_row"}
 
       assert {:ok, %Reservation{} = reservation} = Reservations.update_reservation(reservation, update_attrs)
       assert reservation.code == "some updated code"
@@ -116,7 +113,6 @@ defmodule SeatyReservation.ReservationsTest do
       assert reservation.group == 43
       assert reservation.comment == "some updated comment"
       assert reservation.prio == 43
-      assert reservation.order_date == ~N[2023-09-11 21:24:00]
       assert reservation.contact == "some updated contact"
       assert reservation.preferred_row == "some updated preferred_row"
     end

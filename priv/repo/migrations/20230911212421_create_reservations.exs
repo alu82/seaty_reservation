@@ -4,7 +4,6 @@ defmodule SeatyReservation.Repo.Migrations.CreateReservations do
   def change do
     create table(:reservations) do
       add :prio, :integer
-      add :order_date, :naive_datetime
       add :code, :string
       add :name, :string
       add :contact, :string

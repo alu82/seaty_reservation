@@ -50,6 +50,10 @@ defmodule SeatyReservation.Reservations do
 
   """
   def create_reservation(attrs \\ %{}) do
+    attrs = attrs
+    |> Map.put("code", get_next_code(attrs["event_id"]))
+    |> Map.put("prio", get_next_prio(attrs["event_id"]))
+
     %Reservation{}
     |> Reservation.changeset(attrs)
     |> Repo.insert()
@@ -101,4 +105,22 @@ defmodule SeatyReservation.Reservations do
   def change_reservation(%Reservation{} = reservation, attrs \\ %{}) do
     Reservation.changeset(reservation, attrs)
   end
+
+  defp get_next_code(event_id) do
+    query =
+      from r in Reservation,
+      where: r.event_id == ^event_id,
+      select: count(r.id) |> coalesce(1)
+    Repo.one(query) + String.to_integer(event_id)*1000
+    |> Integer.to_string()
+  end
+
+  defp get_next_prio(event_id) do
+    query =
+      from r in Reservation,
+      where: r.event_id == ^event_id,
+      select: min(r.prio) |> coalesce(1000)
+    Repo.one(query) - 5
+  end
+
 end
