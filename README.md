@@ -48,6 +48,7 @@ mix ecto.migrate
 - [x] create form for reservation creation (:new)
 - [x] implement :create
 - [ ] send confirmation mail
+- [ ] create some fields of reservation automatically (code, time, ...)
 - [ ] deployment
 - [ ] implement validation when creating reservation (incl. sold out message)
 - [ ] layout

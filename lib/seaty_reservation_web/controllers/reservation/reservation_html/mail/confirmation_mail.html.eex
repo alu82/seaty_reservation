@@ -1,9 +1,9 @@
 <p>
-    Sehr geehrte <%= @name %>,
+    Sehr geehrte/r <%= @name %>,
 </p>
 <p>
-    XXXXXXXX Plätze sind für die Vorstellung am XX.XX :00 Uhr unter der
-    Reservierungsnummer YYYYYY für Sie reserviert. Bitte notieren Sie
+    <%= @seats %> Plätze sind für die Vorstellung am <%= @event_date %> unter der
+    Reservierungsnummer <%= @reservation_code %>  für Sie reserviert. Bitte notieren Sie
     sich die Reservierungsnummer für die Abholung der Karten.
 </p>
 <p>

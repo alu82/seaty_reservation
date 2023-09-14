@@ -25,7 +25,8 @@ defmodule SeatyReservationWeb.ReservationController do
   def create(conn, %{"reservation" => reservation_params}) do
     case Reservations.create_reservation(reservation_params) do
       {:ok, reservation} ->
-        ReservationEmail.confirmation() |> Mailer.deliver()
+        event = Events.get_event!(reservation_params["event_id"])
+        ReservationEmail.confirmation(reservation_params, event) |> Mailer.deliver()
         conn
         |> put_flash(:info, "Reservation created successfully.")
         |> redirect(to: ~p"/reservations/#{reservation}")
