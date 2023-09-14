@@ -17,5 +17,6 @@ defmodule SeatyReservation.Repo.Migrations.CreateReservations do
     end
 
     create index(:reservations, [:event_id])
+    create unique_index(:reservations, [:code])
   end
 end

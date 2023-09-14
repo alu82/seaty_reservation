@@ -9,7 +9,7 @@
 
 <.table id="events" rows={@events} row_click={&JS.navigate(~p"/events/#{&1}")}>
   <:col :let={event} label="Datetime"><%= event.datetime %></:col>
-  <:col :let={event} label="Seats"><%= event.seats %></:col>
+  <:col :let={event} label="Seats"><%= event.total_seats %></:col>
   <:col :let={event} label="Active"><%= event.active %></:col>
   <:action :let={event}>
     <div class="sr-only">

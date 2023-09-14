@@ -19,13 +19,13 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 
 
 ### Setup
-create app with ```mix phx.new seaty_app --database sqlite3```
+create app with ```mix phx.new seaty_reservation --database sqlite3```
 
 create and migrate to schema with
 ```
 mix phx.gen.html Events Event events \
     datetime:naive_datetime \
-    seats:integer \
+    total_seats:integer \
     active:boolean
 
 mix phx.gen.html Reservations Reservation reservations \

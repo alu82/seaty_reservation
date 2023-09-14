@@ -13,7 +13,7 @@ defmodule SeatyReservation.EventsFixtures do
       |> Enum.into(%{
         active: true,
         datetime: ~N[2023-09-10 21:17:00],
-        seats: 42
+        total_seats: 42
       })
       |> SeatyReservation.Events.create_event()
 

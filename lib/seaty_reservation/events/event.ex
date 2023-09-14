@@ -5,7 +5,7 @@ defmodule SeatyReservation.Events.Event do
   schema "events" do
     field :active, :boolean, default: false
     field :datetime, :naive_datetime
-    field :seats, :integer
+    field :total_seats, :integer
     has_many :reservations, SeatyReservation.Reservations.Reservation
 
     timestamps()
@@ -14,7 +14,7 @@ defmodule SeatyReservation.Events.Event do
   @doc false
   def changeset(event, attrs) do
     event
-    |> cast(attrs, [:datetime, :seats, :active])
-    |> validate_required([:datetime, :seats, :active])
+    |> cast(attrs, [:datetime, :total_seats, :active])
+    |> validate_required([:datetime, :total_seats, :active])
   end
 end

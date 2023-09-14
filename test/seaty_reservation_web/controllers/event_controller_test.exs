@@ -3,9 +3,9 @@ defmodule SeatyReservationWeb.EventControllerTest do
 
   import SeatyReservation.EventsFixtures
 
-  @create_attrs %{active: true, datetime: ~N[2023-09-10 21:17:00], seats: 42}
-  @update_attrs %{active: false, datetime: ~N[2023-09-11 21:17:00], seats: 43}
-  @invalid_attrs %{active: nil, datetime: nil, seats: nil}
+  @create_attrs %{active: true, datetime: ~N[2023-09-10 21:17:00], total_seats: 42}
+  @update_attrs %{active: false, datetime: ~N[2023-09-11 21:17:00], total_seats: 43}
+  @invalid_attrs %{active: nil, datetime: nil, total_seats: nil}
 
   describe "index" do
     test "lists all events", %{conn: conn} do
