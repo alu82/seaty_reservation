@@ -44,6 +44,7 @@ defmodule SeatyReservation.MixProject do
       {:esbuild, "~> 0.7", runtime: Mix.env() == :dev},
       {:tailwind, "~> 0.2.0", runtime: Mix.env() == :dev},
       {:swoosh, "~> 1.11"},
+      {:phoenix_swoosh, "~> 1.2"},
       {:gen_smtp, "~> 1.2.0"},
       {:finch, "~> 0.13"},
       {:telemetry_metrics, "~> 0.6"},

@@ -31,6 +31,9 @@ defmodule SeatyReservationWeb do
     end
   end
 
+  @spec channel ::
+          {:use, [{:column, 7} | {:context, SeatyReservationWeb} | {:imports, [...]}, ...],
+           [{:__aliases__, [...], [...]}, ...]}
   def channel do
     quote do
       use Phoenix.Channel

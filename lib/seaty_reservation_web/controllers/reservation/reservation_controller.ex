@@ -4,7 +4,7 @@ defmodule SeatyReservationWeb.ReservationController do
   alias SeatyReservation.Reservations
   alias SeatyReservation.Reservations.Reservation
   alias SeatyReservation.Events
-  alias SeatyReservation.ConfirmationEmail
+  alias SeatyReservation.ReservationEmail
   alias SeatyReservation.Mailer
 
   def index(conn, _params) do
@@ -25,7 +25,7 @@ defmodule SeatyReservationWeb.ReservationController do
   def create(conn, %{"reservation" => reservation_params}) do
     case Reservations.create_reservation(reservation_params) do
       {:ok, reservation} ->
-        ConfirmationEmail.welcome() |> Mailer.deliver()
+        ReservationEmail.confirmation() |> Mailer.deliver()
         conn
         |> put_flash(:info, "Reservation created successfully.")
         |> redirect(to: ~p"/reservations/#{reservation}")

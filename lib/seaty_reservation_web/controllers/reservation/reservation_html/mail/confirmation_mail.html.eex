@@ -1,0 +1,27 @@
+<p>
+    Sehr geehrte <%= @name %>,
+</p>
+<p>
+    XXXXXXXX Plätze sind für die Vorstellung am XX.XX :00 Uhr unter der
+    Reservierungsnummer YYYYYY für Sie reserviert. Bitte notieren Sie
+    sich die Reservierungsnummer für die Abholung der Karten.
+</p>
+<p>
+    Einlass ist 90 Minuten vor Spielbeginn. Reservierte Karten müssen
+    spätestens 30 Minuten vor Vorstellungsbeginn mit der oben genannten
+    Reservierungsnummer abgeholt werden. Ansonsten verfällt die
+    Reservierung und die Karten werden an der Abendkasse vergeben.
+    Ausfälle bitte so früh wie möglich - nicht erst an der Abendkasse -
+    mitteilen, damit die Karten für den Verkauf freigegeben werden
+    können. Herzlichen Dank.
+</p>
+<p>
+    Sollten noch mehr Karten benötigt werden, bitte getrennt buchen mit
+    Angabe der Reservierungsnummer. Wir versuchen diese Plätze dann
+    angrenzend zu vergeben - können dies aber nicht garantieren.
+</p>
+<p>
+    Wir freuen uns auf Sie.<br><br>
+    Herzlichen Gruß,<br>
+    Alexander Ludwig im Namen der Südtiroler Volksbühne eV
+</p>
