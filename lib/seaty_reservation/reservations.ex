@@ -123,4 +123,12 @@ defmodule SeatyReservation.Reservations do
     Repo.one(query) - 5
   end
 
+  def get_reservation_count(event_id) do
+    query =
+      from r in Reservation,
+      where: r.event_id == ^event_id,
+      select: sum(r.seats) |> coalesce(0)
+    Repo.one(query)
+  end
+
 end

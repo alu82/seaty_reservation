@@ -13,26 +13,29 @@ defmodule SeatyReservationWeb.ReservationController do
   end
 
   def new(conn, _params) do
-    events = Enum.map(
-      Events.get_all_active(),
-      fn ev-> {ev.datetime, ev.id} end
-    )
     changeset = Reservations.change_reservation(%Reservation{})
-    render(conn, :new, changeset: changeset, events: events)
+    render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
   end
 
-  @spec create(Plug.Conn.t(), map) :: Plug.Conn.t()
   def create(conn, %{"reservation" => reservation_params}) do
-    case Reservations.create_reservation(reservation_params) do
-      {:ok, reservation} ->
-        event = Events.get_event!(reservation.event_id)
-        ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
-        conn
-        |> put_flash(:info, "Reservation created successfully.")
-        |> redirect(to: ~p"/reservations/#{reservation}")
+    event = Events.get_event!(reservation_params["event_id"])
+    number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
+    if event.total_seats > number_of_reservations + String.to_integer(reservation_params["seats"]) do
+      case Reservations.create_reservation(reservation_params) do
+        {:ok, reservation} ->
+          ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
+          conn
+          |> put_flash(:info, "Reservation created successfully.")
+          |> redirect(to: ~p"/reservations/#{reservation}")
+
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
+      end
+    else
+      conn
+      |> put_flash(:error, "Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung.")
+      |> redirect(to: ~p"/reservations/new")
     end
   end
 
@@ -72,5 +75,12 @@ defmodule SeatyReservationWeb.ReservationController do
     conn
     |> put_flash(:info, "Reservation deleted successfully.")
     |> redirect(to: ~p"/reservations")
+  end
+
+  defp get_events_for_dropdown() do
+    Enum.map(
+      Events.get_all_active(),
+      fn ev-> {ev.datetime, ev.id} end
+    )
   end
 end
