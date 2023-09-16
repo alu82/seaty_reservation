@@ -78,10 +78,10 @@ defmodule SeatyReservationWeb.ReservationController do
 
   def delete(conn, %{"id" => id}) do
     reservation = Reservations.get_reservation!(id)
-    {:ok, _reservation} = Reservations.delete_reservation(reservation)
+    {:ok, reservation} = Reservations.delete_reservation(reservation)
 
     conn
-    |> put_flash(:info, "Reservation deleted successfully.")
+    |> put_flash(:info, "Reservation #{reservation.code} deleted successfully.")
     |> redirect(to: ~p"/reservations")
   end
 
