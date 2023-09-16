@@ -53,6 +53,7 @@ defmodule SeatyReservation.Reservations do
     attrs = attrs
     |> Map.put("code", get_next_code(attrs["event_id"]))
     |> Map.put("prio", get_next_prio(attrs["event_id"]))
+    |> Map.put("token", gen_access_token())
 
     %Reservation{}
     |> Reservation.changeset(attrs)
@@ -121,6 +122,12 @@ defmodule SeatyReservation.Reservations do
       where: r.event_id == ^event_id,
       select: min(r.prio) |> coalesce(1000)
     Repo.one(query) - 5
+  end
+
+  defp gen_access_token() do
+    :crypto.strong_rand_bytes(32)
+    |> Base.encode64
+    |> binary_part(0, 32)
   end
 
   def get_reservation_count(event_id) do

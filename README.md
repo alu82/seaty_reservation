@@ -56,8 +56,8 @@ mix ecto.migrate
 - [x] send confirmation mail
 - [x] create some fields of reservation automatically (code, time, ...)
 - [x] deployment
-- [ ] implement validation when creating reservation (incl. sold out message)
+- [x] implement validation when creating reservation (incl. sold out message)
 - [ ] layout
 - [ ] localization, texts
 - [ ] dataprivacy checkbox
-- [ ] route access restrictions
+- [x] route access restrictions

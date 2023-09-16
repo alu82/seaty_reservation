@@ -27,7 +27,7 @@ defmodule SeatyReservationWeb.ReservationController do
           ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
           conn
           |> put_flash(:info, "Reservation created successfully.")
-          |> redirect(to: ~p"/reservations/#{reservation}")
+          |> redirect(to: ~p"/reservations/#{reservation}?token=#{reservation.token}")
 
         {:error, %Ecto.Changeset{} = changeset} ->
           render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
@@ -39,9 +39,17 @@ defmodule SeatyReservationWeb.ReservationController do
     end
   end
 
-  def show(conn, %{"id" => id}) do
+  def show(conn, %{"id" => id, "token" => token}) do
     reservation = Reservations.get_reservation!(id)
-    render(conn, :show, reservation: reservation)
+    if reservation.token == token do
+      event = Events.get_event!(reservation.event_id)
+      render(conn, :show, reservation: reservation, event: event)
+    else
+      conn
+      |> put_flash(:error, "Reservierung nicht vorhanden oder kein Zugriff.")
+      |> redirect(to: ~p"/reservations/new")
+    end
+
   end
 
   def edit(conn, %{"id" => id}) do
@@ -58,10 +66,10 @@ defmodule SeatyReservationWeb.ReservationController do
     reservation = Reservations.get_reservation!(id)
 
     case Reservations.update_reservation(reservation, reservation_params) do
-      {:ok, reservation} ->
+      {:ok, _reservation} ->
         conn
         |> put_flash(:info, "Reservation updated successfully.")
-        |> redirect(to: ~p"/reservations/#{reservation}")
+        |> redirect(to: ~p"/reservations")
 
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, :edit, reservation: reservation, changeset: changeset)

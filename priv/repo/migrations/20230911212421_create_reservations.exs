@@ -12,6 +12,7 @@ defmodule SeatyReservation.Repo.Migrations.CreateReservations do
       add :preferred_row, :string
       add :comment, :text
       add :event_id, references(:events, on_delete: :nothing)
+      add :token, :string
 
       timestamps()
     end

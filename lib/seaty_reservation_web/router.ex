@@ -2,33 +2,40 @@ defmodule SeatyReservationWeb.Router do
   use SeatyReservationWeb, :router
 
   pipeline :browser do
-    plug :basic_auth,
-      username: Application.compile_env(:seaty_reservation, :basic_auth)[:username],
-      password: Application.compile_env(:seaty_reservation, :basic_auth)[:password]
     plug :accepts, ["html"]
     plug :fetch_session
     plug :fetch_live_flash
+    plug :fetch_query_params
     plug :put_root_layout, html: {SeatyReservationWeb.Layouts, :root}
     plug :protect_from_forgery
     plug :put_secure_browser_headers
   end
 
-  pipeline :api do
-    plug :accepts, ["json"]
+  pipeline :auth do
+    plug :basic_auth,
+      username: Application.compile_env(:seaty_reservation, :basic_auth)[:username],
+      password: Application.compile_env(:seaty_reservation, :basic_auth)[:password]
   end
 
   scope "/", SeatyReservationWeb do
     pipe_through :browser
 
     get "/", ReservationController , :new
-    resources "/reservations", ReservationController
-    resources "/events", EventController
+    get "reservations/new", ReservationController, :new
+    get "/reservations/:id", ReservationController, :show
+    post "/reservations", ReservationController, :create
   end
 
-  # Other scopes may use custom stacks.
-  # scope "/api", SeatyReservationWeb do
-  #   pipe_through :api
-  # end
+  scope "/", SeatyReservationWeb do
+    pipe_through [:browser, :auth]
+
+    resources "/events", EventController
+    get "/reservations", ReservationController, :index
+    get "/reservations/:id/edit", ReservationController, :edit
+    patch "/reservations/:id", ReservationController, :update
+    put "/reservations/:id", ReservationController, :update
+    delete "/reservations/:id", ReservationController, :delete
+  end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
   if Application.compile_env(:seaty_reservation, :dev_routes) do

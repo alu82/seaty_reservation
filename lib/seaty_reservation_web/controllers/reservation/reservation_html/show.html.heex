@@ -1,24 +1,14 @@
 <.header>
-  Reservation <%= @reservation.id %>
+  Reservierung <%= @reservation.code %>
   <:subtitle>This is a reservation record from your database.</:subtitle>
-  <:actions>
-    <.link href={~p"/reservations/#{@reservation}/edit"}>
-      <.button>Edit reservation</.button>
-    </.link>
-  </:actions>
 </.header>
 
 <.list>
-  <:item title="Event"><%= @reservation.event_id %></:item>
-  <:item title="Prio"><%= @reservation.prio %></:item>
-  <:item title="Sitze"><%= @reservation.seats %></:item>
-  <:item title="Order date"><%= @reservation.inserted_at %></:item>
+  <:item title="Event"><%= format_datetime(@event.datetime) %></:item>
   <:item title="Code"><%= @reservation.code %></:item>
+  <:item title="Sitze"><%= @reservation.seats %></:item>
   <:item title="Name"><%= @reservation.name %></:item>
   <:item title="Contact"><%= @reservation.contact %></:item>
-  <:item title="Group"><%= @reservation.group %></:item>
-  <:item title="Preferred row"><%= @reservation.preferred_row %></:item>
   <:item title="Comment"><%= @reservation.comment %></:item>
+  <:item title="Order date"><%= format_datetime(@reservation.inserted_at) %></:item>
 </.list>
-
-<.back navigate={~p"/reservations"}>Back to reservations</.back>
