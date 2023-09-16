@@ -1,6 +1,6 @@
 <.header>
-  New Reservation
-  <:subtitle>Use this form to manage reservation records in your database.</:subtitle>
+  <%= gettext("Neue Reservierung anlegen.") %>
+  <:subtitle><%= gettext("Verwenden Sie dieses Formular, um Karten für unsere Aufführungen zu reservieren.") %></:subtitle>
 </.header>
 
 <.reservation_form changeset={@changeset} action={~p"/reservations"} events={@events}/>

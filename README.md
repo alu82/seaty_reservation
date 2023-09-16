@@ -58,6 +58,7 @@ mix ecto.migrate
 - [x] deployment
 - [x] implement validation when creating reservation (incl. sold out message)
 - [ ] custom edit form, option to resend email confirmation when editing
+- [ ] retry when cration failed due to duplicate code
 - [x] layout
 - [ ] localization, texts
 - [ ] dataprivacy checkbox

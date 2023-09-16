@@ -1,14 +1,13 @@
 <.header>
-  Reservierung <%= @reservation.code %>
-  <:subtitle>This is a reservation record from your database.</:subtitle>
+  <%= gettext("Details zur Reservierung ") %> <%= @reservation.code %>
 </.header>
 
 <.list>
-  <:item title="Event"><%= format_datetime(@event.datetime) %></:item>
-  <:item title="Code"><%= @reservation.code %></:item>
-  <:item title="Sitze"><%= @reservation.seats %></:item>
-  <:item title="Name"><%= @reservation.name %></:item>
-  <:item title="Contact"><%= @reservation.contact %></:item>
-  <:item title="Comment"><%= @reservation.comment %></:item>
-  <:item title="Order date"><%= format_datetime(@reservation.inserted_at) %></:item>
+  <:item title={gettext("Aufführung")}><%= format_datetime(@event.datetime) %></:item>
+  <:item title={gettext("Reservierungsnummer")}><%= @reservation.code %></:item>
+  <:item title={gettext("Anzahl der Plätze")}><%= @reservation.seats %></:item>
+  <:item title={gettext("Name")}><%= @reservation.name %></:item>
+  <:item title={gettext("E-Mail")}><%= @reservation.contact %></:item>
+  <:item title={gettext("Ihre Nachricht an uns")}><%= @reservation.comment %></:item>
+  <:item title={gettext("Reservierung angelegt am")}><%= format_datetime(@reservation.inserted_at) %></:item>
 </.list>

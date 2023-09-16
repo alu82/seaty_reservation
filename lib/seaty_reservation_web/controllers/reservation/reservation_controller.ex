@@ -26,7 +26,7 @@ defmodule SeatyReservationWeb.ReservationController do
         {:ok, reservation} ->
           ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
           conn
-          |> put_flash(:info, "Reservation created successfully.")
+          |> put_flash(:info, gettext("Reservierung erfolgreich angelegt."))
           |> redirect(to: ~p"/reservations/#{reservation}?token=#{reservation.token}")
 
         {:error, %Ecto.Changeset{} = changeset} ->
@@ -34,7 +34,7 @@ defmodule SeatyReservationWeb.ReservationController do
       end
     else
       conn
-      |> put_flash(:error, "Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung.")
+      |> put_flash(:error, gettext("Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."))
       |> redirect(to: ~p"/reservations/new")
     end
   end
@@ -46,7 +46,7 @@ defmodule SeatyReservationWeb.ReservationController do
       render(conn, :show, reservation: reservation, event: event)
     else
       conn
-      |> put_flash(:error, "Reservierung nicht vorhanden oder kein Zugriff.")
+      |> put_flash(:error, gettext("Reservierung nicht vorhanden oder kein Zugriff."))
       |> redirect(to: ~p"/reservations/new")
     end
 

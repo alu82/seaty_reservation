@@ -1,13 +1,13 @@
 <.simple_form :let={f} for={@changeset} action={@action}>
   <.error :if={@changeset.action}>
-    Oops, something went wrong! Please check the errors below.
+    <%= gettext("Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.") %>
   </.error>
-  <.input field={f[:event_id]} type="select" label="Event" options={format_events_datetime(@events)}/>
-  <.input field={f[:seats]} type="number" label="Anzahl Sitze" min="1" max="20"/>
-  <.input field={f[:name]} type="text" label="Name" />
-  <.input field={f[:contact]} type="email" label="E-Mail" />
-  <.input field={f[:comment]} type="text" label="Comment" />
+  <.input field={f[:event_id]} type="select" label={gettext("Aufführung")} options={format_events_datetime(@events)}/>
+  <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20"/>
+  <.input field={f[:name]} type="text" label={gettext("Name")} />
+  <.input field={f[:contact]} type="email" label={gettext("E-Mail")} />
+  <.input field={f[:comment]} type="text" label={gettext("Ihre Nachricht an uns")} placeholder={gettext("z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten.")}/>
   <:actions>
-    <.button>Save Reservation</.button>
+    <.button><%= gettext("Reservieren") %></.button>
   </:actions>
 </.simple_form>
