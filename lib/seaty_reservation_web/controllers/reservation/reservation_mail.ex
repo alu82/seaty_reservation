@@ -3,6 +3,8 @@ defmodule SeatyReservation.ReservationEmail do
     template_root: "lib/seaty_reservation_web/controllers/reservation/reservation_html",
     template_path: "mail"
 
+  import SeatyReservationWeb.Commons
+
   def confirmation(reservation, event) do
     mail_params = %{
       :name => reservation.name,

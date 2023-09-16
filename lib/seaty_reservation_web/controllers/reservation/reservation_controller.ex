@@ -68,7 +68,7 @@ defmodule SeatyReservationWeb.ReservationController do
     case Reservations.update_reservation(reservation, reservation_params) do
       {:ok, _reservation} ->
         conn
-        |> put_flash(:info, "Reservation updated successfully.")
+        |> put_flash(:info, "Reservation #{reservation.code} updated successfully.")
         |> redirect(to: ~p"/reservations")
 
       {:error, %Ecto.Changeset{} = changeset} ->

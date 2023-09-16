@@ -57,7 +57,10 @@ mix ecto.migrate
 - [x] create some fields of reservation automatically (code, time, ...)
 - [x] deployment
 - [x] implement validation when creating reservation (incl. sold out message)
-- [ ] layout
+- [ ] custom edit form, option to resend email confirmation when editing
+- [x] layout
 - [ ] localization, texts
 - [ ] dataprivacy checkbox
 - [x] route access restrictions
+- [ ] simple captcha?
+ 

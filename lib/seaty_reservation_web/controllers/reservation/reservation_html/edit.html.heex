@@ -1,8 +1,8 @@
 <.header>
-  Edit Reservation <%= @reservation.id %>
+  Edit Reservation <%= @reservation.code %>
   <:subtitle>Use this form to manage reservation records in your database.</:subtitle>
 </.header>
 
-<.reservation_form changeset={@changeset} action={~p"/reservations/#{@reservation}"} events={@events}/>
+<.reservation_form_full changeset={@changeset} action={~p"/reservations/#{@reservation}"} events={@events}/>
 
 <.back navigate={~p"/reservations"}>Back to reservations</.back>
