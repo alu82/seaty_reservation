@@ -6,6 +6,7 @@ defmodule SeatyReservation.Repo.Migrations.CreateReservations do
       add :prio, :integer
       add :code, :string
       add :name, :string
+      add :seats, :integer
       add :contact, :string
       add :group, :integer
       add :preferred_row, :string
