@@ -1,5 +1,6 @@
 defmodule SeatyReservationWeb.ReservationHTML do
   use SeatyReservationWeb, :html
+  import SeatyReservationWeb.Commons
 
   embed_templates "reservation_html/*"
 

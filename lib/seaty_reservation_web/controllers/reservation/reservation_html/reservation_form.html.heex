@@ -2,10 +2,10 @@
   <.error :if={@changeset.action}>
     Oops, something went wrong! Please check the errors below.
   </.error>
-  <.input field={f[:event_id]} type="select" label="Event" options={@events}/>
-  <.input field={f[:seats]} type="number" label="Anzahl Sitze" />
+  <.input field={f[:event_id]} type="select" label="Event" options={format_events_datetime(@events)}/>
+  <.input field={f[:seats]} type="number" label="Anzahl Sitze" min="1" max="20"/>
   <.input field={f[:name]} type="text" label="Name" />
-  <.input field={f[:contact]} type="text" label="Contact" />
+  <.input field={f[:contact]} type="email" label="E-Mail" />
   <.input field={f[:comment]} type="text" label="Comment" />
   <:actions>
     <.button>Save Reservation</.button>
