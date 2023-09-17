@@ -6,11 +6,13 @@ defmodule SeatyReservation.ReservationEmail do
   import SeatyReservationWeb.Commons
 
   def confirmation(reservation, event) do
+    reservation_link = "#{SeatyReservationWeb.Endpoint.url()}/reservations/#{reservation.id}?token=#{reservation.token}"
     mail_params = %{
       :name => reservation.name,
       :seats => reservation.seats,
       :event_date => event.datetime,
-      :reservation_code => reservation.code
+      :reservation_code => reservation.code,
+      :reservation_link => reservation_link
     }
 
     new()
