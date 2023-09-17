@@ -8,8 +8,9 @@
 </.header>
 
 <.table id="events" rows={@events} row_click={&JS.navigate(~p"/events/#{&1}")}>
-  <:col :let={event} label="Datetime"><%= event.datetime %></:col>
+  <:col :let={event} label="Datetime"><%= format_datetime(event.datetime) %></:col>
   <:col :let={event} label="Seats"><%= event.total_seats %></:col>
+  <:col :let={event} label="Reserved seats"><%= get_reservation_count(event.id, @reservations) %></:col>
   <:col :let={event} label="Active"><%= event.active %></:col>
   <:action :let={event}>
     <div class="sr-only">
@@ -23,3 +24,5 @@
     </.link>
   </:action>
 </.table>
+
+<.back navigate={~p"/reservations"}>Go to reservations</.back>

@@ -9,7 +9,7 @@
 </.header>
 
 <.list>
-  <:item title="Datetime"><%= @event.datetime %></:item>
+  <:item title="Datetime"><%= format_datetime(@event.datetime) %></:item>
   <:item title="Seats"><%= @event.total_seats %></:item>
   <:item title="Active"><%= @event.active %></:item>
 </.list>

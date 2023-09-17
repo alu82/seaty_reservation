@@ -21,7 +21,7 @@ defmodule SeatyReservationWeb.ReservationController do
     event = Events.get_event!(reservation_params["event_id"])
     number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
 
-    if event.total_seats > number_of_reservations + String.to_integer(reservation_params["seats"]) do
+    if event.total_seats >= number_of_reservations + String.to_integer(reservation_params["seats"]) do
       case Reservations.create_reservation(reservation_params) do
         {:ok, reservation} ->
           ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
@@ -64,20 +64,30 @@ defmodule SeatyReservationWeb.ReservationController do
 
   def update(conn, %{"id" => id, "reservation" => reservation_params}) do
     reservation = Reservations.get_reservation!(id)
+    event = Events.get_event!(reservation_params["event_id"])
+    number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
 
-    case Reservations.update_reservation(reservation, reservation_params) do
-      {:ok, reservation} ->
-        if reservation_params["resend_mail"] == "true" do
-          event = Events.get_event!(reservation_params["event_id"])
-          ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
-        end
+    #to calculate the total seats after the update, we have to know the old number of seats
+    next_total_seats = number_of_reservations - reservation.seats + String.to_integer(reservation_params["seats"])
+    if event.total_seats >= next_total_seats do
+      case Reservations.update_reservation(reservation, reservation_params) do
+        {:ok, reservation} ->
+          if reservation_params["resend_mail"] == "true" do
+            event = Events.get_event!(reservation_params["event_id"])
+            ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
+          end
 
-        conn
-        |> put_flash(:info, "Reservation #{reservation.code} updated successfully.")
-        |> redirect(to: ~p"/reservations")
+          conn
+          |> put_flash(:info, "Reservation #{reservation.code} updated successfully.")
+          |> redirect(to: ~p"/reservations")
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, reservation: reservation, changeset: changeset)
+        {:error, %Ecto.Changeset{} = changeset} ->
+          render(conn, :edit, reservation: reservation, changeset: changeset)
+      end
+    else
+      conn
+      |> put_flash(:error, gettext("Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."))
+      |> redirect(to: ~p"/reservations/#{id}/edit")
     end
   end
 

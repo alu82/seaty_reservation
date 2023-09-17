@@ -3,10 +3,12 @@ defmodule SeatyReservationWeb.EventController do
 
   alias SeatyReservation.Events
   alias SeatyReservation.Events.Event
+  alias SeatyReservation.Reservations
 
   def index(conn, _params) do
     events = Events.list_events()
-    render(conn, :index, events: events)
+    reservations = Reservations.get_reservation_count()
+    render(conn, :index, events: events, reservations: reservations)
   end
 
   def new(conn, _params) do
