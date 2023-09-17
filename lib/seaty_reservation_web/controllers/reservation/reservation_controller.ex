@@ -66,7 +66,12 @@ defmodule SeatyReservationWeb.ReservationController do
     reservation = Reservations.get_reservation!(id)
 
     case Reservations.update_reservation(reservation, reservation_params) do
-      {:ok, _reservation} ->
+      {:ok, reservation} ->
+        if reservation_params["resend_mail"] == "true" do
+          event = Events.get_event!(reservation_params["event_id"])
+          ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
+        end
+
         conn
         |> put_flash(:info, "Reservation #{reservation.code} updated successfully.")
         |> redirect(to: ~p"/reservations")

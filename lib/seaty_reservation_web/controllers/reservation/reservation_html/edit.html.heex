@@ -2,7 +2,7 @@
   Edit Reservation <%= @reservation.code %>
   <:subtitle>Use this form to manage reservation records in your database.</:subtitle>
   <:actions>
-    <.link href={~p"/reservations/#{@reservation.id}"} method="delete" data-confirm="Are you sure?">
+    <.link href={~p"/reservations/#{@reservation.id}"} method="delete" data-confirm="Delete Reservation: Are you sure?">
       <.button>Delete</.button>
     </.link>
   </:actions>
