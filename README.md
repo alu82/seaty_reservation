@@ -61,7 +61,7 @@ mix ecto.migrate
 - [x] retry when cration failed due to duplicate code
 - [x] layout
 - [x] localization, texts (for customer facing pages)
-- [ ] dataprivacy checkbox
+- [x] dataprivacy text
 - [x] route access restrictions
 - [ ] simple captcha?
 - [ ] localization, texts (for restricted pages)

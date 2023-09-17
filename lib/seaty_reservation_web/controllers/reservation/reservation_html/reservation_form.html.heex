@@ -7,6 +7,10 @@
   <.input field={f[:name]} type="text" label={gettext("Name")} />
   <.input field={f[:contact]} type="email" label={gettext("E-Mail")} />
   <.input field={f[:comment]} type="text" label={gettext("Ihre Nachricht an uns")} placeholder={gettext("z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten.")}/>
+  <div class="text-sm text-zinc-600">
+    Informationen zu unseren Datenschutzpraktiken finden sich in unseren 
+    <.link class="underline" href="https://www.suedtiroler-volksbuehne.de/page/imprint">Datenschutzbestimmungen.</.link>
+  </div>
   <:actions>
     <.button><%= gettext("Reservieren") %></.button>
   </:actions>
