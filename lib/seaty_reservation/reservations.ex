@@ -107,13 +107,28 @@ defmodule SeatyReservation.Reservations do
     Reservation.changeset(reservation, attrs)
   end
 
+  def get_reservation_by_code(code) do
+    query =
+      from r in Reservation,
+      where: r.code == ^code
+    Repo.one(query)
+  end
+
   defp get_next_code(event_id) do
     query =
       from r in Reservation,
       where: r.event_id == ^event_id,
       select: count(r.id) |> coalesce(1)
-    Repo.one(query) + String.to_integer(event_id)*1000
-    |> Integer.to_string()
+    code = Repo.one(query) + String.to_integer(event_id)*1000
+    check_next_codes(code, get_reservation_by_code(Integer.to_string(code)), code + 1)
+  end
+
+  defp check_next_codes(code, nil, _next_code) do
+    code |> Integer.to_string()
+  end
+
+  defp check_next_codes(_code, count, next_code) when count > 0 do
+    check_next_codes(next_code, get_reservation_by_code(Integer.to_string(next_code)), next_code + 1)
   end
 
   defp get_next_prio(event_id) do
