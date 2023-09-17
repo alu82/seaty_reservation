@@ -23,6 +23,11 @@
       Delete
     </.link>
   </:action>
+  <:action :let={event}>
+    <.link href={~p"/reservations/?event_id=#{event}"} >
+      Reservations
+    </.link>
+  </:action>
 </.table>
 
 <.back navigate={~p"/reservations"}>Go to reservations</.back>

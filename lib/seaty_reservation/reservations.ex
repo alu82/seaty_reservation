@@ -161,4 +161,12 @@ defmodule SeatyReservation.Reservations do
     Repo.all(query)
   end
 
+  def get_reservations_by_event(event_id) do
+    query =
+      from r in Reservation,
+      where: r.event_id == ^event_id,
+      order_by: [desc: r.prio]
+    Repo.all(query)
+  end
+
 end

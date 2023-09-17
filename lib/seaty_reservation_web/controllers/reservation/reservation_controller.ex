@@ -7,9 +7,16 @@ defmodule SeatyReservationWeb.ReservationController do
   alias SeatyReservation.ReservationEmail
   alias SeatyReservation.Mailer
 
+  def index(conn, %{"event_id" => event_id}) do
+    reservations = Reservations.get_reservations_by_event(event_id)
+    events = Events.get_all_active()
+    render(conn, :index, reservations: reservations, events: events)
+  end
+
   def index(conn, _params) do
     reservations = Reservations.list_reservations()
-    render(conn, :index, reservations: reservations)
+    events = Events.get_all_active()
+    render(conn, :index, reservations: reservations, events: events)
   end
 
   def new(conn, _params) do
