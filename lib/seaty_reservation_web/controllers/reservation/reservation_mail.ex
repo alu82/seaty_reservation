@@ -15,11 +15,13 @@ defmodule SeatyReservation.ReservationEmail do
       :reservation_link => reservation_link
     }
 
+    subject = System.get_env("SY_MAIL_SUBJECT") || "Reservierung erfolgreich"
+
     new()
     |> to({reservation.name, reservation.contact})
     |> cc(System.get_env("SY_SMTP_USER"))
     |> from({"Südtiroler Volksbühne Kartenreservierung", System.get_env("SY_SMTP_USER")})
-    |> subject("Reservierung erfolgreich - Reservierungsnummer #{reservation.code}")
+    |> subject("#{subject} - Reservierungsnummer #{reservation.code}")
     |> render_body("confirmation_mail.html", mail_params)
   end
 end
