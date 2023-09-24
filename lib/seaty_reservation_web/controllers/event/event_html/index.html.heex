@@ -13,19 +13,21 @@
   <:col :let={event} label="Reserved seats"><%= get_reservation_count(event.id, @reservations) %></:col>
   <:col :let={event} label="Active"><%= event.active %></:col>
   <:action :let={event}>
-    <div class="sr-only">
-      <.link navigate={~p"/events/#{event}"}>Show</.link>
-    </div>
+    <.link href={~p"/reservations/?event_id=#{event}"} >
+      Reservations
+    </.link>
+  </:action>
+  <:action :let={event}>
+    <.link href={~p"/events/#{event}/allocations"} method="post">
+      Allocation
+    </.link>
+  </:action>
+  <:action :let={event}>
     <.link navigate={~p"/events/#{event}/edit"}>Edit</.link>
   </:action>
   <:action :let={event}>
     <.link href={~p"/events/#{event}"} method="delete" data-confirm="Are you sure?">
       Delete
-    </.link>
-  </:action>
-  <:action :let={event}>
-    <.link href={~p"/reservations/?event_id=#{event}"} >
-      Reservations
     </.link>
   </:action>
 </.table>

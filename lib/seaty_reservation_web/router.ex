@@ -21,7 +21,7 @@ defmodule SeatyReservationWeb.Router do
     pipe_through :browser
 
     get "/", ReservationController , :new
-    get "reservations/new", ReservationController, :new
+    get "/reservations/new", ReservationController, :new
     get "/reservations/:id", ReservationController, :show
     post "/reservations", ReservationController, :create
   end
@@ -35,6 +35,8 @@ defmodule SeatyReservationWeb.Router do
     patch "/reservations/:id", ReservationController, :update
     put "/reservations/:id", ReservationController, :update
     delete "/reservations/:id", ReservationController, :delete
+    get "/events/:event_id/allocations/:id", AllocationController, :show
+    post "/events/:event_id/allocations", AllocationController, :create
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
