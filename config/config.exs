@@ -61,6 +61,7 @@ config :phoenix, :json_library, Jason
 
 # set the locales
 config :seaty_reservation, SeatyReservationWeb.Gettext, locales: ~w(de en)
+config :gettext, :default_locale, "de"
 
 # basic auth setup
 config :seaty_reservation, :basic_auth,

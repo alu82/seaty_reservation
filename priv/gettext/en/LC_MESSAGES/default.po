@@ -1,0 +1,124 @@
+## "msgid"s in this file come from POT (.pot) files.
+###
+### Do not add, change, or remove "msgid"s manually here as
+### they're tied to the ones in the corresponding POT file
+### (with the same domain).
+###
+### Use "mix gettext.extract --merge" or "mix gettext.merge"
+### to merge POT files into PO files.
+msgid ""
+msgstr ""
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: lib/seaty_reservation_web/components/core_components.ex:474
+#, elixir-autogen, elixir-format
+msgid "Actions"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:6
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:8
+#, elixir-autogen, elixir-format
+msgid "Anzahl der Plätze"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:5
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:6
+#, elixir-autogen, elixir-format
+msgid "Aufführung"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Details zur Reservierung "
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:8
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:10
+#, elixir-autogen, elixir-format
+msgid "E-Mail"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:3
+#, elixir-autogen, elixir-format
+msgid "Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:9
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:11
+#, elixir-autogen, elixir-format
+msgid "Ihre Nachricht an uns"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:7
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:9
+#, elixir-autogen, elixir-format
+msgid "Name"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/new.html.heex:2
+#, elixir-autogen, elixir-format
+msgid "Neue Reservierung anlegen."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:15
+#, elixir-autogen, elixir-format
+msgid "Reservieren"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:12
+#, elixir-autogen, elixir-format
+msgid "Reservierung angelegt am"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:36
+#, elixir-autogen, elixir-format
+msgid "Reservierung erfolgreich angelegt."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:56
+#, elixir-autogen, elixir-format
+msgid "Reservierung nicht vorhanden oder kein Zugriff."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:7
+#, elixir-autogen, elixir-format
+msgid "Reservierungsnummer"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/new.html.heex:3
+#, elixir-autogen, elixir-format
+msgid "Verwenden Sie dieses Formular, um Karten für unsere Aufführungen zu reservieren."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:44
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:96
+#, elixir-autogen, elixir-format
+msgid "Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."
+msgstr ""
+
+#: lib/seaty_reservation_web/components/core_components.ex:76
+#: lib/seaty_reservation_web/components/core_components.ex:128
+#, elixir-autogen, elixir-format
+msgid "close"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:9
+#, elixir-autogen, elixir-format
+msgid "z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:21
+#, elixir-autogen, elixir-format
+msgid "Einlass ist 90 Minuten vor Spielbeginn. Reservierte Karten müssen spätestens 30 Minuten vor Vorstellungsbeginn mit der oben genannten Reservierungsnummer abgeholt werden. Ansonsten verfällt die Reservierung und die Karten werden an der Abendkasse vergeben. Ausfälle bitte so früh wie möglich - nicht erst an der Abendkasse - mitteilen, damit die Karten für den Verkauf freigegeben werden können."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:25
+#, elixir-autogen, elixir-format
+msgid "Sollten noch mehr Karten benötigt werden, bitte getrennt buchen mit Angabe der Reservierungsnummer. Wir versuchen diese Plätze dann angrenzend zu vergeben - können dies aber nicht garantieren."
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_html/show.html.heex:16
+#, elixir-autogen, elixir-format
+msgid "Wir haben Ihnen eine Bestätigung an die angegebene E-Mail Adresse geschickt. Sollten Sie diese nicht erhalten haben, wenden Sie sich bitte an %{contact}. Die Details zu Ihrer Reservierung können Sie auch jederzeit unter diesem Link aufrufen."
+msgstr ""

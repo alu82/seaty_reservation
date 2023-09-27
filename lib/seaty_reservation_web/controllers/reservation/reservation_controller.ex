@@ -27,8 +27,9 @@ defmodule SeatyReservationWeb.ReservationController do
   def create(conn, %{"reservation" => reservation_params}) do
     event = Events.get_event!(reservation_params["event_id"])
     number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
+    reservations_seats = if reservation_params["seats"] == "" do 0 else String.to_integer(reservation_params["seats"]) end
 
-    if event.total_seats >= number_of_reservations + String.to_integer(reservation_params["seats"]) do
+    if event.total_seats >= number_of_reservations + reservations_seats do
       case Reservations.create_reservation(reservation_params) do
         {:ok, reservation} ->
           ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
@@ -73,9 +74,10 @@ defmodule SeatyReservationWeb.ReservationController do
     reservation = Reservations.get_reservation!(id)
     event = Events.get_event!(reservation_params["event_id"])
     number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
+    new_reservations_seats = if reservation_params["seats"] == "" do 0 else String.to_integer(reservation_params["seats"]) end
 
     #to calculate the total seats after the update, we have to know the old number of seats
-    next_total_seats = number_of_reservations - reservation.seats + String.to_integer(reservation_params["seats"])
+    next_total_seats = number_of_reservations - reservation.seats + new_reservations_seats
     if event.total_seats >= next_total_seats do
       case Reservations.update_reservation(reservation, reservation_params) do
         {:ok, reservation} ->
