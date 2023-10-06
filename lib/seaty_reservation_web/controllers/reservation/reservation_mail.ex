@@ -6,7 +6,7 @@ defmodule SeatyReservation.ReservationEmail do
   import SeatyReservationWeb.Commons
 
   def confirmation(reservation, event) do
-    reservation_link = "#{SeatyReservationWeb.Endpoint.url()}/reservations/#{reservation.id}?token=#{reservation.token}"
+    reservation_link = "#{SeatyReservationWeb.Endpoint.url()}/reservations/#{reservation.id}?token=#{URI.encode_www_form(reservation.token)}"
     mail_params = %{
       :name => reservation.name,
       :seats => reservation.seats,
