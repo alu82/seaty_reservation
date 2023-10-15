@@ -49,6 +49,27 @@ mix ecto.gen.migration <name>
 mix ecto.migrate
 ```
 
+### Deployment to render
+Follow roughly this guide: https://render.com/docs/deploy-phoenix
+- Set name
+- Instance type 0.5 CPU, 512 MB (can't use the free tier, since we need a disk)
+- Repo: https://github.com/alu82/seaty_reservation
+- Branch: main
+- Build command: ./build.sh
+- Start command: mix phx.server
+- Under advanced
+  - Add a disk and mount under /data
+  - Environment variables
+    - DATABASE_PATH=/data/db/...
+    - ELIXIR_VERSION=1.15.4
+    - ERLANG_VERSION=26.0.2
+    - SECRET_KEY_BASE
+    - SY_BASIC_AUTH_PASSWORD
+    - SY_BASIC_AUTH_USER
+    - SY_MAIL_SUBJECT
+    - SY_SMTP_PASSWORD
+    - SY_SMTP_USER
+
 ### Backlog
 - [x] setup base project
 - [x] create form for reservation creation (:new)
