@@ -10,18 +10,20 @@
 <.table id="events" rows={@events} row_click={&JS.navigate(~p"/events/#{&1}")}>
   <:col :let={event} label="Datetime"><%= format_datetime(event.datetime) %></:col>
   <:col :let={event} label="Seats"><%= event.total_seats %></:col>
-  <:col :let={event} label="Reserved seats"><%= get_reservation_count(event.id, @reservations) %></:col>
+  <:col :let={event} label="Reserved seats"><span class="res_c"><%= get_reservation_count(event.id, @reservations) %></span></:col>
   <:col :let={event} label="Active"><%= event.active %></:col>
   <:action :let={event}>
     <.link href={~p"/reservations/?event_id=#{event}"} >
       Reservations
     </.link>
   </:action>
+  <!--
   <:action :let={event}>
     <.link href={~p"/events/#{event}/allocations"} method="post">
       Allocation
     </.link>
   </:action>
+  -->
   <:action :let={event}>
     <.link navigate={~p"/events/#{event}/edit"}>Edit</.link>
   </:action>
@@ -31,5 +33,35 @@
     </.link>
   </:action>
 </.table>
+
+<h2 id="total-sum"></h2>
+
+<script>
+  function calculateTotalSum() {
+    // Get all elements with the class 'res_c'
+    const elements = document.querySelectorAll('.res_c');
+    
+    // Initialize total sum variable
+    let totalSum = 0;
+    
+    // Loop through each element and add its numeric content to totalSum
+    elements.forEach(element => {
+      // Parse the content of the element and add it to totalSum if it's a valid number
+      const value = parseInt(element.textContent.trim(), 10);
+      
+      // Only add if the value is a valid number (not NaN)
+      if (!isNaN(value)) {
+        totalSum += value;
+      }
+    });
+
+    // Return or log the total sum
+    return totalSum;
+  }
+
+  const total = calculateTotalSum();
+  document.getElementById('total-sum').textContent = 'Total: ' + total;
+
+</script>
 
 <.back navigate={~p"/reservations"}>Go to reservations</.back>
