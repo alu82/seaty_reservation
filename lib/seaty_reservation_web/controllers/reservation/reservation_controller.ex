@@ -19,6 +19,18 @@ defmodule SeatyReservationWeb.ReservationController do
     render(conn, :index, reservations: reservations, events: events)
   end
 
+  def index_csv(conn, _params) do
+    reservations = Reservations.list_reservations()
+
+    csv_data = convert_to_csv(reservations)
+
+    conn
+    |> put_resp_content_type("text/csv")
+    |> put_resp_header("content-disposition", "attachment; filename=\"reservations.csv\"")
+    |> send_resp(200, csv_data)
+
+  end
+
   def new(conn, _params) do
     changeset = Reservations.change_reservation(%Reservation{})
     render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
@@ -115,4 +127,47 @@ defmodule SeatyReservationWeb.ReservationController do
       fn ev-> {ev.datetime, ev.id} end
     )
   end
+
+  defp convert_to_csv(reservations) do
+    # Define the headers for the CSV file
+    headers = [
+      "id",
+      "event_id",
+      "code",
+      "prio",
+      "seats",
+      "name",
+      "contact",
+      "group",
+      "preferred_row",
+      "comment",
+      "token",
+      "inserted_at"
+    ]
+
+    # Prepare the rows of data (mapping each reservation to a list of values)
+    rows = Enum.map(reservations, fn reservation ->
+      %{
+        "id" => reservation.id,
+        "event_id" => reservation.event_id,
+        "code" => reservation.code,
+        "prio" => reservation.prio,
+        "seats" => reservation.seats,
+        "name" => reservation.name,
+        "contact" => reservation.contact,
+        "group" => reservation.group,
+        "preferred_row" => reservation.preferred_row,
+        "comment" => reservation.comment,
+        "token" => reservation.token,
+        "inserted_at" => reservation.inserted_at
+      }
+    end)
+
+    # Use the CSV library to generate the CSV data with proper handling of special characters
+    # CSV.encode/1 returns an enumerable that you can convert to a string
+    rows
+    |> CSV.encode(headers: headers, separator: ?;)
+    |> Enum.join()                        # Join the CSV rows with newlines
+  end
+
 end

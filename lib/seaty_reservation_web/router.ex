@@ -31,6 +31,7 @@ defmodule SeatyReservationWeb.Router do
 
     resources "/events", EventController
     get "/reservations", ReservationController, :index
+    get "/reservations_csv", ReservationController, :index_csv
     get "/reservations/:id/edit", ReservationController, :edit
     patch "/reservations/:id", ReservationController, :update
     put "/reservations/:id", ReservationController, :update
