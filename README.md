@@ -84,6 +84,11 @@ Follow roughly this guide: https://render.com/docs/deploy-phoenix
 - [x] localization, texts (for customer facing pages)
 - [x] dataprivacy text
 - [x] route access restrictions
+- [ ] make user comment field multiline
+- [ ] make additional comment field, so that user comment must not be edited
+- [ ] Confirmation Page on mobile devices (text to long, overlays with reservation number)
+- [ ] No event (date) should be selected when loading the page
+- [ ] Cancel reservation feature
 - [ ] simple captcha?
 - [ ] localization, texts (for restricted pages)
  

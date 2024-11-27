@@ -95,7 +95,7 @@ msgstr ""
 #: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:96
 #, elixir-autogen, elixir-format
 msgid "Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."
-msgstr ""
+msgstr "Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung oder schreiben Sie uns eine Mail an kartenreservierung@suedtiroler-volksbuehne.de für einen Wartelistenplatz."
 
 #: lib/seaty_reservation_web/components/core_components.ex:76
 #: lib/seaty_reservation_web/components/core_components.ex:128
