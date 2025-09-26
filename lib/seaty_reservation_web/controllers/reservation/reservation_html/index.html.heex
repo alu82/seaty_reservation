@@ -31,6 +31,7 @@
   <:col :let={reservation} label="Group"><%= reservation.group %></:col>
   <:col :let={reservation} label="Preferred row"><%= reservation.preferred_row %></:col>
   <:col :let={reservation} label="Comment"><%= reservation.comment %></:col>
+  <:col :let={reservation} label="Internal Comment"><%= reservation.internal_comment %></:col>
   <:action :let={reservation}>
     <.link navigate={~p"/reservations/#{reservation}/edit"}>Edit</.link>
   </:action>

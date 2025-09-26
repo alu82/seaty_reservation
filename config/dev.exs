@@ -2,7 +2,7 @@ import Config
 
 # Configure your database
 config :seaty_reservation, SeatyReservation.Repo,
-  database: Path.expand("/home/aludwig/Documents/svb/2024/db/seaty_reservation_2024_prod.db", Path.dirname(__ENV__.file)),
+  database: Path.expand("/home/aludwig/Documents/svb/2025/db/seaty_reservation_2025_prod.db", Path.dirname(__ENV__.file)),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true

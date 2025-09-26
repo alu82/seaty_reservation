@@ -141,6 +141,7 @@ defmodule SeatyReservationWeb.ReservationController do
       "group",
       "preferred_row",
       "comment",
+      "internal_comment",
       "token",
       "inserted_at"
     ]
@@ -158,6 +159,7 @@ defmodule SeatyReservationWeb.ReservationController do
         "group" => reservation.group,
         "preferred_row" => reservation.preferred_row,
         "comment" => reservation.comment,
+        "internal_comment" => reservation.internal_comment,
         "token" => reservation.token,
         "inserted_at" => reservation.inserted_at
       }

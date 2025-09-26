@@ -54,6 +54,7 @@ defmodule SeatyReservation.Reservations do
     |> Map.put("code", get_next_code(attrs["event_id"]))
     |> Map.put("prio", get_next_prio(attrs["event_id"]))
     |> Map.put("token", gen_access_token())
+    |> Map.put_new("internal_comment", "")
 
     %Reservation{}
     |> Reservation.changeset(attrs)

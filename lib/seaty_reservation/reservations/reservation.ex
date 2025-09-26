@@ -8,6 +8,7 @@ defmodule SeatyReservation.Reservations.Reservation do
     field :seats, :integer
     field :group, :integer
     field :comment, :string
+    field :internal_comment, :string, default: ""
     field :prio, :integer
     field :contact, :string
     field :preferred_row, :string
@@ -20,7 +21,7 @@ defmodule SeatyReservation.Reservations.Reservation do
   @doc false
   def changeset(reservation, attrs) do
     reservation
-    |> cast(attrs, [:prio, :code, :name, :contact, :group, :preferred_row, :comment, :event_id, :seats, :token])
+    |> cast(attrs, [:prio, :code, :name, :contact, :group, :preferred_row, :comment, :internal_comment, :event_id, :seats, :token])
     |> validate_required([:prio, :code, :name, :contact, :event_id, :seats])
   end
 end
