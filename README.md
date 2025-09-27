@@ -86,7 +86,7 @@ Follow roughly this guide: https://render.com/docs/deploy-phoenix
 - [x] route access restrictions
 - [x] make user comment field multiline
 - [x] make additional comment field, so that user comment must not be edited
-- [ ] Confirmation Page on mobile devices (text to long, overlays with reservation number)
+- [x] Confirmation Page on mobile devices (text to long, overlays with reservation number)
 - [ ] No event (date) should be selected when loading the page
 - [ ] Cancel reservation feature
 - [ ] simple captcha?
