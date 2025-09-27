@@ -8,7 +8,9 @@
   <:item title={gettext("Anzahl der Plätze")}><%= @reservation.seats %></:item>
   <:item title={gettext("Name")}><%= @reservation.name %></:item>
   <:item title={gettext("E-Mail")}><%= @reservation.contact %></:item>
-  <:item title={gettext("Ihre Nachricht an uns")}><%= @reservation.comment %></:item>
+  <:item title={gettext("Ihre Nachricht an uns")}>
+    <pre><%= @reservation.comment %></pre>
+  </:item>
   <:item title={gettext("Reservierung angelegt am")}><%= format_datetime(@reservation.inserted_at) %></:item>
 </.list>
 
