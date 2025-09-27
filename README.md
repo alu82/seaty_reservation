@@ -87,8 +87,9 @@ Follow roughly this guide: https://render.com/docs/deploy-phoenix
 - [x] make user comment field multiline
 - [x] make additional comment field, so that user comment must not be edited
 - [x] Confirmation Page on mobile devices (text to long, overlays with reservation number)
-- [ ] No event (date) should be selected when loading the page
-- [ ] Cancel reservation feature
+- [x] No event (date) should be selected when loading the page
+- [ ] show available seats (when inactive available seat are shown, filter which event is shown based on time)
+- [ ] Cancel reservation feature (until event hasn't started)
 - [ ] simple captcha?
 - [ ] localization, texts (for restricted pages)
  
