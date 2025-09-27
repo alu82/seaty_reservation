@@ -60,7 +60,7 @@ defmodule SeatyReservationWeb.ReservationController do
               |> put_flash(:info, gettext("Reservierung erfolgreich angelegt."))
               |> redirect(to: ~p"/reservations/#{reservation}?token=#{reservation.token}")
 
-            {:error, %Ecto.Changeset{} = changeset} ->
+             {:error, %Ecto.Changeset{} = changeset} ->
               render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
           end
         else
@@ -85,10 +85,7 @@ defmodule SeatyReservationWeb.ReservationController do
   end
 
   def edit(conn, %{"id" => id}) do
-    events = Enum.map(
-      Events.get_all_active(),
-      fn ev-> {ev.datetime, ev.id} end
-    )
+    events = get_events_for_dropdown()
     reservation = Reservations.get_reservation!(id)
     changeset = Reservations.change_reservation(reservation)
     render(conn, :edit, reservation: reservation, changeset: changeset, events: events)
@@ -136,7 +133,12 @@ defmodule SeatyReservationWeb.ReservationController do
   defp get_events_for_dropdown() do
     Enum.map(
       Events.get_all_active(),
-      fn ev-> {ev.datetime, ev.id} end
+      fn ev->
+        reserved_seats = Reservations.get_reservation_count(ev.id)
+        total_seats = ev.total_seats
+        reservable_seats = total_seats - reserved_seats
+        {ev.datetime, reservable_seats, ev.id}
+      end
     )
   end
 

@@ -6,7 +6,7 @@
     field={f[:event_id]} 
     type="select" 
     label={gettext("Aufführung")} 
-    options={format_events_datetime(@events)}
+    options={format_events(@events)}
     prompt={gettext("Bitte auswählen")}
   />
   <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20"/>
