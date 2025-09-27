@@ -1,3 +1,5 @@
+<div id="data-active-events" data-active-events={Jason.encode!(filter_active_events(@events))}></div>
+
 <.simple_form :let={f} for={@changeset} action={@action}>
   <.error :if={@changeset.action}>
     <%= gettext("Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.") %>
@@ -8,16 +10,72 @@
     label={gettext("Aufführung")} 
     options={format_events(@events)}
     prompt={gettext("Bitte auswählen")}
+    id="event-select"
   />
-  <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20"/>
-  <.input field={f[:name]} type="text" label={gettext("Name")} />
-  <.input field={f[:contact]} type="email" label={gettext("E-Mail")} />
-  <.input field={f[:comment]} type="textarea" rows="3" label={gettext("Ihre Nachricht an uns")} placeholder={gettext("z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten.")}/>
-  <div class="text-sm text-zinc-600">
-    Informationen zu unseren Datenschutzpraktiken finden sich in unseren 
-    <.link class="underline" href="https://www.suedtiroler-volksbuehne.de/page/imprint">Datenschutzbestimmungen.</.link>
+  
+  <div id="event-form-fields" class="space-y-8">
+    <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20"/>
+    <.input field={f[:name]} type="text" label={gettext("Name")}/>
+    <.input field={f[:contact]} type="email" label={gettext("E-Mail")}/>
+    <.input 
+      field={f[:comment]}
+      type="textarea"
+      rows="3" 
+      label={gettext("Ihre Nachricht an uns")} placeholder={gettext("z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten.")}
+    />
+    <div class="text-sm text-zinc-600">
+      Informationen zu unseren Datenschutzpraktiken finden sich in unseren 
+      <.link class="underline" href="https://www.suedtiroler-volksbuehne.de/page/imprint">Datenschutzbestimmungen.</.link>
+    </div>
   </div>
+  
+
   <:actions>
-    <.button><%= gettext("Reservieren") %></.button>
+      <.button id="submit-button"><%= gettext("Reservieren") %></.button>
   </:actions>
+
+  <div id="inactive-event-message">
+    <div class="text-sm text-zinc-600">
+      Für diese Aufführung können keine Plätze mehr reserviert werden. Die Karten für die noch freien Plätze können Sie gerne direkt an der Abendkasse kaufen.
+    </div>
+  </div>
+
 </.simple_form>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const eventSelect = document.getElementById('event-select');
+    const activeEventsDataDiv = document.getElementById('data-active-events');
+    const activeEventIds = JSON.parse(activeEventsDataDiv.dataset.activeEvents)
+
+    const eventFormFields = document.getElementById('event-form-fields');
+    const inactiveEventMessage = document.getElementById('inactive-event-message');
+    const submitButton = document.getElementById('submit-button');
+
+    function toggleFormFields() {
+      const selectedEventId = parseInt(eventSelect.value);
+
+      //hide everything by default
+      eventFormFields.classList.add('hidden');
+      inactiveEventMessage.classList.add('hidden');
+      submitButton.classList.add('hidden');
+      submitButton.disabled = true;
+
+      if (isNaN(selectedEventId)) {
+        // No event selected
+        return;
+      }
+
+      if(activeEventIds.includes(selectedEventId)) {
+        eventFormFields.classList.remove('hidden');
+        submitButton.classList.remove('hidden');
+        submitButton.disabled = false;
+      } else {
+        inactiveEventMessage.classList.remove('hidden');
+      }
+    }
+
+    eventSelect.addEventListener('change', toggleFormFields);
+    toggleFormFields();
+  });
+</script>

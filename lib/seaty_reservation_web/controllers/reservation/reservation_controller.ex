@@ -9,13 +9,13 @@ defmodule SeatyReservationWeb.ReservationController do
 
   def index(conn, %{"event_id" => event_id}) do
     reservations = Reservations.get_reservations_by_event(event_id)
-    events = Events.get_all_active()
+    events = Events.get_all_future()
     render(conn, :index, reservations: reservations, events: events)
   end
 
   def index(conn, _params) do
     reservations = Reservations.list_reservations()
-    events = Events.get_all_active()
+    events = Events.get_all_future()
     render(conn, :index, reservations: reservations, events: events)
   end
 
@@ -132,12 +132,12 @@ defmodule SeatyReservationWeb.ReservationController do
 
   defp get_events_for_dropdown() do
     Enum.map(
-      Events.get_all_active(),
+      Events.get_all_future(),
       fn ev->
         reserved_seats = Reservations.get_reservation_count(ev.id)
         total_seats = ev.total_seats
         reservable_seats = total_seats - reserved_seats
-        {ev.datetime, reservable_seats, ev.id}
+        {ev.datetime, reservable_seats, ev.active, ev.id}
       end
     )
   end
