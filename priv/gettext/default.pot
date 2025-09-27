@@ -71,12 +71,12 @@ msgstr ""
 msgid "Reservierung angelegt am"
 msgstr ""
 
-#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:49
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:60
 #, elixir-autogen, elixir-format
 msgid "Reservierung erfolgreich angelegt."
 msgstr ""
 
-#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:69
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:81
 #, elixir-autogen, elixir-format
 msgid "Reservierung nicht vorhanden oder kein Zugriff."
 msgstr ""
@@ -91,8 +91,8 @@ msgstr ""
 msgid "Verwenden Sie dieses Formular, um Karten für unsere Aufführungen zu reservieren."
 msgstr ""
 
-#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:57
-#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:110
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:68
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:122
 #, elixir-autogen, elixir-format
 msgid "Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."
 msgstr ""
@@ -126,4 +126,9 @@ msgstr ""
 #: lib/seaty_reservation_web/controllers/reservation/reservation_html/reservation_form.html.heex:10
 #, elixir-autogen, elixir-format
 msgid "Bitte auswählen"
+msgstr ""
+
+#: lib/seaty_reservation_web/controllers/reservation/reservation_controller.ex:47
+#, elixir-autogen, elixir-format
+msgid "Bitte wählen Sie eine Aufführung aus."
 msgstr ""

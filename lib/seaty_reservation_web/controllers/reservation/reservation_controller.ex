@@ -37,25 +37,37 @@ defmodule SeatyReservationWeb.ReservationController do
   end
 
   def create(conn, %{"reservation" => reservation_params}) do
-    event = Events.get_event!(reservation_params["event_id"])
-    number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
-    reservations_seats = if reservation_params["seats"] == "" do 0 else String.to_integer(reservation_params["seats"]) end
+    event_id = reservation_params["event_id"]
 
-    if event.total_seats >= number_of_reservations + reservations_seats do
-      case Reservations.create_reservation(reservation_params) do
-        {:ok, reservation} ->
-          ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
+    # Check if event_id is present and valid
+    cond do
+
+      is_nil(event_id) or event_id == "" ->
+        conn
+        |> put_flash(:error, gettext("Bitte wählen Sie eine Aufführung aus."))
+        |> redirect(to: ~p"/reservations/new")
+
+      true ->
+        event = Events.get_event!(event_id)
+        number_of_reservations = Reservations.get_reservation_count(event_id)
+        reservations_seats = if reservation_params["seats"] == "" do 0 else String.to_integer(reservation_params["seats"]) end
+
+        if event.total_seats >= number_of_reservations + reservations_seats do
+          case Reservations.create_reservation(reservation_params) do
+            {:ok, reservation} ->
+              ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
+              conn
+              |> put_flash(:info, gettext("Reservierung erfolgreich angelegt."))
+              |> redirect(to: ~p"/reservations/#{reservation}?token=#{reservation.token}")
+
+            {:error, %Ecto.Changeset{} = changeset} ->
+              render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
+          end
+        else
           conn
-          |> put_flash(:info, gettext("Reservierung erfolgreich angelegt."))
-          |> redirect(to: ~p"/reservations/#{reservation}?token=#{reservation.token}")
-
-        {:error, %Ecto.Changeset{} = changeset} ->
-          render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
-      end
-    else
-      conn
-      |> put_flash(:error, gettext("Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."))
-      |> redirect(to: ~p"/reservations/new")
+          |> put_flash(:error, gettext("Zu wenig verfügbare Plätze. Bitte wählen Sie eine andere Aufführung."))
+          |> redirect(to: ~p"/reservations/new")
+        end
     end
   end
 
