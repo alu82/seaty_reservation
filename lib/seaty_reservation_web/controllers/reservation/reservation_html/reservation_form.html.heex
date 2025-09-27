@@ -2,7 +2,13 @@
   <.error :if={@changeset.action}>
     <%= gettext("Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.") %>
   </.error>
-  <.input field={f[:event_id]} type="select" label={gettext("Aufführung")} options={format_events_datetime(@events)}/>
+  <.input 
+    field={f[:event_id]} 
+    type="select" 
+    label={gettext("Aufführung")} 
+    options={format_events_datetime(@events)}
+    prompt={gettext("Bitte auswählen")}
+  />
   <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20"/>
   <.input field={f[:name]} type="text" label={gettext("Name")} />
   <.input field={f[:contact]} type="email" label={gettext("E-Mail")} />
