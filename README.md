@@ -23,22 +23,6 @@ create app with ```mix phx.new seaty_reservation --database sqlite3```
 
 create and migrate to schema with
 ```
-mix phx.gen.html Events Event events \
-    datetime:naive_datetime \
-    total_seats:integer \
-    active:boolean
-
-mix phx.gen.html Reservations Reservation reservations \
-    prio:integer \
-    seats:integer \
-    code:string \
-    name:string \
-    contact:string \
-    group:integer \
-    preferred_row:string \
-    event_id:references:events \
-    comment:text
-
 mix ecto.migrate
 ```
 
@@ -69,6 +53,10 @@ Follow roughly this guide: https://render.com/docs/deploy-phoenix
     - SY_MAIL_SUBJECT
     - SY_SMTP_PASSWORD
     - SY_SMTP_USER
+- Open Shell and run
+  - mix ecto.create (maybe not necesary)
+  - mix ecto.migrate
+- Enjoy!
 
 ### Backlog
 - [x] setup base project
