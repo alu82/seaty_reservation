@@ -7,6 +7,9 @@
     sich die Reservierungsnummer für die Abholung der Karten.
 </p>
 <p>
+    Die Details Ihrer Reservierung finden Sie <a href="<%= @reservation_link %>">hier</a>.
+</p>
+<p>
     Einlass ist 90 Minuten vor Spielbeginn. Reservierte Karten müssen
     spätestens 30 Minuten vor Vorstellungsbeginn mit der oben genannten
     Reservierungsnummer abgeholt werden. Ansonsten verfällt die
