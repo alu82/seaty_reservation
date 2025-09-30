@@ -121,6 +121,24 @@ defmodule SeatyReservationWeb.ReservationController do
     end
   end
 
+  def cancel(conn, %{"id" => id}) do
+    reservation = Reservations.get_reservation!(id)
+
+    case Reservations.update_reservation(reservation, %{"seats" => 0, "internal_comment" => "storniert", "prio" => 0}) do
+      {:ok, reservation} ->
+        # Send confirmation email with the updated reservation (0 seats)
+        event = Events.get_event!(reservation.event_id)
+        ReservationEmail.confirmation(reservation, event) |> Mailer.deliver()
+
+        conn
+        |> put_flash(:info, "Reservation #{reservation.code} cancelled successfully and confirmation email sent.")
+        |> redirect(to: ~p"/reservations/#{id}/edit")
+
+      {:error, %Ecto.Changeset{} = changeset} ->
+        render(conn, :edit, reservation: reservation, changeset: changeset)
+    end
+  end
+
   def delete(conn, %{"id" => id}) do
     reservation = Reservations.get_reservation!(id)
     {:ok, reservation} = Reservations.delete_reservation(reservation)
