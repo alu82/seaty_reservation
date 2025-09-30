@@ -1,13 +1,25 @@
 <.header>
   Edit Reservation <%= @reservation.code %>
   <:subtitle>Use this form to manage reservation records in your database.</:subtitle>
-  <:actions>
-    <.link href={~p"/reservations/#{@reservation.id}"} method="delete" data-confirm="Delete Reservation: Are you sure?">
-      <.button>Delete</.button>
-    </.link>
-  </:actions>
 </.header>
 
 <.reservation_form_full changeset={@changeset} action={~p"/reservations/#{@reservation}"} events={@events} />
+
+<div class="mt-20 bg-red-50 border border-red-200 rounded-lg p-6">
+  <div class="flex items-center mb-4">
+    <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+      <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+    </svg>
+    <h3 class="text-lg font-medium text-red-800">Danger Zone</h3>
+  </div>
+  <p class="text-sm text-red-700 mb-4">
+    Once you delete a reservation, there is no going back. Please be certain.
+  </p>
+  <.link href={~p"/reservations/#{@reservation.id}"} method="delete" data-confirm="Delete Reservation: Are you sure?">
+    <.button class="bg-red-500 hover:bg-red-800 text-white font-medium py-2 px-4 rounded-md transition-colors">
+      Delete Reservation
+    </.button>
+  </.link>
+</div>
 
 <.back navigate={~p"/reservations"}>Back to reservations</.back>
