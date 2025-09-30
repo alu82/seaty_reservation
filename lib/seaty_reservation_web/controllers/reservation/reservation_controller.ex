@@ -109,7 +109,7 @@ defmodule SeatyReservationWeb.ReservationController do
 
           conn
           |> put_flash(:info, "Reservation #{reservation.code} updated successfully.")
-          |> redirect(to: ~p"/reservations")
+          |> redirect(to: ~p"/reservations/?event_id=#{event.id}")
 
         {:error, %Ecto.Changeset{} = changeset} ->
           render(conn, :edit, reservation: reservation, changeset: changeset)
