@@ -48,6 +48,7 @@ Follow roughly this guide: https://render.com/docs/deploy-phoenix
     - ELIXIR_VERSION=1.15.4
     - ERLANG_VERSION=26.0.2
     - SECRET_KEY_BASE
+    - SY_API_URL
     - SY_BASIC_AUTH_PASSWORD
     - SY_BASIC_AUTH_USER
     - SY_MAIL_SUBJECT
