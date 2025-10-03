@@ -56,7 +56,7 @@ Follow roughly this guide: https://render.com/docs/deploy-phoenix
     - SY_SMTP_USER
 - Open Shell and run
   - mix ecto.create (maybe not necesary)
-  - mix ecto.migrate
+  - mix ecto.migrate (mix ecto.reset to reset the whole database - create, migrate, seed)
 - Enjoy!
 
 ### Backlog
