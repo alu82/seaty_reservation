@@ -1,6 +1,11 @@
 <.header>
   <%= gettext("Neue Reservierung anlegen.") %>
-  <:subtitle><%= gettext("Verwenden Sie dieses Formular, um Karten für unsere Aufführungen zu reservieren.") %></:subtitle>
+  <:subtitle><%= gettext("Nutzen Sie dieses Formular, um Karten für unsere Aufführungen zu reservieren.") %></:subtitle>
 </.header>
+<div class="text-sm text-zinc-600">
+  Für alle Fragen können Sie sich gerne an <a class="underline" href="mailto:kartenreservierung@suedtiroler-volksbuehne.de">kartenreservierung@suedtiroler-volksbuehne.de</a> wenden.
+</div>
 
 <.reservation_form changeset={@changeset} action={~p"/reservations"} events={@events}/>
+
+<.reservation_faq />

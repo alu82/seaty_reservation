@@ -89,6 +89,7 @@ defmodule SeatyReservationWeb do
       import Phoenix.HTML
       # Core UI components and translation
       import SeatyReservationWeb.CoreComponents
+      import SeatyReservationWeb.FaqComponents
       import SeatyReservationWeb.Gettext
 
       # Shortcut for generating JS commands

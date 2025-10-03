@@ -657,6 +657,54 @@ defmodule SeatyReservationWeb.CoreComponents do
   end
 
   @doc """
+  Renders a FAQ section with collapsible questions and answers.
+
+  ## Examples
+
+      <.faq>
+        <:item question="How do I make a reservation?">
+          You can make a reservation using our online form above.
+        </:item>
+        <:item question="When will I receive confirmation?">
+          You will receive a confirmation email within 24 hours.
+        </:item>
+      </.faq>
+  """
+  slot :item, required: true do
+    attr :question, :string, required: true
+  end
+
+  def faq(assigns) do
+    ~H"""
+    <div class="mt-12 border-t border-zinc-200 pt-8">
+      <h3 class="text-lg font-medium text-zinc-900 mb-6">
+        <%= gettext("Häufig gestellte Fragen") %>
+      </h3>
+      <div class="space-y-4">
+        <div :for={{item, index} <- Enum.with_index(@item)} class="border border-zinc-200 rounded-lg">
+          <button
+            type="button"
+            class="w-full px-4 py-3 text-left flex items-center justify-between text-sm font-medium text-zinc-900 hover:bg-zinc-50 focus:outline-none focus:ring-2 focus:ring-zinc-500 focus:ring-offset-2 rounded-lg"
+            phx-click={JS.toggle(to: "#faq-answer-#{index}")}
+            aria-expanded="false"
+            aria-controls={"faq-answer-#{index}"}
+          >
+            <span><%= item.question %></span>
+            <.icon name="hero-chevron-down-solid" class="h-4 w-4 text-zinc-500 transition-transform duration-200" />
+          </button>
+          <div
+            id={"faq-answer-#{index}"}
+            class="hidden px-4 pt-2 pb-3 text-sm text-zinc-600 leading-relaxed"
+          >
+            <%= render_slot(item) %>
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
+  @doc """
   Translates the errors for a field from a keyword list of errors.
   """
   def translate_errors(errors, field) when is_list(errors) do
