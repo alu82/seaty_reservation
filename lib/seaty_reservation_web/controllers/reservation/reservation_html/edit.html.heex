@@ -26,7 +26,7 @@
   <button 
     type="button" 
     class="flex items-center justify-between w-full text-left"
-    onclick="toggleDangerZone()"
+    phx-click={JS.toggle(to: "#danger-zone-content") |> JS.toggle(to: "#danger-zone-chevron-down") |> JS.toggle(to: "#danger-zone-chevron-up")}
   >
     <div class="flex items-center">
       <svg class="w-5 h-5 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
@@ -34,9 +34,14 @@
       </svg>
       <h3 class="text-lg font-medium text-red-800">Danger Zone</h3>
     </div>
-    <svg id="danger-zone-chevron" class="w-5 h-5 text-red-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
-    </svg>
+    <div class="relative">
+      <svg id="danger-zone-chevron-down" class="w-5 h-5 text-red-500 transition-transform duration-200" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+      </svg>
+      <svg id="danger-zone-chevron-up" class="w-5 h-5 text-red-500 transition-transform duration-200 hidden" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+      </svg>
+    </div>
   </button>
   
   <div id="danger-zone-content" class="hidden mt-4">
@@ -51,19 +56,5 @@
   </div>
 </div>
 
-<script>
-function toggleDangerZone() {
-  const content = document.getElementById('danger-zone-content');
-  const chevron = document.getElementById('danger-zone-chevron');
-  
-  if (content.classList.contains('hidden')) {
-    content.classList.remove('hidden');
-    chevron.style.transform = 'rotate(180deg)';
-  } else {
-    content.classList.add('hidden');
-    chevron.style.transform = 'rotate(0deg)';
-  }
-}
-</script>
 
 <.back navigate={~p"/reservations"}>Back to reservations</.back>
