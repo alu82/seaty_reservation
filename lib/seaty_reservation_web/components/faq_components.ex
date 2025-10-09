@@ -26,6 +26,9 @@ defmodule SeatyReservationWeb.FaqComponents do
       <:item question={gettext("Wann muss ich die Karten abholen?")}>
         <%= gettext("Bitte holen Sie Ihre reservierten Karten spätestens 30 Minuten vor Vorstellungsbeginn mit Ihrer Reservierungsnummer ab. Andernfalls verfällt die Reservierung und die Karten werden an der Abendkasse vergeben.") %>
       </:item>
+      <:item question={gettext("Wie werden die Plätze zugeteilt?")}>
+        <%= gettext("Die Einteilung der Plätze (Tisch- und Sitznummer) erfolgt ein oder zwei Tage vor der Aufführung. Dabei gilt das Prinzip „Wer zuerst kommt, mahlt zuerst“ – das bedeutet, je früher Sie Ihre Reservierung vornehmen, desto bessere Plätze können wir Ihnen zuweisen. Wir bemühen uns, allen Gästen einen angenehmen Theaterbesuch zu ermöglichen und versuchen, auch auf besondere Bedürfnisse Rücksicht zu nehmen.") %>
+      </:item>
       <:item question={gettext("Was passiert wenn jemand nicht kommen kann?")}>
         <%= gettext("Bitte teilen Sie Ausfälle so früh wie möglich mit - nicht erst an der Abendkasse. So können wir die Karten rechtzeitig für den Verkauf freigeben.") %>
       </:item>
