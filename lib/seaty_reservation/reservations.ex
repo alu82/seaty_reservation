@@ -135,7 +135,7 @@ defmodule SeatyReservation.Reservations do
   defp get_next_prio(event_id) do
     query =
       from r in Reservation,
-      where: r.event_id == ^event_id,
+      where: r.event_id == ^event_id and r.prio != 0,
       select: min(r.prio) |> coalesce(1000)
     Repo.one(query) - 5
   end
