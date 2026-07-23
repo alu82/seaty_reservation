@@ -81,6 +81,9 @@ config :seaty_reservation, SeatyReservation.Mailer,
     verify: :verify_none
   ]
 
+config :seaty_reservation,
+  smtp_user: System.get_env("SY_SMTP_USER", "test@example.com")
+
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

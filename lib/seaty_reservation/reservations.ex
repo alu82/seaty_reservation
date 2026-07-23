@@ -50,15 +50,24 @@ defmodule SeatyReservation.Reservations do
 
   """
   def create_reservation(attrs \\ %{}) do
-    attrs = attrs
-    |> Map.put("code", get_next_code(attrs["event_id"]))
-    |> Map.put("prio", get_next_prio(attrs["event_id"]))
-    |> Map.put("token", gen_access_token())
-    |> Map.put_new("internal_comment", "")
 
-    %Reservation{}
-    |> Reservation.changeset(attrs)
-    |> Repo.insert()
+    input_changeset = validate_reservation_input(attrs)
+
+    if input_changeset.valid? do
+      event_id = normalize_id(attrs["event_id"] || attrs[:event_id])
+
+      attrs = attrs
+      |> Map.put("code", get_next_code(event_id))
+      |> Map.put("prio", get_next_prio(event_id))
+      |> Map.put("token", gen_access_token())
+      |> Map.put_new("internal_comment", "")
+
+      %Reservation{}
+      |> Reservation.changeset(attrs)
+      |> Repo.insert()
+    else
+      {:error, input_changeset}
+    end
   end
 
   @doc """
@@ -120,7 +129,7 @@ defmodule SeatyReservation.Reservations do
       from r in Reservation,
       where: r.event_id == ^event_id,
       select: count(r.id) |> coalesce(1)
-    code = Repo.one(query) + String.to_integer(event_id)*1000
+    code = Repo.one(query) + event_id * 1000
     check_next_codes(code, get_reservation_by_code(Integer.to_string(code)), code + 1)
   end
 
@@ -169,5 +178,29 @@ defmodule SeatyReservation.Reservations do
       order_by: [desc: r.prio]
     Repo.all(query)
   end
+
+
+  defp validate_reservation_input(attrs) do
+    %Reservation{}
+    |> Ecto.Changeset.cast(attrs, [
+      :name,
+      :contact,
+      :event_id,
+      :seats,
+      :group,
+      :comment,
+      :preferred_row
+    ])
+    |> Ecto.Changeset.validate_required([
+      :name,
+      :contact,
+      :event_id,
+      :seats
+    ])
+  end
+
+  defp normalize_id(nil), do: nil
+  defp normalize_id(id) when is_integer(id), do: id
+  defp normalize_id(id) when is_binary(id), do: String.to_integer(id)
 
 end

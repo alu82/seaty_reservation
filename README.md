@@ -83,10 +83,10 @@ Follow roughly this guide: <https://render.com/docs/deploy-phoenix>
 * [x] Confirmation Page on mobile devices (text to long, overlays with reservation number)
 * [x] No event (date) should be selected when loading the page
 * [x] show available seats (when inactive available seat are shown, filter which event is shown based on time)
-* [ ] ics file in confirmation mail
 * [ ] cancel reservation template
 * [ ] print ticket feature
 * [ ] allocation endpoint
 * [ ] Cancel reservation feature (until event hasn't started)
 * [ ] simple captcha?
 * [ ] localization, texts (for restricted pages)
+* [ ] ics file in confirmation mail

@@ -93,7 +93,8 @@ defmodule SeatyReservationWeb.ReservationController do
 
   def update(conn, %{"id" => id, "reservation" => reservation_params}) do
     reservation = Reservations.get_reservation!(id)
-    event = Events.get_event!(reservation_params["event_id"])
+    event_id = reservation_params["event_id"]
+    event = Events.get_event!(event_id)
     number_of_reservations = Reservations.get_reservation_count(reservation_params["event_id"])
     new_reservations_seats = if reservation_params["seats"] == "" do 0 else String.to_integer(reservation_params["seats"]) end
 
@@ -112,7 +113,7 @@ defmodule SeatyReservationWeb.ReservationController do
           |> redirect(to: ~p"/reservations/?event_id=#{event.id}")
 
         {:error, %Ecto.Changeset{} = changeset} ->
-          render(conn, :edit, reservation: reservation, changeset: changeset)
+          render(conn, :edit, reservation: reservation, changeset: changeset, events: get_events_for_dropdown())
       end
     else
       conn

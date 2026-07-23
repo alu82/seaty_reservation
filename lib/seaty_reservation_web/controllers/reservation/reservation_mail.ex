@@ -20,7 +20,7 @@ defmodule SeatyReservation.ReservationEmail do
     new()
     |> to({reservation.name, reservation.contact})
     |> cc(System.get_env("SY_SMTP_USER"))
-    |> from({"Südtiroler Volksbühne Kartenreservierung", System.get_env("SY_SMTP_USER")})
+    |> from({"Südtiroler Volksbühne Kartenreservierung", Application.get_env(:seaty_reservation, :smtp_user)})
     |> subject("#{subject} - Reservierungsnummer #{reservation.code}")
     |> render_body("confirmation_mail.html", mail_params)
   end

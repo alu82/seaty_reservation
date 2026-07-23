@@ -8,16 +8,19 @@ defmodule SeatyReservation.ReservationsFixtures do
   Generate a reservation.
   """
   def reservation_fixture(attrs \\ %{}) do
+    event = SeatyReservation.EventsFixtures.event_fixture()
+
     {:ok, reservation} =
       attrs
       |> Enum.into(%{
-        code: "some code",
-        name: "some name",
-        group: 42,
-        comment: "some comment",
-        prio: 42,
-        contact: "some contact",
-        preferred_row: "some preferred_row"
+        "code" => "some code",
+        "name" => "some name",
+        "group" => "42",
+        "comment" => "some comment",
+        "seats" => "2",
+        "contact" => "some contact",
+        "event_id" => Integer.to_string(event.id),
+        "preferred_row" => "some preferred_row"
       })
       |> SeatyReservation.Reservations.create_reservation()
 

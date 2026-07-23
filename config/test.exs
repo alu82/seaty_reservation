@@ -28,3 +28,15 @@ config :logger, level: :warning
 
 # Initialize plugs at runtime for faster test compilation
 config :phoenix, :plug_init_mode, :runtime
+
+config :seaty_reservation,
+  basic_auth: [
+    username: "test_user",
+    password: "test_password"
+  ]
+
+config :seaty_reservation, SeatyReservation.Mailer,
+  adapter: Swoosh.Adapters.Test
+
+config :seaty_reservation,
+  smtp_user: "test@example.com"

@@ -2,14 +2,19 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   use SeatyReservationWeb.ConnCase
 
   import SeatyReservation.ReservationsFixtures
+  import SeatyReservation.EventsFixtures
 
-  @create_attrs %{code: "some code", name: "some name", group: 42, comment: "some comment", prio: 42, contact: "some contact", preferred_row: "some preferred_row"}
-  @update_attrs %{code: "some updated code", name: "some updated name", group: 43, comment: "some updated comment", prio: 43, contact: "some updated contact", preferred_row: "some updated preferred_row"}
-  @invalid_attrs %{code: nil, name: nil, group: nil, comment: nil, prio: nil, contact: nil, preferred_row: nil}
+  @create_attrs %{"code" => "some code", "name" => "some name", "seats" => "2", "group" => "42", "comment" => "some comment", "prio" => "42", "contact" => "some contact", "preferred_row" => "some preferred_row"}
+  @update_attrs %{"code" => "some updated code", "name" => "some updated name", "seats" => "3", "group" => "43", "comment" => "some updated comment", "prio" => "43", "contact" => "some updated contact", "preferred_row" => "some updated preferred_row"}
+  @invalid_attrs %{"code" => "", "name" => "", "group" => "", "comment" => "", "prio" => "", "contact" => "", "preferred_row" => "", "seats" => ""}
 
   describe "index" do
     test "lists all reservations", %{conn: conn} do
-      conn = get(conn, ~p"/reservations")
+      conn =
+        conn
+        |> auth_conn()
+        |> get(~p"/reservations")
+
       assert html_response(conn, 200) =~ "Listing Reservations"
     end
   end
@@ -17,24 +22,30 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   describe "new reservation" do
     test "renders form", %{conn: conn} do
       conn = get(conn, ~p"/reservations/new")
-      assert html_response(conn, 200) =~ "New Reservation"
+      assert html_response(conn, 200) =~ "Neue Reservierung anlegen"
     end
   end
 
   describe "create reservation" do
     test "redirects to show when data is valid", %{conn: conn} do
-      conn = post(conn, ~p"/reservations", reservation: @create_attrs)
+      event = event_fixture()
+      attrs =
+        @create_attrs
+        |> Map.put("event_id", Integer.to_string(event.id))
 
-      assert %{id: id} = redirected_params(conn)
-      assert redirected_to(conn) == ~p"/reservations/#{id}"
+      conn = post(conn, ~p"/reservations", reservation: attrs)
 
-      conn = get(conn, ~p"/reservations/#{id}")
-      assert html_response(conn, 200) =~ "Reservation #{id}"
+      redirected = redirected_to(conn)
+      assert redirected =~ "/reservations/"
+      assert redirected =~ "token="
+
+      conn = get(conn, redirected)
+      assert html_response(conn, 200) =~ "Reservation"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
       conn = post(conn, ~p"/reservations", reservation: @invalid_attrs)
-      assert html_response(conn, 200) =~ "New Reservation"
+      assert redirected_to(conn) == ~p"/reservations/new"
     end
   end
 
@@ -42,7 +53,11 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     setup [:create_reservation]
 
     test "renders form for editing chosen reservation", %{conn: conn, reservation: reservation} do
-      conn = get(conn, ~p"/reservations/#{reservation}/edit")
+      conn =
+        conn
+        |> auth_conn()
+        |> get(~p"/reservations/#{reservation}/edit")
+
       assert html_response(conn, 200) =~ "Edit Reservation"
     end
   end
@@ -51,15 +66,33 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     setup [:create_reservation]
 
     test "redirects when data is valid", %{conn: conn, reservation: reservation} do
-      conn = put(conn, ~p"/reservations/#{reservation}", reservation: @update_attrs)
-      assert redirected_to(conn) == ~p"/reservations/#{reservation}"
 
-      conn = get(conn, ~p"/reservations/#{reservation}")
+      attrs =
+        @update_attrs
+        |> Map.put("event_id", Integer.to_string(reservation.event_id))
+
+      conn =
+        conn
+        |> auth_conn()
+        |> put(~p"/reservations/#{reservation}", reservation: attrs)
+
+      assert redirected_to(conn) == ~p"/reservations/?event_id=#{reservation.event_id}"
+
+      conn = get(conn, ~p"/reservations/#{reservation}?token=#{reservation.token}")
       assert html_response(conn, 200) =~ "some updated code"
     end
 
     test "renders errors when data is invalid", %{conn: conn, reservation: reservation} do
-      conn = put(conn, ~p"/reservations/#{reservation}", reservation: @invalid_attrs)
+
+      attrs =
+        @invalid_attrs
+        |> Map.put("event_id", Integer.to_string(reservation.event_id))
+
+      conn =
+        conn
+        |> auth_conn()
+        |> put(~p"/reservations/#{reservation}", reservation: attrs)
+
       assert html_response(conn, 200) =~ "Edit Reservation"
     end
   end
@@ -68,11 +101,15 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     setup [:create_reservation]
 
     test "deletes chosen reservation", %{conn: conn, reservation: reservation} do
-      conn = delete(conn, ~p"/reservations/#{reservation}")
+      conn =
+        conn
+        |> auth_conn()
+        |> delete(~p"/reservations/#{reservation}")
+
       assert redirected_to(conn) == ~p"/reservations"
 
       assert_error_sent 404, fn ->
-        get(conn, ~p"/reservations/#{reservation}")
+        get(conn, ~p"/reservations/#{reservation}?token=#{reservation.token}")
       end
     end
   end
@@ -80,5 +117,18 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   defp create_reservation(_) do
     reservation = reservation_fixture()
     %{reservation: reservation}
+  end
+
+  defp auth_conn(conn) do
+    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
+
+    username = basic_auth[:username]
+    password = basic_auth[:password]
+
+    put_req_header(
+      conn,
+      "authorization",
+      "Basic " <> Base.encode64("#{username}:#{password}")
+    )
   end
 end
