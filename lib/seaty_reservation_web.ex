@@ -47,7 +47,7 @@ defmodule SeatyReservationWeb do
         layouts: [html: SeatyReservationWeb.Layouts]
 
       import Plug.Conn
-      import SeatyReservationWeb.Gettext
+      use Gettext, backend: SeatyReservationWeb.Gettext
 
       unquote(verified_routes())
     end
@@ -90,7 +90,7 @@ defmodule SeatyReservationWeb do
       # Core UI components and translation
       import SeatyReservationWeb.CoreComponents
       import SeatyReservationWeb.FaqComponents
-      import SeatyReservationWeb.Gettext
+      use Gettext, backend: SeatyReservationWeb.Gettext
 
       # Shortcut for generating JS commands
       alias Phoenix.LiveView.JS

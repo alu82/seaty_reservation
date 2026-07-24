@@ -5,7 +5,7 @@ defmodule SeatyReservationWeb.FaqComponents do
   use Phoenix.Component
 
   import SeatyReservationWeb.CoreComponents
-  import SeatyReservationWeb.Gettext
+  use Gettext, backend: SeatyReservationWeb.Gettext
 
   @doc """
   Renders the reservation FAQ section with all common questions and answers.

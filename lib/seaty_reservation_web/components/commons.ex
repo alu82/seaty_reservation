@@ -1,5 +1,5 @@
 defmodule SeatyReservationWeb.Commons do
-  import SeatyReservationWeb.Gettext
+  use Gettext, backend: SeatyReservationWeb.Gettext
 
   def format_events(events) do
     Enum.map(

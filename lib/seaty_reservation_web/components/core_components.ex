@@ -17,7 +17,7 @@ defmodule SeatyReservationWeb.CoreComponents do
   use Phoenix.Component
 
   alias Phoenix.LiveView.JS
-  import SeatyReservationWeb.Gettext
+  use Gettext, backend: SeatyReservationWeb.Gettext
 
   @doc """
   Renders a modal.
