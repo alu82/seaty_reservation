@@ -20,6 +20,27 @@ if System.get_env("PHX_SERVER") do
   config :seaty_reservation, SeatyReservationWeb.Endpoint, server: true
 end
 
+# basic auth setup
+config :seaty_reservation, :basic_auth,
+  username: System.get_env("SY_BASIC_AUTH_USER") || "seaty",
+  password: System.get_env("SY_BASIC_AUTH_PASSWORD") || "password"
+
+config :seaty_reservation, SeatyReservation.Mailer,
+  adapter: Swoosh.Adapters.SMTP,
+  relay: "smtp.ionos.de",
+  port: 587,
+  username: System.get_env("SY_SMTP_USER"),
+  password: System.get_env("SY_SMTP_PASSWORD"),
+  ssl: :false,
+  tls: :if_available,
+  auth: :always,
+  tls_options: [
+    verify: :verify_none
+  ]
+
+config :seaty_reservation,
+  smtp_user: System.get_env("SY_SMTP_USER", "test@example.com")
+
 if config_env() == :prod do
   database_path =
     System.get_env("DATABASE_PATH") ||

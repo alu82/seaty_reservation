@@ -1,0 +1,11 @@
+_build
+deps
+.git
+
+# local environment
+.env
+.env.*
+
+# editor files
+.vscode
+.idea

@@ -63,27 +63,6 @@ config :phoenix, :json_library, Jason
 config :seaty_reservation, SeatyReservationWeb.Gettext, locales: ~w(de en)
 config :gettext, :default_locale, "de"
 
-# basic auth setup
-config :seaty_reservation, :basic_auth,
-  username: System.get_env("SY_BASIC_AUTH_USER") || "seaty",
-  password: System.get_env("SY_BASIC_AUTH_PASSWORD") || "password"
-
-config :seaty_reservation, SeatyReservation.Mailer,
-  adapter: Swoosh.Adapters.SMTP,
-  relay: "smtp.ionos.de",
-  port: 587,
-  username: System.get_env("SY_SMTP_USER"),
-  password: System.get_env("SY_SMTP_PASSWORD"),
-  ssl: :false,
-  tls: :if_available,
-  auth: :always,
-  tls_options: [
-    verify: :verify_none
-  ]
-
-config :seaty_reservation,
-  smtp_user: System.get_env("SY_SMTP_USER", "test@example.com")
-
 # Import environment specific config. This must remain at the bottom
 # of this file so it overrides the configuration defined above.
 import_config "#{config_env()}.exs"

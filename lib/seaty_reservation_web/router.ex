@@ -12,9 +12,14 @@ defmodule SeatyReservationWeb.Router do
   end
 
   pipeline :auth do
-    plug :basic_auth,
-      username: Application.compile_env(:seaty_reservation, :basic_auth)[:username],
-      password: Application.compile_env(:seaty_reservation, :basic_auth)[:password]
+    plug :require_basic_auth
+  end
+
+  defp require_basic_auth(conn, _opts) do
+    Plug.BasicAuth.basic_auth(conn,
+      username: System.fetch_env!("SY_BASIC_AUTH_USER"),
+      password: System.fetch_env!("SY_BASIC_AUTH_PASSWORD")
+    )
   end
 
   scope "/", SeatyReservationWeb do
