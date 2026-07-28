@@ -2,6 +2,18 @@
 
 set -euo pipefail
 
+echo "Select environment to deploy to (test, int, prod):"
+read -r ENV
+
+case "$ENV" in
+  test) HOSTNAME="seaty-test" ;;
+  int)  HOSTNAME="seaty-int" ;;
+  prod) HOSTNAME="seaty-prod" ;;
+  *) echo "Invalid environment. Please choose test, int, or prod."; exit 1 ;;
+esac
+
+echo "==> Deploying to $HOSTNAME"
+
 echo "==> Cleaning previous release"
 rm -rf _build/prod/rel/seaty_reservation
 
@@ -18,19 +30,19 @@ podman cp \
 
 podman rm seaty-build
 
-echo "==> Stopping production service"
-ssh seaty-prod 'systemctl stop seaty'
+echo "==> Stopping $HOSTNAME service"
+ssh "$HOSTNAME" 'systemctl stop seaty'
 
 echo "==> Uploading release"
 rsync --delete -avz \
   _build/prod/rel/seaty_reservation/ \
-  seaty-prod:/opt/seaty/
+  "$HOSTNAME":/opt/seaty/
 
 echo "==> Fixing ownership"
-ssh seaty-prod 'chown -R seaty:seaty /opt/seaty'
+ssh "$HOSTNAME" 'chown -R seaty:seaty /opt/seaty'
 
 echo "==> Running database migrations"
-ssh seaty-prod \
+ssh "$HOSTNAME" \
   'sudo systemd-run --wait --collect --pipe \
     --property=User=seaty \
     --property=WorkingDirectory=/opt/seaty \
@@ -38,10 +50,10 @@ ssh seaty-prod \
     env PHX_SERVER=false \
     /opt/seaty/bin/seaty_reservation eval "SeatyReservation.Release.migrate()"'
 
-echo "==> Starting production service"
-ssh seaty-prod 'systemctl start seaty'
+echo "==> Starting $HOSTNAME service"
+ssh "$HOSTNAME" 'systemctl start seaty'
 
 echo "==> Checking service status"
-ssh seaty-prod 'systemctl is-active --quiet seaty'
+ssh "$HOSTNAME" 'systemctl is-active --quiet seaty'
 
 echo "==> Deployment completed successfully"

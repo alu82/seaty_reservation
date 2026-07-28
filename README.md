@@ -17,7 +17,7 @@ Ready to run in production? Please [check our deployment guides](https://hexdocs
 * Forum: <https://elixirforum.com/c/phoenix-forum>
 * Source: <https://github.com/phoenixframework/phoenix>
 
-### Setup
+## Setup
 
 create app with ```mix phx.new seaty_reservation --database sqlite3```
 
@@ -27,7 +27,7 @@ create and migrate to schema with
 mix ecto.migrate
 ```
 
-### DB Migration
+## DB Migration
 
 ```sh
 mix ecto.gen.migration <name>
@@ -35,7 +35,13 @@ mix ecto.gen.migration <name>
 mix ecto.migrate
 ```
 
-### Backlog
+## Deployment
+
+For a Deployment to a Scaleway VPS see [Deployment Guide](README_Deployment.md).
+
+After Reading and understanding it, just execute `build-deploy.sh`.
+
+## Backlog
 
 * [x] setup base project
 * [x] create form for reservation creation (:new)
