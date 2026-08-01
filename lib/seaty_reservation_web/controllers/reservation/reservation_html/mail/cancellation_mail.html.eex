@@ -1,0 +1,13 @@
+<p>
+    Sehr geehrte/r <%= @name %>,
+</p>
+<p>
+    Ihre Reservierung für die Vorstellung am <%= format_datetime(@event_date) %> wurde storniert.
+</p>
+<p>
+    Die Details Ihrer stornierten Reservierung finden Sie <a href="<%= @reservation_link %>">hier</a>.
+</p>
+<p>
+    Herzlichen Gruß,<br>
+    Alexander Ludwig im Namen der Südtiroler Volksbühne München e.V.
+</p>

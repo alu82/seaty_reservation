@@ -17,7 +17,7 @@ config :seaty_reservation, SeatyReservationWeb.Endpoint,
   secret_key_base: "Wp9q3bwP5tcU2BwCpuU6gXuJcl7eVS+NMxLOTEU6T8GqDrofynUwpBkkWiXhCljg",
   server: false
 
-# In test we don't send emails.
+# In test we don't send emails - test adapter captures them for assertions
 config :seaty_reservation, SeatyReservation.Mailer, adapter: Swoosh.Adapters.Test
 
 # Disable swoosh api client as it is only required for production adapters.
@@ -33,10 +33,5 @@ config :seaty_reservation,
   basic_auth: [
     username: "test_user",
     password: "test_password"
-  ]
-
-config :seaty_reservation, SeatyReservation.Mailer,
-  adapter: Swoosh.Adapters.Test
-
-config :seaty_reservation,
+  ],
   smtp_user: "test@example.com"

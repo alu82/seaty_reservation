@@ -4,8 +4,10 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   import SeatyReservation.ReservationsFixtures
   import SeatyReservation.EventsFixtures
 
-  @create_attrs %{"code" => "some code", "name" => "some name", "seats" => "2", "group" => "42", "comment" => "some comment", "prio" => "42", "contact" => "some contact", "preferred_row" => "some preferred_row"}
-  @update_attrs %{"code" => "some updated code", "name" => "some updated name", "seats" => "3", "group" => "43", "comment" => "some updated comment", "prio" => "43", "contact" => "some updated contact", "preferred_row" => "some updated preferred_row"}
+  import Swoosh.TestAssertions
+
+  @create_attrs %{"code" => "some code", "name" => "some name", "seats" => "2", "group" => "42", "comment" => "some comment", "prio" => "42", "contact" => "test@example.com", "preferred_row" => "some preferred_row"}
+  @update_attrs %{"code" => "some updated code", "name" => "some updated name", "seats" => "3", "group" => "43", "comment" => "some updated comment", "prio" => "43", "contact" => "test@example.com", "preferred_row" => "some preferred_row"}
   @invalid_attrs %{"code" => "", "name" => "", "group" => "", "comment" => "", "prio" => "", "contact" => "", "preferred_row" => "", "seats" => ""}
 
   describe "index" do
@@ -41,6 +43,11 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
 
       conn = get(conn, redirected)
       assert html_response(conn, 200) =~ "Reservation"
+
+      {:email, email} = assert_email_sent()
+      assert email.subject =~ "Reservierungsnummer"
+      refute email.subject =~ "storniert"
+      assert email.to == [{"some name", "test@example.com"}]
     end
 
     test "renders errors when data is invalid", %{conn: conn} do
@@ -111,6 +118,27 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
       assert_error_sent 404, fn ->
         get(conn, ~p"/reservations/#{reservation}?token=#{reservation.token}")
       end
+    end
+  end
+
+  describe "cancel reservation" do
+    setup [:create_reservation]
+
+    test "cancels reservation and sends cancellation email", %{conn: conn, reservation: reservation} do
+      conn =
+        conn
+        |> auth_conn()
+        |> patch(~p"/reservations/#{reservation}/cancel")
+
+      assert redirected_to(conn) == ~p"/reservations/#{reservation}/edit"
+
+      conn = get(conn, redirected_to(conn))
+      assert html_response(conn, 200) =~ "cancelled successfully and cancellation email sent"
+
+      {:email, email} = assert_email_sent()
+      assert email.subject =~ "Reservierung storniert"
+      assert email.subject =~ to_string(reservation.code)
+      assert email.to == [{reservation.name, reservation.contact}]
     end
   end
 

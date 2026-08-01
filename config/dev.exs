@@ -74,3 +74,10 @@ config :phoenix, :plug_init_mode, :runtime
 
 # Disable swoosh api client as it is only required for production adapters.
 config :swoosh, :api_client, false
+
+# Configure mailer for development - uses local adapter to save emails to disk
+config :seaty_reservation, SeatyReservation.Mailer,
+  adapter: Swoosh.Adapters.Local
+
+config :seaty_reservation,
+  smtp_user: System.get_env("SY_SMTP_USER", "test@example.com")

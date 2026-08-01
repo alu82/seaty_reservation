@@ -18,7 +18,7 @@ defmodule SeatyReservation.ReservationsFixtures do
         "group" => "42",
         "comment" => "some comment",
         "seats" => "2",
-        "contact" => "some contact",
+        "contact" => "test@example.com",
         "event_id" => Integer.to_string(event.id),
         "preferred_row" => "some preferred_row"
       })
