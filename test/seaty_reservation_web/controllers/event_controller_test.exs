@@ -24,6 +24,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
         conn
         |> auth_conn()
         |> get(~p"/events/new")
+
       assert html_response(conn, 200) =~ "New Event"
     end
   end

@@ -25,7 +25,7 @@ defmodule SeatyReservationWeb.Router do
   scope "/", SeatyReservationWeb do
     pipe_through [:browser]
 
-    get "/", ReservationController , :new
+    get "/", ReservationController, :new
     get "/reservations/new", ReservationController, :new
     get "/reservations/:id", ReservationController, :show
     post "/reservations", ReservationController, :create

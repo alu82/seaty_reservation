@@ -2,7 +2,11 @@ import Config
 
 # Configure your database
 config :seaty_reservation, SeatyReservation.Repo,
-  database: Path.expand("/home/aludwig/Documents/svb/2025/db/seaty_reservation_2025_prod.db", Path.dirname(__ENV__.file)),
+  database:
+    Path.expand(
+      "/home/aludwig/Documents/svb/2025/db/seaty_reservation_2025_prod.db",
+      Path.dirname(__ENV__.file)
+    ),
   pool_size: 5,
   stacktrace: true,
   show_sensitive_data_on_connection_error: true
@@ -76,8 +80,7 @@ config :phoenix, :plug_init_mode, :runtime
 config :swoosh, :api_client, false
 
 # Configure mailer for development - uses local adapter to save emails to disk
-config :seaty_reservation, SeatyReservation.Mailer,
-  adapter: Swoosh.Adapters.Local
+config :seaty_reservation, SeatyReservation.Mailer, adapter: Swoosh.Adapters.Local
 
 config :seaty_reservation,
   smtp_user: System.get_env("SY_SMTP_USER", "test@example.com")

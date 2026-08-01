@@ -50,17 +50,17 @@ defmodule SeatyReservation.Reservations do
 
   """
   def create_reservation(attrs \\ %{}) do
-
     input_changeset = validate_reservation_input(attrs)
 
     if input_changeset.valid? do
       event_id = normalize_id(attrs["event_id"] || attrs[:event_id])
 
-      attrs = attrs
-      |> Map.put("code", get_next_code(event_id))
-      |> Map.put("prio", get_next_prio(event_id))
-      |> Map.put("token", gen_access_token())
-      |> Map.put_new("internal_comment", "")
+      attrs =
+        attrs
+        |> Map.put("code", get_next_code(event_id))
+        |> Map.put("prio", get_next_prio(event_id))
+        |> Map.put("token", gen_access_token())
+        |> Map.put_new("internal_comment", "")
 
       %Reservation{}
       |> Reservation.changeset(attrs)
@@ -120,15 +120,17 @@ defmodule SeatyReservation.Reservations do
   def get_reservation_by_code(code) do
     query =
       from r in Reservation,
-      where: r.code == ^code
+        where: r.code == ^code
+
     Repo.one(query)
   end
 
   defp get_next_code(event_id) do
     query =
       from r in Reservation,
-      where: r.event_id == ^event_id,
-      select: count(r.id) |> coalesce(1)
+        where: r.event_id == ^event_id,
+        select: count(r.id) |> coalesce(1)
+
     code = Repo.one(query) + event_id * 1000
     check_next_codes(code, get_reservation_by_code(Integer.to_string(code)), code + 1)
   end
@@ -138,47 +140,54 @@ defmodule SeatyReservation.Reservations do
   end
 
   defp check_next_codes(_code, count, next_code) when count > 0 do
-    check_next_codes(next_code, get_reservation_by_code(Integer.to_string(next_code)), next_code + 1)
+    check_next_codes(
+      next_code,
+      get_reservation_by_code(Integer.to_string(next_code)),
+      next_code + 1
+    )
   end
 
   defp get_next_prio(event_id) do
     query =
       from r in Reservation,
-      where: r.event_id == ^event_id and r.prio != 0,
-      select: min(r.prio) |> coalesce(1000)
+        where: r.event_id == ^event_id and r.prio != 0,
+        select: min(r.prio) |> coalesce(1000)
+
     Repo.one(query) - 5
   end
 
   defp gen_access_token() do
     :crypto.strong_rand_bytes(32)
-    |> Base.encode64
+    |> Base.encode64()
     |> binary_part(0, 32)
   end
 
   def get_reservation_count(event_id) do
     query =
       from r in Reservation,
-      where: r.event_id == ^event_id,
-      select: sum(r.seats) |> coalesce(0)
+        where: r.event_id == ^event_id,
+        select: sum(r.seats) |> coalesce(0)
+
     Repo.one(query)
   end
 
   def get_reservation_count() do
     query =
       from r in Reservation,
-      select: {r.event_id, sum(r.seats) |> coalesce(0)},
-      group_by: r.event_id
+        select: {r.event_id, sum(r.seats) |> coalesce(0)},
+        group_by: r.event_id
+
     Repo.all(query)
   end
 
   def get_reservations_by_event(event_id) do
     query =
       from r in Reservation,
-      where: r.event_id == ^event_id,
-      order_by: [desc: r.prio]
+        where: r.event_id == ^event_id,
+        order_by: [desc: r.prio]
+
     Repo.all(query)
   end
-
 
   defp validate_reservation_input(attrs) do
     %Reservation{}
@@ -202,5 +211,4 @@ defmodule SeatyReservation.Reservations do
   defp normalize_id(nil), do: nil
   defp normalize_id(id) when is_integer(id), do: id
   defp normalize_id(id) when is_binary(id), do: String.to_integer(id)
-
 end

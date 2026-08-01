@@ -104,10 +104,12 @@ defmodule SeatyReservation.Events do
 
   def get_all_future do
     one_hour_ago = NaiveDateTime.utc_now() |> NaiveDateTime.add(-3600, :second)
+
     query =
       from e in Event,
-      where: e.datetime > ^one_hour_ago,
-      order_by: e.datetime
+        where: e.datetime > ^one_hour_ago,
+        order_by: e.datetime
+
     Repo.all(query)
   end
 end

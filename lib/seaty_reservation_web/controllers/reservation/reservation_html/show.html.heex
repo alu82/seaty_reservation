@@ -11,12 +11,16 @@
   <:item title={gettext("Ihre Nachricht an uns")}>
     <pre><%= @reservation.comment %></pre>
   </:item>
-  <:item title={gettext("Reservierung angelegt am")}><%= format_datetime(@reservation.inserted_at) %></:item>
+  <:item title={gettext("Reservierung angelegt am")}>
+    <%= format_datetime(@reservation.inserted_at) %>
+  </:item>
 </.list>
 
 <div class="mt-10 text-sm leading-6 text-zinc-900">
-  <%= gettext("Wir haben Ihnen eine Bestätigung an die angegebene E-Mail Adresse geschickt. Sollten Sie diese nicht erhalten haben, wenden Sie sich bitte an %{contact}. Die Details zu Ihrer Reservierung können Sie auch jederzeit unter diesem Link aufrufen.",
-    contact: System.get_env("SY_SMTP_USER")) %>
+  <%= gettext(
+    "Wir haben Ihnen eine Bestätigung an die angegebene E-Mail Adresse geschickt. Sollten Sie diese nicht erhalten haben, wenden Sie sich bitte an %{contact}. Die Details zu Ihrer Reservierung können Sie auch jederzeit unter diesem Link aufrufen.",
+    contact: System.get_env("SY_SMTP_USER")
+  ) %>
 </div>
 
 <.reservation_faq />

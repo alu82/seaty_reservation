@@ -10,10 +10,12 @@
 <.table id="events" rows={@events} row_click={&JS.navigate(~p"/events/#{&1}")}>
   <:col :let={event} label="Datetime"><%= format_datetime(event.datetime) %></:col>
   <:col :let={event} label="Seats"><%= event.total_seats %></:col>
-  <:col :let={event} label="Reserved seats"><span class="res_c"><%= get_reservation_count(event.id, @reservations) %></span></:col>
+  <:col :let={event} label="Reserved seats">
+    <span class="res_c"><%= get_reservation_count(event.id, @reservations) %></span>
+  </:col>
   <:col :let={event} label="Active"><%= event.active %></:col>
   <:action :let={event}>
-    <.link href={~p"/reservations/?event_id=#{event}"} >
+    <.link href={~p"/reservations/?event_id=#{event}"}>
       Reservations
     </.link>
   </:action>
@@ -61,7 +63,6 @@
 
   const total = calculateTotalSum();
   document.getElementById('total-sum').textContent = 'Total: ' + total;
-
 </script>
 
 <.back navigate={~p"/reservations"}>Go to reservations</.back>

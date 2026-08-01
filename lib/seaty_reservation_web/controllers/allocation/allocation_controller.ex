@@ -15,6 +15,6 @@ defmodule SeatyReservationWeb.AllocationController do
     Allocations.create_allocation(reservations)
 
     conn
-      |> redirect(to: ~p"/events")
+    |> redirect(to: ~p"/events")
   end
 end

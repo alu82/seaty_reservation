@@ -21,7 +21,19 @@ defmodule SeatyReservation.Reservations.Reservation do
   @doc false
   def changeset(reservation, attrs) do
     reservation
-    |> cast(attrs, [:prio, :code, :name, :contact, :group, :preferred_row, :comment, :internal_comment, :event_id, :seats, :token])
+    |> cast(attrs, [
+      :prio,
+      :code,
+      :name,
+      :contact,
+      :group,
+      :preferred_row,
+      :comment,
+      :internal_comment,
+      :event_id,
+      :seats,
+      :token
+    ])
     |> validate_required([:prio, :code, :name, :contact, :event_id, :seats])
   end
 end

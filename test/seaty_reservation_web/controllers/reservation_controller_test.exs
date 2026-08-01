@@ -6,9 +6,36 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
 
   import Swoosh.TestAssertions
 
-  @create_attrs %{"code" => "some code", "name" => "some name", "seats" => "2", "group" => "42", "comment" => "some comment", "prio" => "42", "contact" => "test@example.com", "preferred_row" => "some preferred_row"}
-  @update_attrs %{"code" => "some updated code", "name" => "some updated name", "seats" => "3", "group" => "43", "comment" => "some updated comment", "prio" => "43", "contact" => "test@example.com", "preferred_row" => "some preferred_row"}
-  @invalid_attrs %{"code" => "", "name" => "", "group" => "", "comment" => "", "prio" => "", "contact" => "", "preferred_row" => "", "seats" => ""}
+  @create_attrs %{
+    "code" => "some code",
+    "name" => "some name",
+    "seats" => "2",
+    "group" => "42",
+    "comment" => "some comment",
+    "prio" => "42",
+    "contact" => "test@example.com",
+    "preferred_row" => "some preferred_row"
+  }
+  @update_attrs %{
+    "code" => "some updated code",
+    "name" => "some updated name",
+    "seats" => "3",
+    "group" => "43",
+    "comment" => "some updated comment",
+    "prio" => "43",
+    "contact" => "test@example.com",
+    "preferred_row" => "some preferred_row"
+  }
+  @invalid_attrs %{
+    "code" => "",
+    "name" => "",
+    "group" => "",
+    "comment" => "",
+    "prio" => "",
+    "contact" => "",
+    "preferred_row" => "",
+    "seats" => ""
+  }
 
   describe "index" do
     test "lists all reservations", %{conn: conn} do
@@ -31,6 +58,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   describe "create reservation" do
     test "redirects to show when data is valid", %{conn: conn} do
       event = event_fixture()
+
       attrs =
         @create_attrs
         |> Map.put("event_id", Integer.to_string(event.id))
@@ -73,7 +101,6 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     setup [:create_reservation]
 
     test "redirects when data is valid", %{conn: conn, reservation: reservation} do
-
       attrs =
         @update_attrs
         |> Map.put("event_id", Integer.to_string(reservation.event_id))
@@ -90,7 +117,6 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     end
 
     test "renders errors when data is invalid", %{conn: conn, reservation: reservation} do
-
       attrs =
         @invalid_attrs
         |> Map.put("event_id", Integer.to_string(reservation.event_id))
@@ -124,7 +150,10 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   describe "cancel reservation" do
     setup [:create_reservation]
 
-    test "cancels reservation and sends cancellation email", %{conn: conn, reservation: reservation} do
+    test "cancels reservation and sends cancellation email", %{
+      conn: conn,
+      reservation: reservation
+    } do
       conn =
         conn
         |> auth_conn()

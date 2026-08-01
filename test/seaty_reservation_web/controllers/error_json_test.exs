@@ -2,7 +2,9 @@ defmodule SeatyReservationWeb.ErrorJSONTest do
   use SeatyReservationWeb.ConnCase, async: true
 
   test "renders 404" do
-    assert SeatyReservationWeb.ErrorJSON.render("404.json", %{}) == %{errors: %{detail: "Not Found"}}
+    assert SeatyReservationWeb.ErrorJSON.render("404.json", %{}) == %{
+             errors: %{detail: "Not Found"}
+           }
   end
 
   test "renders 500" do

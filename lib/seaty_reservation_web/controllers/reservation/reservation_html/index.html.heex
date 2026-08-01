@@ -8,7 +8,7 @@
 </.header>
 
 <div class="text-sm font-semibold leading-6 text-zinc-900 hover:text-zinc-700">
-  <span :for={event <- @events}  >
+  <span :for={event <- @events}>
     <.link href={~p"/reservations/?event_id=#{event}"}>
       [ <%= format_datetime(event.datetime) %> ]
     </.link>
@@ -20,11 +20,17 @@
   </span>
 </div>
 
-<.table id="reservations" rows={@reservations} row_click={&JS.navigate(~p"/reservations/#{&1}?token=#{&1.token}")}>
+<.table
+  id="reservations"
+  rows={@reservations}
+  row_click={&JS.navigate(~p"/reservations/#{&1}?token=#{&1.token}")}
+>
   <:col :let={reservation} label="Event"><%= reservation.event_id %></:col>
   <:col :let={reservation} label="Prio"><%= reservation.prio %></:col>
   <:col :let={reservation} label="Sitze"><%= reservation.seats %></:col>
-  <:col :let={reservation} label="Order date"><%= format_datetime(reservation.inserted_at) %></:col>
+  <:col :let={reservation} label="Order date">
+    <%= format_datetime(reservation.inserted_at) %>
+  </:col>
   <:col :let={reservation} label="Code"><%= reservation.code %></:col>
   <:col :let={reservation} label="Name"><%= reservation.name %></:col>
   <:col :let={reservation} label="Contact"><%= reservation.contact %></:col>
@@ -37,8 +43,6 @@
   </:action>
 </.table>
 
-
 <.link navigate={~p"/reservations_csv"}>Download</.link>
-
 
 <.back navigate={~p"/events"}>Go to events</.back>

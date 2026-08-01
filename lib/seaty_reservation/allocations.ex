@@ -4,7 +4,7 @@ defmodule SeatyReservation.Allocations do
   """
 
   def create_allocation(attrs \\ %{}) do
-    Map.keys(attrs) # dummy implementation
+    # dummy implementation
+    Map.keys(attrs)
   end
-
 end
