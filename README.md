@@ -63,7 +63,7 @@ After Reading and understanding it, just execute `build-deploy.sh`.
 * [x] Confirmation Page on mobile devices (text to long, overlays with reservation number)
 * [x] No event (date) should be selected when loading the page
 * [x] show available seats (when inactive available seat are shown, filter which event is shown based on time)
-* [ ] cancel reservation template --> [Story](.agent/tasks/001_Cancellation-Mail.md)
+* [x] cancel reservation template --> [Story](.agent/tasks/001_Cancellation-Mail.md)
 * [ ] print ticket feature
 * [ ] allocation endpoint
 * [ ] Cancel reservation feature (until event hasn't started)

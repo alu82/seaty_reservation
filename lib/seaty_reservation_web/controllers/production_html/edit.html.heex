@@ -1,0 +1,8 @@
+<.header>
+  Edit Production <%= @production.id %>
+  <:subtitle>Use this form to manage production records in your database.</:subtitle>
+</.header>
+
+<.production_form changeset={@changeset} action={~p"/productions/#{@production}"} />
+
+<.back navigate={~p"/productions"}>Back to productions</.back>

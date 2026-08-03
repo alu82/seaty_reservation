@@ -35,6 +35,7 @@ defmodule SeatyReservationWeb.Router do
     pipe_through [:browser, :auth]
 
     resources "/events", EventController
+    resources "/productions", ProductionController
     get "/reservations", ReservationController, :index
     get "/reservations_csv", ReservationController, :index_csv
     get "/reservations/:id/edit", ReservationController, :edit
