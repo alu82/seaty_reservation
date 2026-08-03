@@ -4,6 +4,7 @@ defmodule SeatyReservation.Productions.Production do
 
   schema "productions" do
     field :name, :string
+    has_many :events, SeatyReservation.Events.Event, on_delete: :delete_all
 
     timestamps()
   end

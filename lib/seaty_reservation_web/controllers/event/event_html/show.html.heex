@@ -9,6 +9,9 @@
 </.header>
 
 <.list>
+  <:item title="Production">
+    <%= if @event.production, do: @event.production.name, else: "N/A" %>
+  </:item>
   <:item title="Datetime"><%= format_datetime(@event.datetime) %></:item>
   <:item title="Seats"><%= @event.total_seats %></:item>
   <:item title="Active"><%= @event.active %></:item>

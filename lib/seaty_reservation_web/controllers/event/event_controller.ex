@@ -4,6 +4,7 @@ defmodule SeatyReservationWeb.EventController do
   alias SeatyReservation.Events
   alias SeatyReservation.Events.Event
   alias SeatyReservation.Reservations
+  alias SeatyReservation.Productions
 
   def index(conn, _params) do
     events = Events.list_events()
@@ -13,7 +14,8 @@ defmodule SeatyReservationWeb.EventController do
 
   def new(conn, _params) do
     changeset = Events.change_event(%Event{})
-    render(conn, :new, changeset: changeset)
+    productions = Productions.list_productions() |> Enum.map(&{&1.name, &1.id})
+    render(conn, :new, changeset: changeset, productions: productions)
   end
 
   def create(conn, %{"event" => event_params}) do
@@ -24,19 +26,21 @@ defmodule SeatyReservationWeb.EventController do
         |> redirect(to: ~p"/events/#{event}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :new, changeset: changeset)
+        productions = Productions.list_productions() |> Enum.map(&{&1.name, &1.id})
+        render(conn, :new, changeset: changeset, productions: productions)
     end
   end
 
   def show(conn, %{"id" => id}) do
-    event = Events.get_event!(id)
+    event = Events.get_event!(id, preload: [:production])
     render(conn, :show, event: event)
   end
 
   def edit(conn, %{"id" => id}) do
     event = Events.get_event!(id)
     changeset = Events.change_event(event)
-    render(conn, :edit, event: event, changeset: changeset)
+    productions = Productions.list_productions() |> Enum.map(&{&1.name, &1.id})
+    render(conn, :edit, event: event, changeset: changeset, productions: productions)
   end
 
   def update(conn, %{"id" => id, "event" => event_params}) do
@@ -49,7 +53,8 @@ defmodule SeatyReservationWeb.EventController do
         |> redirect(to: ~p"/events/#{event}")
 
       {:error, %Ecto.Changeset{} = changeset} ->
-        render(conn, :edit, event: event, changeset: changeset)
+        productions = Productions.list_productions() |> Enum.map(&{&1.name, &1.id})
+        render(conn, :edit, event: event, changeset: changeset, productions: productions)
     end
   end
 

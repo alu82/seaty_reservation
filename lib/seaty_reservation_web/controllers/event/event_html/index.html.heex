@@ -8,6 +8,9 @@
 </.header>
 
 <.table id="events" rows={@events} row_click={&JS.navigate(~p"/events/#{&1}")}>
+  <:col :let={event} label="Production">
+    <%= if event.production, do: event.production.name, else: "N/A" %>
+  </:col>
   <:col :let={event} label="Datetime"><%= format_datetime(event.datetime) %></:col>
   <:col :let={event} label="Seats"><%= event.total_seats %></:col>
   <:col :let={event} label="Reserved seats">

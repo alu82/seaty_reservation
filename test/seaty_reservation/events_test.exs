@@ -8,11 +8,13 @@ defmodule SeatyReservation.EventsTest do
 
     import SeatyReservation.EventsFixtures
 
-    @invalid_attrs %{active: nil, datetime: nil, total_seats: nil}
+    @invalid_attrs %{active: nil, datetime: nil, total_seats: nil, production_id: nil}
 
     test "list_events/0 returns all events" do
       event = event_fixture()
-      assert Events.list_events() == [event]
+      [loaded_event] = Events.list_events()
+      assert loaded_event.id == event.id
+      assert loaded_event.production_id == event.production_id
     end
 
     test "get_event!/1 returns the event with given id" do
@@ -21,7 +23,14 @@ defmodule SeatyReservation.EventsTest do
     end
 
     test "create_event/1 with valid data creates a event" do
-      valid_attrs = %{active: true, datetime: ~N[2023-09-10 21:17:00], total_seats: 42}
+      production = SeatyReservation.ProductionsFixtures.production_fixture()
+
+      valid_attrs = %{
+        active: true,
+        datetime: ~N[2023-09-10 21:17:00],
+        total_seats: 42,
+        production_id: production.id
+      }
 
       assert {:ok, %Event{} = event} = Events.create_event(valid_attrs)
       assert event.active == true

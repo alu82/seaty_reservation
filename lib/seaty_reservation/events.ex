@@ -18,7 +18,7 @@ defmodule SeatyReservation.Events do
 
   """
   def list_events do
-    Repo.all(Event)
+    Repo.all(from e in Event, preload: [:production])
   end
 
   @doc """
@@ -35,7 +35,10 @@ defmodule SeatyReservation.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id), do: Repo.get!(Event, id)
+  def get_event!(id, opts \\ []) do
+    preload = Keyword.get(opts, :preload, [])
+    Repo.get!(Event, id) |> Repo.preload(preload)
+  end
 
   @doc """
   Creates a event.
