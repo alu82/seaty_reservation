@@ -1,37 +1,46 @@
-<div id="data-active-events" data-active-events={Jason.encode!(filter_active_events(@events))}></div>
+<div id="data-active-events" data-active-events={Jason.encode!(filter_active_events(@events))}>
+</div>
 
 <.simple_form :let={f} for={@changeset} action={@action}>
   <.error :if={@changeset.action}>
-    <%= gettext("Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut.") %>
+    <%= gettext(
+      "Ein Fehler ist aufgetreten. Bitte überprüfen Sie Ihre Eingabe und versuchen Sie es erneut."
+    ) %>
   </.error>
-  <.input 
-    field={f[:event_id]} 
-    type="select" 
-    label={gettext("Aufführung")} 
+  <.input
+    field={f[:event_id]}
+    type="select"
+    label={gettext("Aufführung")}
     options={format_events(@events)}
     prompt={gettext("Bitte auswählen")}
     id="event-select"
   />
-  
+
   <div id="event-form-fields" class="space-y-8">
-    <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20"/>
-    <.input field={f[:name]} type="text" label={gettext("Name")}/>
-    <.input field={f[:contact]} type="email" label={gettext("E-Mail")}/>
-    <.input 
+    <.input field={f[:seats]} type="number" label={gettext("Anzahl der Plätze")} min="1" max="20" />
+    <.input field={f[:name]} type="text" label={gettext("Name")} />
+    <.input field={f[:contact]} type="email" label={gettext("E-Mail")} />
+    <.input
       field={f[:comment]}
       type="textarea"
-      rows="3" 
-      label={gettext("Ihre Nachricht an uns")} placeholder={gettext("z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten.")}
+      rows="3"
+      label={gettext("Ihre Nachricht an uns")}
+      placeholder={
+        gettext(
+          "z.B. die Reservierungsnummer von Freundinnen oder Freunden neben denen Sie sitzen möchten."
+        )
+      }
     />
     <div class="text-sm text-zinc-600">
-      Informationen zu unseren Datenschutzpraktiken finden sich in unseren 
-      <.link class="underline" href="https://www.suedtiroler-volksbuehne.de/page/imprint">Datenschutzbestimmungen.</.link>
+      Informationen zu unseren Datenschutzpraktiken finden sich in unseren
+      <.link class="underline" href="https://www.suedtiroler-volksbuehne.de/page/imprint">
+        Datenschutzbestimmungen.
+      </.link>
     </div>
   </div>
-  
 
   <:actions>
-      <.button id="submit-button"><%= gettext("Reservieren") %></.button>
+    <.button id="submit-button"><%= gettext("Reservieren") %></.button>
   </:actions>
 
   <div id="inactive-event-message">
@@ -41,7 +50,6 @@
       </p>
     </div>
   </div>
-
 </.simple_form>
 
 <script>

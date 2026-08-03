@@ -5,7 +5,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
 
   @create_attrs %{active: true, datetime: ~N[2023-09-10 21:17:00], total_seats: 42}
   @update_attrs %{active: false, datetime: ~N[2023-09-11 21:17:00], total_seats: 43}
-  @invalid_attrs %{active: nil, datetime: nil, total_seats: nil}
+  @invalid_attrs %{active: nil, datetime: nil, total_seats: nil, production_id: nil}
 
   describe "index" do
     test "lists all events", %{conn: conn} do
@@ -24,16 +24,21 @@ defmodule SeatyReservationWeb.EventControllerTest do
         conn
         |> auth_conn()
         |> get(~p"/events/new")
+
       assert html_response(conn, 200) =~ "New Event"
     end
   end
 
   describe "create event" do
-    test "redirects to show when data is valid", %{conn: conn} do
+    setup [:create_production]
+
+    test "redirects to show when data is valid", %{conn: conn, production: production} do
+      create_attrs = Map.put(@create_attrs, :production_id, production.id)
+
       conn =
         conn
         |> auth_conn()
-        |> post(~p"/events", event: @create_attrs)
+        |> post(~p"/events", event: create_attrs)
 
       assert %{id: id} = redirected_params(conn)
       assert redirected_to(conn) == ~p"/events/#{id}"
@@ -69,10 +74,12 @@ defmodule SeatyReservationWeb.EventControllerTest do
     setup [:create_event]
 
     test "redirects when data is valid", %{conn: conn, event: event} do
+      update_attrs = Map.put(@update_attrs, :production_id, event.production_id)
+
       conn =
         conn
         |> auth_conn()
-        |> put(~p"/events/#{event}", event: @update_attrs)
+        |> put(~p"/events/#{event}", event: update_attrs)
 
       assert redirected_to(conn) == ~p"/events/#{event}"
 
@@ -123,5 +130,10 @@ defmodule SeatyReservationWeb.EventControllerTest do
       "authorization",
       "Basic " <> Base.encode64("#{username}:#{password}")
     )
+  end
+
+  defp create_production(_) do
+    production = SeatyReservation.ProductionsFixtures.production_fixture()
+    %{production: production}
   end
 end

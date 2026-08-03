@@ -690,7 +690,10 @@ defmodule SeatyReservationWeb.CoreComponents do
             aria-controls={"faq-answer-#{index}"}
           >
             <span><%= item.question %></span>
-            <.icon name="hero-chevron-down-solid" class="h-4 w-4 text-zinc-500 transition-transform duration-200" />
+            <.icon
+              name="hero-chevron-down-solid"
+              class="h-4 w-4 text-zinc-500 transition-transform duration-200"
+            />
           </button>
           <div
             id={"faq-answer-#{index}"}

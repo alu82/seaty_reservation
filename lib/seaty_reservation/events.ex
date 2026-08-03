@@ -18,7 +18,7 @@ defmodule SeatyReservation.Events do
 
   """
   def list_events do
-    Repo.all(Event)
+    Repo.all(from e in Event, preload: [:production])
   end
 
   @doc """
@@ -35,7 +35,10 @@ defmodule SeatyReservation.Events do
       ** (Ecto.NoResultsError)
 
   """
-  def get_event!(id), do: Repo.get!(Event, id)
+  def get_event!(id, opts \\ []) do
+    preload = Keyword.get(opts, :preload, [])
+    Repo.get!(Event, id) |> Repo.preload(preload)
+  end
 
   @doc """
   Creates a event.
@@ -104,10 +107,12 @@ defmodule SeatyReservation.Events do
 
   def get_all_future do
     one_hour_ago = NaiveDateTime.utc_now() |> NaiveDateTime.add(-3600, :second)
+
     query =
       from e in Event,
-      where: e.datetime > ^one_hour_ago,
-      order_by: e.datetime
+        where: e.datetime > ^one_hour_ago,
+        order_by: e.datetime
+
     Repo.all(query)
   end
 end

@@ -1,0 +1,24 @@
+<.header>
+  Listing Productions
+  <:actions>
+    <.link navigate={~p"/productions/new"}>
+      <.button>New Production</.button>
+    </.link>
+  </:actions>
+</.header>
+
+<.table id="productions" rows={@productions} row_click={&JS.navigate(~p"/productions/#{&1}")}>
+  <:col :let={production} label="Name"><%= production.name %></:col>
+  <:action :let={production}>
+    <.link navigate={~p"/productions/#{production}/edit"}>Edit</.link>
+  </:action>
+  <:action :let={production}>
+    <.link
+      href={~p"/productions/#{production}"}
+      method="delete"
+      data-confirm="Delete this production and all its events and reservations? This cannot be undone."
+    >
+      Delete
+    </.link>
+  </:action>
+</.table>

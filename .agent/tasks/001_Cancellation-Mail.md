@@ -21,4 +21,4 @@ As a guest that just cancelled the reservation, I want to get a cancellation mai
 
 ## Status
 
-Ready
+Done

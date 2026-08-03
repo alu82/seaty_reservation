@@ -6,7 +6,9 @@ defmodule SeatyReservation.ReservationEmail do
   import SeatyReservationWeb.Commons
 
   def confirmation(reservation, event) do
-    reservation_link = "#{System.get_env("SY_API_URL")}/reservations/#{reservation.id}?token=#{URI.encode_www_form(reservation.token)}"
+    reservation_link =
+      "#{System.get_env("SY_API_URL")}/reservations/#{reservation.id}?token=#{URI.encode_www_form(reservation.token)}"
+
     mail_params = %{
       :name => reservation.name,
       :seats => reservation.seats,
@@ -20,13 +22,18 @@ defmodule SeatyReservation.ReservationEmail do
     new()
     |> to({reservation.name, reservation.contact})
     |> cc(System.get_env("SY_SMTP_USER"))
-    |> from({"Südtiroler Volksbühne Kartenreservierung", Application.get_env(:seaty_reservation, :smtp_user)})
+    |> from(
+      {"Südtiroler Volksbühne Kartenreservierung",
+       Application.get_env(:seaty_reservation, :smtp_user)}
+    )
     |> subject("#{subject} - Reservierungsnummer #{reservation.code}")
     |> render_body("confirmation_mail.html", mail_params)
   end
 
   def cancellation(reservation, event) do
-    reservation_link = "#{System.get_env("SY_API_URL")}/reservations/#{reservation.id}?token=#{URI.encode_www_form(reservation.token)}"
+    reservation_link =
+      "#{System.get_env("SY_API_URL")}/reservations/#{reservation.id}?token=#{URI.encode_www_form(reservation.token)}"
+
     mail_params = %{
       :name => reservation.name,
       :event_date => event.datetime,
@@ -36,7 +43,10 @@ defmodule SeatyReservation.ReservationEmail do
     new()
     |> to({reservation.name, reservation.contact})
     |> cc(System.get_env("SY_SMTP_USER"))
-    |> from({"Südtiroler Volksbühne Kartenreservierung", Application.get_env(:seaty_reservation, :smtp_user)})
+    |> from(
+      {"Südtiroler Volksbühne Kartenreservierung",
+       Application.get_env(:seaty_reservation, :smtp_user)}
+    )
     |> subject("Reservierung storniert - Reservierungsnummer #{reservation.code}")
     |> render_body("cancellation_mail.html", mail_params)
   end

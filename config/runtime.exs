@@ -32,7 +32,7 @@ if config_env() == :prod do
     port: 587,
     username: System.get_env("SY_SMTP_USER"),
     password: System.get_env("SY_SMTP_PASSWORD"),
-    ssl: :false,
+    ssl: false,
     tls: :if_available,
     auth: :always,
     tls_options: [
@@ -41,6 +41,7 @@ if config_env() == :prod do
 
   config :seaty_reservation,
     smtp_user: System.get_env("SY_SMTP_USER", "test@example.com")
+
   database_path =
     System.get_env("DATABASE_PATH") ||
       raise """

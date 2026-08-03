@@ -101,8 +101,6 @@ Cancellation is always a soft cancel:
 - `internal_comment = "storniert"`
 - send cancellation email
 
-Reservations are never deleted.
-
 ### Capacity
 
 Reservations may never exceed available seats.
@@ -152,7 +150,6 @@ Never:
 
 - commit secrets
 - remove the capacity guard
-- hard-delete reservations
 - expose admin functionality outside the `:auth` pipeline
 - edit generated assets under `priv/static/assets`
 

@@ -19,6 +19,8 @@ As a user, I want to ... so ...
 - out1
 - out2
 
+## Implementation Plan
+
 ## Status
 
 New
