@@ -11,8 +11,9 @@ defmodule SeatyReservationWeb.Router do
     plug :put_secure_browser_headers
   end
 
-  pipeline :auth do
+  pipeline :admin do
     plug :require_basic_auth
+    plug :put_layout, html: {SeatyReservationWeb.Layouts, :admin}
   end
 
   defp require_basic_auth(conn, _opts) do
@@ -32,7 +33,7 @@ defmodule SeatyReservationWeb.Router do
   end
 
   scope "/", SeatyReservationWeb do
-    pipe_through [:browser, :auth]
+    pipe_through [:browser, :admin]
 
     resources "/events", EventController
     resources "/productions", ProductionController
