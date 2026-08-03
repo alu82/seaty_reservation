@@ -7,7 +7,7 @@ defmodule SeatyReservation.Events.Event do
     field :datetime, :naive_datetime
     field :total_seats, :integer
     belongs_to :production, SeatyReservation.Productions.Production
-    has_many :reservations, SeatyReservation.Reservations.Reservation
+    has_many :reservations, SeatyReservation.Reservations.Reservation, on_delete: :delete_all
 
     timestamps()
   end

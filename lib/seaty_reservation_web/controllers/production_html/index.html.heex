@@ -13,7 +13,11 @@
     <.link navigate={~p"/productions/#{production}/edit"}>Edit</.link>
   </:action>
   <:action :let={production}>
-    <.link href={~p"/productions/#{production}"} method="delete" data-confirm="Are you sure?">
+    <.link
+      href={~p"/productions/#{production}"}
+      method="delete"
+      data-confirm="Delete this production and all its events and reservations? This cannot be undone."
+    >
       Delete
     </.link>
   </:action>
