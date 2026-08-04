@@ -7,6 +7,7 @@ defmodule SeatyReservation.Reservations do
   alias SeatyReservation.Repo
 
   alias SeatyReservation.Reservations.Reservation
+  alias SeatyReservation.Events
 
   @doc """
   Returns the list of reservations.
@@ -126,25 +127,28 @@ defmodule SeatyReservation.Reservations do
   end
 
   defp get_next_code(event_id) do
+    event = Events.get_event!(event_id)
+
     query =
       from r in Reservation,
         where: r.event_id == ^event_id,
-        select: count(r.id) |> coalesce(1)
+        select: count(r.id) |> coalesce(0)
 
-    code = Repo.one(query) + event_id * 1000
-    check_next_codes(code, get_reservation_by_code(Integer.to_string(code)), code + 1)
+    next_num = Repo.one(query) + 1
+    code = event.code <> String.pad_leading(Integer.to_string(next_num), 3, "0")
+    check_next_codes(code, event.code, next_num)
   end
 
-  defp check_next_codes(code, nil, _next_code) do
-    code |> Integer.to_string()
-  end
-
-  defp check_next_codes(_code, count, next_code) when count > 0 do
-    check_next_codes(
-      next_code,
-      get_reservation_by_code(Integer.to_string(next_code)),
-      next_code + 1
-    )
+  defp check_next_codes(code, event_code, next_num) do
+    if get_reservation_by_code(code) do
+      # Code exists, this shouldn't happen with sequential numbering, but handle it
+      # by trying the next number
+      new_num = next_num + 1
+      new_code = event_code <> String.pad_leading(Integer.to_string(new_num), 4, "0")
+      check_next_codes(new_code, event_code, new_num)
+    else
+      code
+    end
   end
 
   defp get_next_prio(event_id) do

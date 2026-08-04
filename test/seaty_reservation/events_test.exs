@@ -8,7 +8,7 @@ defmodule SeatyReservation.EventsTest do
 
     import SeatyReservation.EventsFixtures
 
-    @invalid_attrs %{active: nil, datetime: nil, total_seats: nil, production_id: nil}
+    @invalid_attrs %{active: nil, datetime: nil, total_seats: nil, production_id: nil, code: nil}
 
     test "list_events/0 returns all events" do
       event = event_fixture()
@@ -29,7 +29,8 @@ defmodule SeatyReservation.EventsTest do
         active: true,
         datetime: ~N[2023-09-10 21:17:00],
         total_seats: 42,
-        production_id: production.id
+        production_id: production.id,
+        code: "EVT1"
       }
 
       assert {:ok, %Event{} = event} = Events.create_event(valid_attrs)
@@ -44,7 +45,7 @@ defmodule SeatyReservation.EventsTest do
 
     test "update_event/2 with valid data updates the event" do
       event = event_fixture()
-      update_attrs = %{active: false, datetime: ~N[2023-09-11 21:17:00], total_seats: 43}
+      update_attrs = %{active: false, datetime: ~N[2023-09-11 21:17:00], total_seats: 43, code: "UPDATED"}
 
       assert {:ok, %Event{} = event} = Events.update_event(event, update_attrs)
       assert event.active == false

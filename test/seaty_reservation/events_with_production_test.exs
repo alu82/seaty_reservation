@@ -17,7 +17,8 @@ defmodule SeatyReservation.EventsWithProductionTest do
         active: true,
         datetime: ~N[2023-09-10 21:17:00],
         total_seats: 42,
-        production_id: production.id
+        production_id: production.id,
+        code: "TEST"
       }
 
       assert {:ok, %Event{} = event} = Events.create_event(valid_attrs)
@@ -28,7 +29,8 @@ defmodule SeatyReservation.EventsWithProductionTest do
       valid_attrs = %{
         active: true,
         datetime: ~N[2023-09-10 21:17:00],
-        total_seats: 42
+        total_seats: 42,
+        code: "TEST"
       }
 
       assert {:error, %Ecto.Changeset{}} = Events.create_event(valid_attrs)

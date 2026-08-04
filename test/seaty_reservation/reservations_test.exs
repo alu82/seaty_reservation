@@ -53,6 +53,46 @@ defmodule SeatyReservation.ReservationsTest do
       assert reservation.prio != nil
       assert reservation.token != nil
     end
+    test "create_reservation/1 generates code with event code prefix" do
+      event = event_fixture(%{code: "ABC"})
+
+      valid_attrs = %{
+        "event_id" => Integer.to_string(event.id),
+        "name" => "some name",
+        "seats" => "2",
+        "contact" => "test@example.com"
+      }
+
+      assert {:ok, %Reservation{} = reservation} = Reservations.create_reservation(valid_attrs)
+      assert String.starts_with?(reservation.code, "ABC")
+      assert String.length(reservation.code) == 7  # ABC + 0001 (4 digits)
+    end
+
+    test "create_reservation/1 generates sequential codes" do
+      event = event_fixture(%{code: "XYZ"})
+
+      # Create first reservation
+      attrs1 = %{
+        "event_id" => Integer.to_string(event.id),
+        "name" => "name1",
+        "seats" => "1",
+        "contact" => "contact1@example.com"
+      }
+      assert {:ok, %Reservation{code: code1}} = Reservations.create_reservation(attrs1)
+
+      # Create second reservation
+      attrs2 = %{
+        "event_id" => Integer.to_string(event.id),
+        "name" => "name2",
+        "seats" => "1",
+        "contact" => "contact2@example.com"
+      }
+      assert {:ok, %Reservation{code: code2}} = Reservations.create_reservation(attrs2)
+
+      # Verify codes are sequential
+      assert code1 == "XYZ0001"
+      assert code2 == "XYZ0002"
+    end
 
     test "create_reservation/1 with invalid data returns error changeset" do
       assert {:error, %Ecto.Changeset{}} = Reservations.create_reservation(@invalid_attrs)
