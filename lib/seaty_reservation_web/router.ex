@@ -44,7 +44,6 @@ defmodule SeatyReservationWeb.Router do
     put "/reservations/:id", ReservationController, :update
     patch "/reservations/:id/cancel", ReservationController, :cancel
     delete "/reservations/:id", ReservationController, :delete
-    get "/events/:event_id/allocations/:id", AllocationController, :show
     post "/events/:event_id/allocations", AllocationController, :create
   end
 

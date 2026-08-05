@@ -22,13 +22,11 @@
       Reservations
     </.link>
   </:action>
-  <!--
   <:action :let={event}>
-    <.link href={~p"/events/#{event}/allocations"} method="post">
+    <.link href={~p"/events/#{event.id}/allocations"} method="post">
       Allocation
     </.link>
   </:action>
-  -->
   <:action :let={event}>
     <.link navigate={~p"/events/#{event}/edit"}>Edit</.link>
   </:action>
