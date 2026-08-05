@@ -26,6 +26,7 @@ defmodule SeatyReservationWeb.EventWithProductionTest do
             active: "true",
             datetime: "2023-09-10 21:17:00",
             total_seats: "42",
+            code: "A",
             production_id: to_string(production.id)
           }
         )

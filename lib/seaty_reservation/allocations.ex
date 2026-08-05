@@ -279,13 +279,11 @@ defmodule SeatyReservation.Allocations do
   @doc """
   Creates an allocation for the given reservations.
   """
-  def create_allocation(reservations)
   def create_allocation(reservations) when is_list(reservations) do
     allocate_event_from_reservations(reservations)
   end
 
-  def create_allocation(attrs \\ %{}) do
-    # For backwards compatibility with any code that might call this
+  def create_allocation(attrs) when is_map(attrs) do
     Map.keys(attrs)
   end
 end
