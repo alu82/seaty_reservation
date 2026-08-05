@@ -35,7 +35,7 @@ defmodule SeatyReservationWeb.AllocationComponents do
   """
   def row(assigns) do
     ~H"""
-    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+    <div class="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden mb-8">
       <div class="px-2 py-3">
         <div class="flex items-center justify-center font-semibold text-slate-800 text-center">
           Row <%= @row_number %>

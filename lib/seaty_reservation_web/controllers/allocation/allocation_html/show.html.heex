@@ -10,21 +10,21 @@
 <div class="min-h-screen p-0 mt-4">
 
   <!-- Rows 1-4: 24 seats each -->
-  <div class="grid grid-cols-4 gap-0 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
     <%= for row <- 1..4 do %>
       <.row row_number={row} seat_count={24} assigned={Enum.filter(@result.assigned, &(&1.row == row))} />
     <% end %>
   </div>
 
   <!-- Rows 5-9: 19 seats each -->
-  <div class="grid grid-cols-5 gap-0 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-5 gap-0">
     <%= for row <- 5..9 do %>
       <.row row_number={row} seat_count={19} assigned={Enum.filter(@result.assigned, &(&1.row == row))} />
     <% end %>
   </div>
 
   <!-- Rows 10-13: 4 seats each -->
-  <div class="grid grid-cols-4 gap-0 mb-8">
+  <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
     <%= for row <- 10..13 do %>
       <.row row_number={row} seat_count={4} assigned={Enum.filter(@result.assigned, &(&1.row == row))} />
     <% end %>
