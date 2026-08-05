@@ -65,7 +65,7 @@ defmodule SeatyReservation.ReservationsTest do
 
       assert {:ok, %Reservation{} = reservation} = Reservations.create_reservation(valid_attrs)
       assert String.starts_with?(reservation.code, "ABC")
-      assert String.length(reservation.code) == 7  # ABC + 0001 (4 digits)
+      assert String.length(reservation.code) == 6  # ABC + 001 (3 digits)
     end
 
     test "create_reservation/1 generates sequential codes" do
@@ -90,8 +90,8 @@ defmodule SeatyReservation.ReservationsTest do
       assert {:ok, %Reservation{code: code2}} = Reservations.create_reservation(attrs2)
 
       # Verify codes are sequential
-      assert code1 == "XYZ0001"
-      assert code2 == "XYZ0002"
+      assert code1 == "XYZ001"
+      assert code2 == "XYZ002"
     end
 
     test "create_reservation/1 with invalid data returns error changeset" do
