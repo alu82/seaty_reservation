@@ -64,8 +64,8 @@ After Reading and understanding it, just execute `build-deploy.sh`.
 * [x] No event (date) should be selected when loading the page
 * [x] show available seats (when inactive available seat are shown, filter which event is shown based on time)
 * [x] cancel reservation template --> [Story](.agent/tasks/001_Cancellation-Mail.md)
-* [ ] print ticket feature
-* [ ] allocation endpoint
+* [ ] print ticket feature [Story](.agent/tasks/004_Print_Tickets.md)
+* [ ] allocation endpoint [Story](.agent/tasks/003_Make-Allocation.md)
 * [ ] Cancel reservation feature (until event hasn't started)
 * [ ] simple captcha?
 * [ ] localization, texts (for restricted pages)

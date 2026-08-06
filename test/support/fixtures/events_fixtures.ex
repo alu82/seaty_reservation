@@ -18,7 +18,8 @@ defmodule SeatyReservation.EventsFixtures do
       active: true,
       datetime: ~N[2023-09-10 21:17:00],
       total_seats: 42,
-      production_id: production.id
+      production_id: production.id,
+      code: "TEST"
     }
 
     merged_attrs = attrs |> Enum.into(default_attrs)

@@ -2,19 +2,19 @@ defmodule SeatyReservationWeb.AllocationController do
   use SeatyReservationWeb, :controller
 
   alias SeatyReservation.Events
-  alias SeatyReservation.Reservations
   alias SeatyReservation.Allocations
 
-  def show(conn, %{"id" => id}) do
-    event = Events.get_event!(id)
-    render(conn, :show, event: event)
-  end
-
   def create(conn, %{"event_id" => event_id}) do
-    reservations = Reservations.get_reservations_by_event(event_id)
-    Allocations.create_allocation(reservations)
+    event = Events.get_event!(event_id)
+    result = Allocations.allocate_event(event_id)
+    reservations = SeatyReservation.Reservations.get_reservations_by_event(event_id)
+    code_to_name = Map.new(reservations, &{&1.code, &1.name})
 
-    conn
-    |> redirect(to: ~p"/events")
+    result_with_names = %{
+      assigned: Enum.map(result.assigned, &Map.put(&1, :name, code_to_name[&1.code])),
+      unallocated: Enum.map(result.unallocated, &Map.put(&1, :name, code_to_name[&1.code]))
+    }
+
+    render(conn, :show, event: event, result: result_with_names)
   end
 end

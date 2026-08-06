@@ -90,6 +90,7 @@ defmodule SeatyReservationWeb do
       # Core UI components and translation
       import SeatyReservationWeb.CoreComponents
       import SeatyReservationWeb.FaqComponents
+      import SeatyReservationWeb.AllocationComponents
       use Gettext, backend: SeatyReservationWeb.Gettext
 
       # Shortcut for generating JS commands

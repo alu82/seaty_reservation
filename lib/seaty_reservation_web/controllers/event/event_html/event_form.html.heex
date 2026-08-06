@@ -9,6 +9,7 @@
     options={@productions}
     prompt="Select a production"
   />
+  <.input field={f[:code]} type="text" label="Code" required />
   <.input field={f[:datetime]} type="datetime-local" label="Datetime" />
   <.input field={f[:total_seats]} type="number" label="Seats" />
   <.input field={f[:active]} type="checkbox" label="Active" />
