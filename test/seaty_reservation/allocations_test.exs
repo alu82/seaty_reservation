@@ -202,4 +202,151 @@ defmodule SeatyReservation.AllocationsTest do
       assert hd(valid_options2) == {0, 0, 1, 0}
     end
   end
+  describe "allocation persistence" do
+    test "persist_allocation/1 creates and persists an allocation" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create reservations
+      _reservation1 =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "group" => 1,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      _reservation2 =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 3,
+          "group" => 2,
+          "code" => "R002",
+          "prio" => 95
+        })
+
+      # Persist allocation
+      {:ok, allocation} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      # Check it was saved
+      assert allocation.event_id == event.id
+      assert Map.has_key?(allocation.result, :assigned)
+      assert Map.has_key?(allocation.result, :unallocated)
+      assert length(allocation.result.assigned) == 5
+    end
+
+    test "list_allocations_by_event/1 returns allocations for an event" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create a reservation
+      _reservation =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      # Create allocation
+      {:ok, _allocation1} = SeatyReservation.Allocations.persist_allocation(event.id)
+      {:ok, _allocation2} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      allocations = SeatyReservation.Allocations.list_allocations_by_event(event.id)
+      assert length(allocations) == 2
+    end
+
+    test "get_allocation!/1 retrieves a specific allocation" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create a reservation
+      _reservation =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      # Create allocation
+      {:ok, allocation} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      # Retrieve it
+      retrieved = SeatyReservation.Allocations.get_allocation!(allocation.id)
+      assert retrieved.id == allocation.id
+      assert retrieved.event_id == event.id
+    end
+
+    test "delete_allocation/1 deletes an allocation" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create a reservation
+      _reservation =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      # Create allocation
+      {:ok, allocation} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      # Delete it
+      {:ok, _} = SeatyReservation.Allocations.delete_allocation(allocation)
+
+      # Verify it's gone
+      assert_raise Ecto.NoResultsError, fn ->
+        SeatyReservation.Allocations.get_allocation!(allocation.id)
+      end
+    end
+
+    test "is_up_to_date/1 returns true when allocation is newer than reservations" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create a reservation
+      _reservation =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      # Small delay to ensure allocation is created after reservation
+      Process.sleep(500)
+      # Create allocation
+      {:ok, allocation} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      # Should be up to date since allocation was created after reservation
+      assert SeatyReservation.Allocations.is_up_to_date(allocation)
+    end
+
+    test "is_up_to_date/1 returns false when reservation is updated after allocation" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create a reservation
+      _reservation =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      # Create allocation
+      {:ok, allocation} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      # Ensure allocation is up to date initially
+      assert SeatyReservation.Allocations.is_up_to_date(allocation)
+
+      # Small delay to ensure updated_at is after allocation
+      Process.sleep(500)
+      Process.sleep(500)
+      # Update the reservation (this will change its updated_at)
+{:ok, _} = SeatyReservation.Reservations.update_reservation(_reservation, %{seats: 3})
+
+      # Now allocation should not be up to date
+      refute SeatyReservation.Allocations.is_up_to_date(allocation)
+    end
+  end
 end

@@ -1,8 +1,13 @@
 <.header>
-  Allocation for <%= @event.code %>
+  Allocation for <%= @allocation.event.code %>
+  <:subtitle>
+    Created: <%= format_datetime(@allocation.inserted_at) %>
+    | Up to date: <%= if @is_up_to_date, do: "Yes", else: "No" %>
+    | Fully allocated: <%= if @fully_allocated, do: "Yes", else: "No" %>
+  </:subtitle>
   <:actions>
-    <.link href={~p"/events"}>
-      <.button>Back to Events</.button>
+    <.link href={~p"/events/#{@allocation.event_id}"}>
+      <.button>Back to Event</.button>
     </.link>
   </:actions>
 </.header>

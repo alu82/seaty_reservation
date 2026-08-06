@@ -3,12 +3,15 @@ defmodule SeatyReservation.Allocations do
   The Allocations context.
 
   Handles seat allocation for reservations in an event.
-  Allocations are transient (not stored in database).
+  Allocations are persisted to the database.
   """
 
   alias SeatyReservation.Reservations
+  alias SeatyReservation.Repo
+  alias SeatyReservation.Allocations.Allocation
 
   @distance_range 8
+  import Ecto.Query, warn: false
 
   @doc """
   Allocates seats for all reservations of a specific event.
@@ -18,7 +21,8 @@ defmodule SeatyReservation.Allocations do
     - :unallocated - list of %{code: string, group: integer, seats: integer}
   """
   def allocate_event(event_id) do
-    reservations = Reservations.get_reservations_by_event(event_id)
+    event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
+    reservations = Reservations.get_reservations_by_event(event_id_int)
     allocate_event_from_reservations(reservations)
   end
 
@@ -331,5 +335,67 @@ defmodule SeatyReservation.Allocations do
 
   def create_allocation(attrs) when is_map(attrs) do
     Map.keys(attrs)
+  end
+
+  @doc """
+  Persists an allocation for the given event.
+  Computes the allocation and saves it to the database.
+  """
+  def persist_allocation(event_id) do
+    event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
+    result = allocate_event(event_id_int)
+    %Allocation{event_id: event_id_int, result: result}
+    |> Allocation.changeset(%{})
+    |> Repo.insert()
+  end
+
+  @doc """
+  Returns the list of allocations for an event.
+  """
+  def list_allocations_by_event(event_id) do
+    event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
+    Repo.all(from a in Allocation, where: a.event_id == ^event_id_int, order_by: [desc: a.inserted_at])
+  end
+
+  @doc """
+  Gets a single allocation.
+  Raises `Ecto.NoResultsError` if the Allocation does not exist.
+  """
+  def get_allocation!(id) do
+    Repo.get!(Allocation, id)
+  end
+
+  @doc """
+  Deletes an allocation.
+  """
+  def delete_allocation(%Allocation{} = allocation) do
+    Repo.delete(allocation)
+  end
+
+  @doc """
+  Returns whether an allocation is up to date.
+  An allocation is up to date if its created timestamp is greater than
+  the max updated_at timestamp of the reservations belonging to its event.
+  """
+  def is_up_to_date(%Allocation{} = allocation) do
+    query =
+      from r in SeatyReservation.Reservations.Reservation,
+        where: r.event_id == ^allocation.event_id,
+        select: max(r.updated_at)
+    max_updated_at = Repo.one(query)
+
+    if max_updated_at do
+      allocation.inserted_at >= max_updated_at
+    else
+      true
+    end
+  end
+
+  @doc """
+  Returns whether an allocation is fully allocated (no unallocated reservations).
+  """
+  def fully_allocated?(%Allocation{} = allocation) do
+    result = allocation.result
+    length(result["unallocated"]) == 0
   end
 end

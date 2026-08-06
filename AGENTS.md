@@ -120,9 +120,7 @@ Both creation and updates enforce:
 reserved + requested <= total_seats
 ```
 
-### Allocation
-
-Seat allocation is handled separately by the `Allocations` context. Allocations are transient objects that are not stored in the database.
+Seat allocation is handled by the `Allocations` context. Allocations are persisted to the database and can be created, viewed, and deleted through the event detail page.
 
 ## Development
 

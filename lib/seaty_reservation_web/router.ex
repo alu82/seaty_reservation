@@ -45,6 +45,8 @@ defmodule SeatyReservationWeb.Router do
     patch "/reservations/:id/cancel", ReservationController, :cancel
     delete "/reservations/:id", ReservationController, :delete
     post "/events/:event_id/allocations", AllocationController, :create
+    get "/events/:event_id/allocations/:id", AllocationController, :show
+    delete "/events/:event_id/allocations/:id", AllocationController, :delete
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
