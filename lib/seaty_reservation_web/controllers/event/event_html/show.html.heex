@@ -30,10 +30,18 @@
   <.table id="allocations" rows={@allocations} row_click={&JS.navigate(~p"/events/#{&1.event_id}/allocations/#{&1.id}")}>
     <:col :let={a} label="Date taken"><%= format_datetime(a.inserted_at) %></:col>
     <:col :let={a} label="Up to date">
-      <%= if SeatyReservation.Allocations.is_up_to_date(a), do: "Yes", else: "No" %>
+      <%= if SeatyReservation.Allocations.is_up_to_date(a) do %>
+        <.icon name="hero-check-circle" class="h-5 w-5 text-green-500 inline-block" />
+      <% else %>
+        <.icon name="hero-x-circle" class="h-5 w-5 text-red-500 inline-block" />
+      <% end %>
     </:col>
     <:col :let={a} label="Fully allocated">
-      <%= if SeatyReservation.Allocations.fully_allocated?(a), do: "Yes", else: "No" %>
+      <%= if SeatyReservation.Allocations.fully_allocated?(a) do %>
+        <.icon name="hero-check-circle" class="h-5 w-5 text-green-500 inline-block" />
+      <% else %>
+        <.icon name="hero-x-circle" class="h-5 w-5 text-red-500 inline-block" />
+      <% end %>
     </:col>
     <:action :let={a}>
       <.link href={~p"/events/#{a.event_id}/allocations/#{a.id}"} method="delete" data-confirm="Delete this allocation?">Delete</.link>
