@@ -31,7 +31,11 @@
     <.link navigate={~p"/events/#{event}/edit"}>Edit</.link>
   </:action>
   <:action :let={event}>
-    <.link href={~p"/events/#{event}"} method="delete" data-confirm="Delete this event and all its reservations? This cannot be undone.">
+    <.link
+      href={~p"/events/#{event}"}
+      method="delete"
+      data-confirm="Delete this event and all its reservations? This cannot be undone."
+    >
       Delete
     </.link>
   </:action>

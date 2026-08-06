@@ -49,7 +49,9 @@ defmodule SeatyReservation.Allocations do
       allocate_groups_recursive(groups, code_to_group, active_reservations, location, 0, [])
 
     # Flatten assigned list and sort by row ascending, then seat ascending
-    assigned_list = assigned |> List.flatten()
+    assigned_list =
+      assigned
+      |> List.flatten()
       |> Enum.sort_by(fn a -> {a.row, a.seat} end)
 
     %{assigned: assigned_list, unallocated: not_allocated}
@@ -70,7 +72,9 @@ defmodule SeatyReservation.Allocations do
     Enum.reduce(sorted, {[], nil, []}, fn res, {groups_acc, current_group, current_group_seats} ->
       if res.group == nil || res.group != current_group do
         # Start new group
-        new_groups = if current_group_seats != [], do: groups_acc ++ [current_group_seats], else: groups_acc
+        new_groups =
+          if current_group_seats != [], do: groups_acc ++ [current_group_seats], else: groups_acc
+
         new_current_group_seats = [res]
         {new_groups, res.group, new_current_group_seats}
       else
@@ -88,16 +92,27 @@ defmodule SeatyReservation.Allocations do
     end)
   end
 
-  defp allocate_groups_recursive(groups, code_to_group, reservations, location, idx, assigned_indices) do
+  defp allocate_groups_recursive(
+         groups,
+         code_to_group,
+         reservations,
+         location,
+         idx,
+         assigned_indices
+       ) do
     if idx >= length(groups) do
       # Build not_allocated list from groups that weren't assigned
       not_allocated =
         groups
         |> Enum.with_index()
         |> Enum.filter(fn {_group, i} -> !Enum.member?(assigned_indices, i) end)
-        |> Enum.map(fn {group_seats, _i} ->
-          first_code = hd(group_seats)
-          %{code: first_code, group: code_to_group[first_code], seats: length(group_seats)}
+        |> Enum.flat_map(fn {group_seats, _i} ->
+          group_seats
+          |> Enum.chunk_by(& &1)
+          |> Enum.map(fn codes ->
+            code = hd(codes)
+            %{code: code, group: code_to_group[code], seats: length(codes)}
+          end)
         end)
 
       {[], not_allocated, location}
@@ -106,9 +121,17 @@ defmodule SeatyReservation.Allocations do
 
       if Enum.member?(assigned_indices, idx) do
         # Already assigned, move to next
-        allocate_groups_recursive(groups, code_to_group, reservations, location, idx + 1, assigned_indices)
+        allocate_groups_recursive(
+          groups,
+          code_to_group,
+          reservations,
+          location,
+          idx + 1,
+          assigned_indices
+        )
       else
         row_wishes = get_row_wishes(reservations, MapSet.new(group_seats))
+
         case allocate_group(location, group_seats, row_wishes) do
           {true, new_loc, placed_seats} ->
             # Extract allocation info from placed seats
@@ -119,18 +142,29 @@ defmodule SeatyReservation.Allocations do
               end)
 
             # Allocate and restart from beginning
-            {a, na, l} = allocate_groups_recursive(
+            {a, na, l} =
+              allocate_groups_recursive(
+                groups,
+                code_to_group,
+                reservations,
+                new_loc,
+                # Restart from beginning
+                0,
+                [idx | assigned_indices]
+              )
+
+            {[alloc_info | a], na, l}
+
+          {false, _new_loc, _} ->
+            # Cannot allocate this group yet, try next
+            allocate_groups_recursive(
               groups,
               code_to_group,
               reservations,
-              new_loc,
-              0,  # Restart from beginning
-              [idx | assigned_indices]
+              location,
+              idx + 1,
+              assigned_indices
             )
-            {[alloc_info | a], na, l}
-          {false, _new_loc, _} ->
-            # Cannot allocate this group yet, try next
-            allocate_groups_recursive(groups, code_to_group, reservations, location, idx + 1, assigned_indices)
         end
       end
     end
@@ -148,7 +182,9 @@ defmodule SeatyReservation.Allocations do
 
   defp get_row_wishes(reservations, reservation_codes) do
     reservations
-    |> Enum.filter(fn r -> Enum.member?(reservation_codes, r.code) && r.preferred_row && r.preferred_row != "" end)
+    |> Enum.filter(fn r ->
+      Enum.member?(reservation_codes, r.code) && r.preferred_row && r.preferred_row != ""
+    end)
     |> Enum.flat_map(fn r ->
       case Integer.parse(r.preferred_row) do
         {num, _} -> [num]
@@ -165,7 +201,9 @@ defmodule SeatyReservation.Allocations do
     filtered_options = find_options(valid_options, row_wishes)
 
     case filtered_options do
-      [] -> {false, location, []}
+      [] ->
+        {false, location, []}
+
       _ ->
         sorted_options = Enum.sort_by(filtered_options, &elem(&1, 3))
         best_option = hd(sorted_options)
@@ -184,6 +222,7 @@ defmodule SeatyReservation.Allocations do
               loc
               |> Enum.at(row_nr)
               |> List.replace_at(seat_offset, Enum.at(group_seats, seat_offset - seat_nr))
+
             List.replace_at(loc, row_nr, new_row)
           end)
 
@@ -208,8 +247,10 @@ defmodule SeatyReservation.Allocations do
         {:halt, acc}
       else
         last_nr = seat_nr + number_of_seats - 1
+
         if last_nr < length(row) do
           window = Enum.slice(row, seat_nr..last_nr)
+
           if Enum.all?(window, &(&1 == nil)) do
             distance = get_distance(row_nr, last_nr)
             {:halt, {row_nr, seat_nr, last_nr, distance}}
@@ -225,14 +266,19 @@ defmodule SeatyReservation.Allocations do
 
   defp find_options(options, row_wishes) do
     case options do
-      [] -> []
+      [] ->
+        []
+
       _ ->
         if row_wishes != [] do
           # Filter by row wishes (note: row_wishes are 1-indexed, row_nr is 0-indexed)
           Enum.filter(options, fn {row_nr, _, _, _} -> Enum.member?(row_wishes, row_nr + 1) end)
         else
           min_distance = Enum.min_by(options, &elem(&1, 3)) |> elem(3)
-          Enum.filter(options, fn {_, _, _, distance} -> distance <= min_distance + @distance_range end)
+
+          Enum.filter(options, fn {_, _, _, distance} ->
+            distance <= min_distance + @distance_range
+          end)
         end
     end
   end

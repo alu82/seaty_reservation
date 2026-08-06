@@ -9,7 +9,11 @@ defmodule SeatyReservationWeb.AllocationController do
     result = Allocations.allocate_event(event_id)
     reservations = SeatyReservation.Reservations.get_reservations_by_event(event_id)
     code_to_name = Map.new(reservations, &{&1.code, &1.name})
-    result_with_names = %{assigned: Enum.map(result.assigned, &Map.put(&1, :name, code_to_name[&1.code])), unallocated: result.unallocated}
+
+    result_with_names = %{
+      assigned: Enum.map(result.assigned, &Map.put(&1, :name, code_to_name[&1.code])),
+      unallocated: Enum.map(result.unallocated, &Map.put(&1, :name, code_to_name[&1.code]))
+    }
 
     render(conn, :show, event: event, result: result_with_names)
   end

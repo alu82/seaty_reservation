@@ -1,19 +1,20 @@
 defmodule SeatyReservationWeb.AllocationComponents do
   use Phoenix.Component
+
   @reservation_colors [
-     "bg-red-100",
-     "bg-blue-100",
-     "bg-green-100",
-     "bg-yellow-100",
-     "bg-purple-100",
-     "bg-pink-100",
-     "bg-indigo-100",
-     "bg-teal-100",
-     "bg-orange-100",
-     "bg-cyan-100",
-     "bg-rose-100",
-     "bg-emerald-100"
-   ]
+    "bg-red-100",
+    "bg-blue-100",
+    "bg-green-100",
+    "bg-yellow-100",
+    "bg-purple-100",
+    "bg-pink-100",
+    "bg-indigo-100",
+    "bg-teal-100",
+    "bg-orange-100",
+    "bg-cyan-100",
+    "bg-rose-100",
+    "bg-emerald-100"
+  ]
 
   def color_for_reservation(reservation) when is_map(reservation) do
     if reservation[:group] do
@@ -22,7 +23,9 @@ defmodule SeatyReservationWeb.AllocationComponents do
       color_for_reservation(reservation[:code] || reservation["code"])
     end
   end
-  def color_for_reservation(group_or_code), do: Enum.at(@reservation_colors, rem(abs(:erlang.crc32(to_string(group_or_code))), 12))
+
+  def color_for_reservation(group_or_code),
+    do: Enum.at(@reservation_colors, rem(abs(:erlang.crc32(to_string(group_or_code))), 12))
 
   @doc """
   Renders a row of seats for the allocation visualization.
@@ -39,7 +42,7 @@ defmodule SeatyReservationWeb.AllocationComponents do
       <div class="px-2 py-3">
         <div class="flex items-center justify-center font-semibold text-slate-800 text-center">
           Row <%= @row_number %>
-          <.row_indicator row={@row_number} class="w-20 h-10"/>
+          <.row_indicator row={@row_number} class="w-20 h-10" />
         </div>
       </div>
       <div class="p-1">
@@ -84,16 +87,16 @@ defmodule SeatyReservationWeb.AllocationComponents do
   """
   def seat_card(assigns) do
     ~H"""
-    <%
-      bg_class = if @assigned do
+    <% bg_class =
+      if @assigned do
         color_for_reservation(@assigned)
       else
         "bg-slate-100"
       end
-      text_align_class = if rem(@seat, 2) == 0, do: "text-left", else: "text-right"
-    %>
+
+    text_align_class = if rem(@seat, 2) == 0, do: "text-left", else: "text-right" %>
     <div class={"h-24 rounded-lg border border-slate-300 py-2 px-1 shadow-sm #{bg_class} #{text_align_class}"}>
-      <div class={"text-xs font-semibold uppercase tracking-wide text-slate-600"}>
+      <div class="text-xs font-semibold uppercase tracking-wide text-slate-600">
         <%= @seat %>
       </div>
       <%= if @assigned do %>
@@ -112,17 +115,16 @@ defmodule SeatyReservationWeb.AllocationComponents do
     ~H"""
     <svg class={@class} viewBox="0 0 20 10" xmlns="http://www.w3.org/2000/svg">
       <!-- upper row: 4 bars -->
-      <rect x="6"  y="1" width="1" height="3" fill={row_color(@row, 1)} />
-      <rect x="8"  y="1" width="1" height="3" fill={row_color(@row, 2)} />
+      <rect x="6" y="1" width="1" height="3" fill={row_color(@row, 1)} />
+      <rect x="8" y="1" width="1" height="3" fill={row_color(@row, 2)} />
       <rect x="10" y="1" width="1" height="3" fill={row_color(@row, 3)} />
       <rect x="12" y="1" width="1" height="3" fill={row_color(@row, 4)} />
-
       <!-- lower row: 5 bars -->
-      <rect x="5"  y="5" width="1" height="3" fill={row_color(@row, 5)}/>
-      <rect x="7"  y="5" width="1" height="3" fill={row_color(@row, 6)}/>
-      <rect x="9"  y="5" width="1" height="3" fill={row_color(@row, 7)}/>
-      <rect x="11" y="5" width="1" height="3" fill={row_color(@row, 8)}/>
-      <rect x="13" y="5" width="1" height="3" fill={row_color(@row, 9)}/>
+      <rect x="5" y="5" width="1" height="3" fill={row_color(@row, 5)} />
+      <rect x="7" y="5" width="1" height="3" fill={row_color(@row, 6)} />
+      <rect x="9" y="5" width="1" height="3" fill={row_color(@row, 7)} />
+      <rect x="11" y="5" width="1" height="3" fill={row_color(@row, 8)} />
+      <rect x="13" y="5" width="1" height="3" fill={row_color(@row, 9)} />
     </svg>
     """
   end
@@ -130,5 +132,4 @@ defmodule SeatyReservationWeb.AllocationComponents do
   defp row_color(current_row, row) do
     if current_row == row, do: "#2563eb", else: "#cbd5e1"
   end
-
 end

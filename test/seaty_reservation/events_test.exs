@@ -45,7 +45,13 @@ defmodule SeatyReservation.EventsTest do
 
     test "update_event/2 with valid data updates the event" do
       event = event_fixture()
-      update_attrs = %{active: false, datetime: ~N[2023-09-11 21:17:00], total_seats: 43, code: "UPDATED"}
+
+      update_attrs = %{
+        active: false,
+        datetime: ~N[2023-09-11 21:17:00],
+        total_seats: 43,
+        code: "UPDATED"
+      }
 
       assert {:ok, %Event{} = event} = Events.update_event(event, update_attrs)
       assert event.active == false

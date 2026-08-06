@@ -53,6 +53,7 @@ defmodule SeatyReservation.ReservationsTest do
       assert reservation.prio != nil
       assert reservation.token != nil
     end
+
     test "create_reservation/1 generates code with event code prefix" do
       event = event_fixture(%{code: "ABC"})
 
@@ -65,7 +66,8 @@ defmodule SeatyReservation.ReservationsTest do
 
       assert {:ok, %Reservation{} = reservation} = Reservations.create_reservation(valid_attrs)
       assert String.starts_with?(reservation.code, "ABC")
-      assert String.length(reservation.code) == 6  # ABC + 001 (3 digits)
+      # ABC + 001 (3 digits)
+      assert String.length(reservation.code) == 6
     end
 
     test "create_reservation/1 generates sequential codes" do
@@ -78,6 +80,7 @@ defmodule SeatyReservation.ReservationsTest do
         "seats" => "1",
         "contact" => "contact1@example.com"
       }
+
       assert {:ok, %Reservation{code: code1}} = Reservations.create_reservation(attrs1)
 
       # Create second reservation
@@ -87,6 +90,7 @@ defmodule SeatyReservation.ReservationsTest do
         "seats" => "1",
         "contact" => "contact2@example.com"
       }
+
       assert {:ok, %Reservation{code: code2}} = Reservations.create_reservation(attrs2)
 
       # Verify codes are sequential

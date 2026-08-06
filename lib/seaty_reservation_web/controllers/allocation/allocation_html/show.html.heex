@@ -8,36 +8,47 @@
 </.header>
 
 <div class="min-h-screen p-0 mt-4">
-
   <!-- Rows 1-4: 24 seats each -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
     <%= for row <- 1..4 do %>
-      <.row row_number={row} seat_count={24} assigned={Enum.filter(@result.assigned, &(&1.row == row))} />
+      <.row
+        row_number={row}
+        seat_count={24}
+        assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+      />
     <% end %>
   </div>
-
   <!-- Rows 5-9: 19 seats each -->
   <div class="grid grid-cols-1 md:grid-cols-5 gap-0">
     <%= for row <- 5..9 do %>
-      <.row row_number={row} seat_count={19} assigned={Enum.filter(@result.assigned, &(&1.row == row))} />
+      <.row
+        row_number={row}
+        seat_count={19}
+        assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+      />
     <% end %>
   </div>
-
   <!-- Rows 10-13: 4 seats each -->
   <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
     <%= for row <- 10..13 do %>
-      <.row row_number={row} seat_count={4} assigned={Enum.filter(@result.assigned, &(&1.row == row))} />
+      <.row
+        row_number={row}
+        seat_count={4}
+        assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+      />
     <% end %>
   </div>
 
-  <h2 class="text-2xl font-bold text-slate-800 mb-4">Not Allocated</h2>
-  
   <%= if @result.unallocated != [] do %>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+    <h2 class="text-2xl font-bold text-slate-800 mb-4">Not Allocated</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
       <%= for entry <- @result.unallocated do %>
-        <div class={"rounded-lg border border-amber-300 p-4 shadow-sm #{SeatyReservationWeb.AllocationComponents.color_for_reservation(entry)}"}>
+        <div class={"rounded-lg border border-amber-300 p-2 #{SeatyReservationWeb.AllocationComponents.color_for_reservation(entry)}"}>
           <div class="text-sm font-semibold text-amber-800">
-            Reservation: <%= entry.code %>
+            <%= entry.code %>
+          </div>
+          <div class="text-sm font-semibold text-amber-800">
+            <%= entry.name %>
           </div>
           <div class="text-sm text-amber-700">
             Group: <%= entry.group || "None" %>
