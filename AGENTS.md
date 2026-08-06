@@ -33,6 +33,7 @@ Primary contexts:
 - `Events`
 - `Reservations`
 - `Allocations`
+- `Productions`
 
 ### Web (`lib/seaty_reservation_web/`)
 
@@ -63,6 +64,14 @@ A theatre performance with:
 - `active`
 
 An event has many reservations.
+
+### Production
+
+A grouping for events with:
+
+- `name`
+
+An event belongs to a production (required). Deleting a production cascades to its events and related reservations.
 
 ### Reservation Code
 
@@ -113,7 +122,7 @@ reserved + requested <= total_seats
 
 ### Allocation
 
-Seat allocation is handled separately by the `Allocations` context.
+Seat allocation is handled separately by the `Allocations` context. Allocations are transient objects that are not stored in the database.
 
 ## Development
 
