@@ -203,6 +203,54 @@ defmodule SeatyReservation.AllocationsTest do
     end
   end
 
+  describe "row wishes parsing" do
+    test "handles comma-separated values" do
+      # Create an event with enough seats
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      # Create reservation 1: 20 seats, prio 100, row_wishes "1,4"
+      res1 =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 10,
+          "group" => nil,
+          "prio" => 100,
+          "preferred_row" => "1,4"
+        })
+
+      # Create reservation 2: 3 seats, prio 99, row_wishes "1,4"
+      res2 =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 4,
+          "group" => nil,
+          "prio" => 99,
+          "preferred_row" => "1,4"
+        })
+
+      # Call allocation
+      result = Allocations.allocate_event(event.id)
+
+      # Find allocations for RES1 and RES2
+      res1_allocations = Enum.filter(result.assigned, &(&1.code == res1.code))
+      res2_allocations = Enum.filter(result.assigned, &(&1.code == res2.code))
+
+      # RES1 should be allocated (20 seats should fit in row 1 which has 24 seats)
+      assert length(res1_allocations) == 10
+
+      # RES2 should be allocated (3 seats should fit in row 4 which has 19 seats)
+      assert length(res2_allocations) == 4
+
+      # Check that RES1 is allocated in row 1
+      res1_rows = Enum.map(res1_allocations, & &1.row) |> Enum.uniq()
+      assert res1_rows == [1], "RES1 should be allocated in row 1, got: #{inspect(res1_rows)}"
+
+      # Check that RES2 is allocated in row 4
+      res2_rows = Enum.map(res2_allocations, & &1.row) |> Enum.uniq()
+      assert res2_rows == [4], "RES2 should be allocated in row 4, got: #{inspect(res2_rows)}"
+    end
+  end
+
   describe "allocation persistence" do
     test "persist_allocation/1 creates and persists an allocation" do
       event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})

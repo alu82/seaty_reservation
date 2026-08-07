@@ -190,10 +190,14 @@ defmodule SeatyReservation.Allocations do
       Enum.member?(reservation_codes, r.code) && r.preferred_row && r.preferred_row != ""
     end)
     |> Enum.flat_map(fn r ->
-      case Integer.parse(r.preferred_row) do
-        {num, _} -> [num]
-        :error -> []
-      end
+      String.split(r.preferred_row, ",")
+      |> Enum.map(fn part ->
+        case Integer.parse(String.trim(part)) do
+          {num, _} -> num
+          :error -> nil
+        end
+      end)
+      |> Enum.reject(&(&1 == nil))
     end)
     |> Enum.uniq()
   end
