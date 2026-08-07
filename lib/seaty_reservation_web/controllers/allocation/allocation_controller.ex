@@ -24,26 +24,34 @@ defmodule SeatyReservationWeb.AllocationController do
     code_to_name = Map.new(reservations, &{&1.code, &1.name})
 
     result = allocation.result
+
     result_with_names = %{
-      assigned: Enum.map(result["assigned"], fn entry ->
-        entry
-        |> Map.put(:name, code_to_name[entry["code"]])
-        |> Enum.into(%{}, fn {k, v} ->
-          key = if is_binary(k), do: String.to_atom(k), else: k
-          {key, v}
+      assigned:
+        Enum.map(result["assigned"], fn entry ->
+          entry
+          |> Map.put(:name, code_to_name[entry["code"]])
+          |> Enum.into(%{}, fn {k, v} ->
+            key = if is_binary(k), do: String.to_atom(k), else: k
+            {key, v}
+          end)
+        end),
+      unallocated:
+        Enum.map(result["unallocated"], fn entry ->
+          entry
+          |> Map.put(:name, code_to_name[entry["code"]])
+          |> Enum.into(%{}, fn {k, v} ->
+            key = if is_binary(k), do: String.to_atom(k), else: k
+            {key, v}
+          end)
         end)
-      end),
-      unallocated: Enum.map(result["unallocated"], fn entry ->
-        entry
-        |> Map.put(:name, code_to_name[entry["code"]])
-        |> Enum.into(%{}, fn {k, v} ->
-          key = if is_binary(k), do: String.to_atom(k), else: k
-          {key, v}
-        end)
-      end)
     }
 
-    render(conn, :show, allocation: allocation, is_up_to_date: is_up_to_date, fully_allocated: fully_allocated, result: result_with_names)
+    render(conn, :show,
+      allocation: allocation,
+      is_up_to_date: is_up_to_date,
+      fully_allocated: fully_allocated,
+      result: result_with_names
+    )
   end
 
   def delete(conn, %{"event_id" => event_id, "id" => id}) do

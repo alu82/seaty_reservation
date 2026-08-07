@@ -202,6 +202,7 @@ defmodule SeatyReservation.AllocationsTest do
       assert hd(valid_options2) == {0, 0, 1, 0}
     end
   end
+
   describe "allocation persistence" do
     test "persist_allocation/1 creates and persists an allocation" do
       event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
@@ -325,7 +326,7 @@ defmodule SeatyReservation.AllocationsTest do
       event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
 
       # Create a reservation
-      _reservation =
+      reservation =
         SeatyReservation.ReservationsFixtures.reservation_fixture(%{
           "event_id" => event.id,
           "seats" => 2,
@@ -340,10 +341,10 @@ defmodule SeatyReservation.AllocationsTest do
       assert SeatyReservation.Allocations.is_up_to_date(allocation)
 
       # Small delay to ensure updated_at is after allocation
-      Process.sleep(500)
-      Process.sleep(500)
+      Process.sleep(1000)
+
       # Update the reservation (this will change its updated_at)
-{:ok, _} = SeatyReservation.Reservations.update_reservation(_reservation, %{seats: 3})
+      {:ok, _} = SeatyReservation.Reservations.update_reservation(reservation, %{seats: 3})
 
       # Now allocation should not be up to date
       refute SeatyReservation.Allocations.is_up_to_date(allocation)

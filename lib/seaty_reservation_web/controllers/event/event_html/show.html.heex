@@ -27,7 +27,11 @@
 <h3 class="text-xl font-bold mt-20 mb-0  ">Allocations</h3>
 
 <%= if @allocations != [] do %>
-  <.table id="allocations" rows={@allocations} row_click={&JS.navigate(~p"/events/#{&1.event_id}/allocations/#{&1.id}")}>
+  <.table
+    id="allocations"
+    rows={@allocations}
+    row_click={&JS.navigate(~p"/events/#{&1.event_id}/allocations/#{&1.id}")}
+  >
     <:col :let={a} label="Date taken"><%= format_datetime(a.inserted_at) %></:col>
     <:col :let={a} label="Up to date">
       <%= if SeatyReservation.Allocations.is_up_to_date(a) do %>
@@ -44,7 +48,13 @@
       <% end %>
     </:col>
     <:action :let={a}>
-      <.link href={~p"/events/#{a.event_id}/allocations/#{a.id}"} method="delete" data-confirm="Delete this allocation?">Delete</.link>
+      <.link
+        href={~p"/events/#{a.event_id}/allocations/#{a.id}"}
+        method="delete"
+        data-confirm="Delete this allocation?"
+      >
+        Delete
+      </.link>
     </:action>
   </.table>
 <% else %>

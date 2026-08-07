@@ -344,6 +344,7 @@ defmodule SeatyReservation.Allocations do
   def persist_allocation(event_id) do
     event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
     result = allocate_event(event_id_int)
+
     %Allocation{event_id: event_id_int, result: result}
     |> Allocation.changeset(%{})
     |> Repo.insert()
@@ -354,7 +355,10 @@ defmodule SeatyReservation.Allocations do
   """
   def list_allocations_by_event(event_id) do
     event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
-    Repo.all(from a in Allocation, where: a.event_id == ^event_id_int, order_by: [desc: a.inserted_at])
+
+    Repo.all(
+      from a in Allocation, where: a.event_id == ^event_id_int, order_by: [desc: a.inserted_at]
+    )
   end
 
   @doc """
@@ -382,6 +386,7 @@ defmodule SeatyReservation.Allocations do
       from r in SeatyReservation.Reservations.Reservation,
         where: r.event_id == ^allocation.event_id,
         select: max(r.updated_at)
+
     max_updated_at = Repo.one(query)
 
     if max_updated_at do
