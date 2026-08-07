@@ -161,7 +161,7 @@ Seat Row
 
 ### 3. Plan the change
 
-**Slice 1: Implement allocation algorithm in Elixir**
+#### Slice 1: Implement allocation algorithm in Elixir
 
 - Port Python algorithm from notebook to `SeatyReservation.Allocations`
 - Create `allocate_event/1` function that takes event_id
@@ -170,30 +170,30 @@ Seat Row
 - Group reservations by group field, respecting priority order
 - Return allocation result with assigned seats and unallocated groups
 
-**Slice 2: Update Allocations context**
+#### Slice 2: Update Allocations context
 
 - Replace dummy `create_allocation/1` with actual implementation
 - Add `get_allocation_result/1` to return structured result for display
 - Result format: `%{assigned: [{row, seat, code, group}], unallocated: [{code, group, seats}]}`
 
-**Slice 3: Update AllocationController**
+#### Slice 3: Update AllocationController
 
 - `create/2`: fetch event, get reservations, call allocation, render results directly
 - Remove `show/2` action and route (not needed for transient allocations)
 
-**Slice 4: Create allocation result template**
+#### Slice 4: Create allocation result template
 
 - Create `allocation_html/` directory with `show.html.heex`
 - Display table with columns: row, seat, reservation code, group
 - Display unallocated section at bottom
 - Add back link to event listing
 
-**Slice 5: Update event listing template**
+#### Slice 5: Update event listing template
 
 - Uncomment and fix allocation link between Reservations and Edit
 - Link should POST to `/events/:event_id/allocations`
 
-**Slice 6: Add AllocationHTML view**
+#### Slice 6: Add AllocationHTML view
 
 - Create `allocation_html.ex` to render the show template
 
