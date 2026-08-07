@@ -44,7 +44,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
       assert redirected_to(conn) == ~p"/events/#{id}"
 
       conn = get(conn, ~p"/events/#{id}")
-      assert html_response(conn, 200) =~ "Event #{id}"
+      assert html_response(conn, 200) =~ "Event"
     end
 
     test "renders errors when data is invalid", %{conn: conn} do

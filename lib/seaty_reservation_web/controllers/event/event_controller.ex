@@ -33,7 +33,8 @@ defmodule SeatyReservationWeb.EventController do
 
   def show(conn, %{"id" => id}) do
     event = Events.get_event!(id, preload: [:production])
-    render(conn, :show, event: event)
+    allocations = SeatyReservation.Allocations.list_allocations_by_event(id)
+    render(conn, :show, event: event, allocations: allocations)
   end
 
   def edit(conn, %{"id" => id}) do

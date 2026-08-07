@@ -1,8 +1,22 @@
 <.header>
-  Allocation for <%= @event.code %>
+  Allocation for <%= @allocation.event.code %>
+  <:subtitle>
+    Created: <%= format_datetime(@allocation.inserted_at) %> | Up to date:
+    <%= if @is_up_to_date do %>
+      <.icon name="hero-check-circle" class="h-5 w-5 text-green-500 inline-block" />
+    <% else %>
+      <.icon name="hero-x-circle" class="h-5 w-5 text-red-500 inline-block" />
+    <% end %>
+    | Fully allocated:
+    <%= if @fully_allocated do %>
+      <.icon name="hero-check-circle" class="h-5 w-5 text-green-500 inline-block" />
+    <% else %>
+      <.icon name="hero-x-circle" class="h-5 w-5 text-red-500 inline-block" />
+    <% end %>
+  </:subtitle>
   <:actions>
-    <.link href={~p"/events"}>
-      <.button>Back to Events</.button>
+    <.link href={~p"/events/#{@allocation.event_id}"}>
+      <.button>Back to Event</.button>
     </.link>
   </:actions>
 </.header>

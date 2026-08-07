@@ -18,7 +18,7 @@ defmodule SeatyReservation.Events do
 
   """
   def list_events do
-    Repo.all(from e in Event, preload: [:production])
+    Repo.all(from e in Event, preload: [:production], order_by: e.datetime)
   end
 
   @doc """
