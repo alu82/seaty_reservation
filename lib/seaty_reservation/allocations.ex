@@ -27,10 +27,10 @@ defmodule SeatyReservation.Allocations do
   end
 
   defp allocate_event_from_reservations(reservations) do
-    # Filter out cancelled reservations (prio = 0) and reservations with 0 seats
+    # Filter out reservations with 0 seats
     active_reservations =
       reservations
-      |> Enum.filter(fn r -> r.prio != 0 && r.seats > 0 end)
+      |> Enum.filter(fn r -> r.seats > 0 end)
       |> Enum.sort_by(fn r -> {-r.prio, r.code} end)
 
     # Build room location: 13 rows
@@ -201,15 +201,15 @@ defmodule SeatyReservation.Allocations do
   defp allocate_group(location, group_seats, row_wishes) do
     number_of_seats = length(group_seats)
     options = find_all_options(location, number_of_seats)
-    valid_options = validate_options(location, options)
-    filtered_options = find_options(valid_options, row_wishes)
+    filtered_options = find_options(options, row_wishes)
+    valid_options = validate_options(location, filtered_options)
 
-    case filtered_options do
+    case valid_options do
       [] ->
         {false, location, []}
 
       _ ->
-        sorted_options = Enum.sort_by(filtered_options, &elem(&1, 3))
+        sorted_options = Enum.sort_by(valid_options, &elem(&1, 3))
         best_option = hd(sorted_options)
         {row_nr, seat_nr, last_nr, _distance} = best_option
 
@@ -296,16 +296,16 @@ defmodule SeatyReservation.Allocations do
       row = Enum.at(location, row_nr)
       number_of_seats = last_nr - seat_nr + 1
       free_in_row = length(Enum.filter(row, &(&1 == nil)))
-
-      cond do
-        # We don't want to leave one single seat free in front rows
-        row_nr < 4 and number_of_seats == free_in_row - 1 -> false
-        # Not a diagonal positioning for pairs
-        rem(number_of_seats, 2) == 0 && rem(seat_nr, 2) == 1 -> false
-        # If all seats in row are free, it's valid
-        number_of_seats == free_in_row -> true
-        # Otherwise valid
-        true -> true
+      
+      # Match Python behavior: condition 3 (all seats in row are free) overrides all
+      if number_of_seats == free_in_row do
+        true
+      else
+        cond do
+          row_nr < 4 and number_of_seats == free_in_row - 1 -> false
+          rem(number_of_seats, 2) == 0 && rem(seat_nr, 2) == 1 -> false
+          true -> true
+        end
       end
     end)
   end
