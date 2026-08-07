@@ -53,15 +53,14 @@ defmodule SeatyReservation.AllocationsValidationTest do
 
       # The 4-seat reservation should be assigned (not unallocated)
       assert reservation_4seats.code in assigned_codes,
-        "4-seat reservation should be assigned when it takes all remaining seats in a row"
+             "4-seat reservation should be assigned when it takes all remaining seats in a row"
 
       # Find the assigned seat for TEST_4SEATS
       test_assignment = Enum.find(result.assigned, &(&1.code == reservation_4seats.code))
 
       # It should be assigned in one of rows 5-9
       assert test_assignment.row >= 5 && test_assignment.row <= 9,
-        "4-seat reservation should be allocated in rows 5-9, got row #{test_assignment.row}"
-
+             "4-seat reservation should be allocated in rows 5-9, got row #{test_assignment.row}"
     end
   end
 end

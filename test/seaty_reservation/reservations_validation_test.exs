@@ -183,9 +183,9 @@ defmodule SeatyReservation.ReservationsValidationTest do
       r3 = reservation_fixture(%{"event_id" => event.id})
 
       # Set specific priorities
-      {:ok, _} = Reservations.update_reservation(r1, %{prio: 50})
-      {:ok, _} = Reservations.update_reservation(r2, %{prio: 100})
-      {:ok, _} = Reservations.update_reservation(r3, %{prio: 75})
+      {:ok, _} = Reservations.update_reservation(r1, %{prio: 50, group: 1})
+      {:ok, _} = Reservations.update_reservation(r2, %{prio: 100, group: 2})
+      {:ok, _} = Reservations.update_reservation(r3, %{prio: 75, group: 3})
 
       reservations = Reservations.get_reservations_by_event(event.id)
 

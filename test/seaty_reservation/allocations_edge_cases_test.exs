@@ -41,13 +41,13 @@ defmodule SeatyReservation.AllocationsEdgeCasesTest do
 
       # Create 5 reservations of 19 seats
       for c <- 1..5 do
-        r = create_reservation_for_event(event, %{"seats" => "19", "group" => c})
+        r = create_reservation_for_event(event, %{"seats" => "19", "group" => c + 4})
         {:ok, _} = Reservations.update_reservation(r, %{prio: 95})
       end
 
       # Create 4 reservations of 4 seats
       for c <- 1..4 do
-        r = create_reservation_for_event(event, %{"seats" => "4", "group" => c})
+        r = create_reservation_for_event(event, %{"seats" => "4", "group" => c + 9})
         {:ok, _} = Reservations.update_reservation(r, %{prio: 90})
       end
 

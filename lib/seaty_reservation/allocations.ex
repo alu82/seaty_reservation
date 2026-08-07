@@ -300,7 +300,7 @@ defmodule SeatyReservation.Allocations do
       row = Enum.at(location, row_nr)
       number_of_seats = last_nr - seat_nr + 1
       free_in_row = length(Enum.filter(row, &(&1 == nil)))
-      
+
       # Match Python behavior: condition 3 (all seats in row are free) overrides all
       if number_of_seats == free_in_row do
         true

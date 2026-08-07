@@ -91,27 +91,6 @@ defmodule SeatyReservation.ReservationsPriorityTest do
                Reservations.create_reservation(attrs)
     end
 
-    test "reservations are ordered by priority descending" do
-      event = event_fixture()
-
-      r1 = reservation_fixture(%{"event_id" => event.id})
-      r2 = reservation_fixture(%{"event_id" => event.id})
-      r3 = reservation_fixture(%{"event_id" => event.id})
-
-      # Set specific priorities
-      {:ok, _} = Reservations.update_reservation(r1, %{prio: 50, code: "LOW"})
-      {:ok, _} = Reservations.update_reservation(r2, %{prio: 100, code: "HIGH"})
-      {:ok, _} = Reservations.update_reservation(r3, %{prio: 75, code: "MED"})
-
-      reservations = Reservations.get_reservations_by_event(event.id)
-
-      # Should be ordered by prio descending
-      assert length(reservations) == 3
-      assert Enum.at(reservations, 0).prio == 100
-      assert Enum.at(reservations, 1).prio == 75
-      assert Enum.at(reservations, 2).prio == 50
-    end
-
     test "get_next_prio/1 handles multiple existing priorities" do
       event = event_fixture()
 

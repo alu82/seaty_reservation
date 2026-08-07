@@ -54,18 +54,27 @@ defmodule SeatyReservation.Reservations do
     input_changeset = validate_reservation_input(attrs)
 
     if input_changeset.valid? do
-      event_id = normalize_id(attrs["event_id"] || attrs[:event_id])
+      attrs = ensure_atom_keys(attrs)
+      event_id = normalize_id(attrs[:event_id])
 
       attrs =
         attrs
-        |> Map.put("code", get_next_code(event_id))
-        |> Map.put("prio", get_next_prio(event_id))
-        |> Map.put("token", gen_access_token())
-        |> Map.put_new("internal_comment", "")
+        |> Map.put(:code, get_next_code(event_id))
+        |> Map.put(:prio, get_next_prio(event_id))
+        |> Map.put(:token, gen_access_token())
+        |> Map.put_new(:internal_comment, "")
 
-      %Reservation{}
-      |> Reservation.changeset(attrs)
-      |> Repo.insert()
+      case Repo.insert(%Reservation{} |> Reservation.changeset(attrs)) do
+        {:ok, reservation} ->
+          if reservation.seats != 0 and reservation.group do
+            update_group_members_prio(reservation)
+          end
+
+          {:ok, reservation}
+
+        {:error, changeset} ->
+          {:error, changeset}
+      end
     else
       {:error, input_changeset}
     end
@@ -84,9 +93,22 @@ defmodule SeatyReservation.Reservations do
 
   """
   def update_reservation(%Reservation{} = reservation, attrs) do
+    attrs = ensure_atom_keys(attrs)
+
     reservation
     |> Reservation.changeset(attrs)
     |> Repo.update()
+    |> case do
+      {:ok, updated_reservation} ->
+        if updated_reservation.seats != 0 and updated_reservation.group do
+          update_group_members_prio(updated_reservation)
+        end
+
+        {:ok, updated_reservation}
+
+      {:error, changeset} ->
+        {:error, changeset}
+    end
   end
 
   @doc """
@@ -160,6 +182,25 @@ defmodule SeatyReservation.Reservations do
     Repo.one(query) - 5
   end
 
+  defp update_group_members_prio(%Reservation{} = reservation) do
+    if reservation.group do
+      query =
+        from r in Reservation,
+          where:
+            r.event_id == ^reservation.event_id and
+              r.group == ^reservation.group and
+              r.id != ^reservation.id and
+              r.seats != 0
+
+      Repo.all(query)
+      |> Enum.each(fn other_reservation ->
+        other_reservation
+        |> Reservation.changeset(%{prio: reservation.prio})
+        |> Repo.update()
+      end)
+    end
+  end
+
   defp gen_access_token() do
     :crypto.strong_rand_bytes(32)
     |> Base.encode64()
@@ -214,5 +255,15 @@ defmodule SeatyReservation.Reservations do
 
   defp normalize_id(nil), do: nil
   defp normalize_id(id) when is_integer(id), do: id
-  defp normalize_id(id) when is_binary(id), do: String.to_integer(id)
+
+  defp normalize_id(id) when is_binary(id) do
+    if id == "", do: nil, else: String.to_integer(id)
+  end
+
+  defp ensure_atom_keys(attrs) do
+    Map.new(attrs, fn
+      {k, v} when is_binary(k) -> {String.to_atom(k), v}
+      {k, v} -> {k, v}
+    end)
+  end
 end
