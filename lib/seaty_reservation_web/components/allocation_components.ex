@@ -129,7 +129,56 @@ defmodule SeatyReservationWeb.AllocationComponents do
     """
   end
 
+  @doc """
+  Renders a ticket card for printing.
+
+  ## Attributes
+
+  * production_name - Name of the production
+  * event_date - Date of the event (naive datetime)
+  * code - Reservation code
+  * row - Row number
+  * seat - Seat number
+  """
+  def ticket_card(assigns) do
+    ~H"""
+    <div class="ticket-card border border-slate-300 rounded-lg p-3 bg-white shadow-sm print:border print:border-gray-400">
+      <div class="flex flex-col items-center gap-2">
+        <img src="/images/logo_icon.svg" alt="Logo" class="h-12 object-contain brightness-0" />
+        <div class="text-center">
+          <h3 class="font-bold text-lg text-slate-800"><%= @production_name %></h3>
+          <div class="text-base text-slate-600 mt-1">
+            <%= format_date(@event_date) %> | <%= format_time(@event_date) %>
+          </div>
+          <div class="mt-2">
+            <div class="text-base font-medium text-slate-600">
+              <%= @code %>
+            </div>
+            <div class="text-base text-slate-600">
+              Reihe <%= @row %> | Platz <%= @seat %>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    """
+  end
+
   defp row_color(current_row, row) do
     if current_row == row, do: "#2563eb", else: "#cbd5e1"
   end
+
+  @weekday_abbrs ["MO", "DI", "MI", "DO", "FR", "SA", "SO"]
+
+  defp format_date(%NaiveDateTime{year: year, month: month, day: day}) do
+    dt = Date.new!(year, month, day)
+    wday = Date.day_of_week(dt) - 1
+    "#{Enum.at(@weekday_abbrs, wday)} | #{pad(day)}.#{pad(month)}.#{year}"
+  end
+  defp format_date(_), do: ""
+
+  defp format_time(%NaiveDateTime{hour: hour, minute: minute}), do: "#{pad(hour)}:#{pad(minute)}"
+  defp format_time(_), do: ""
+
+  defp pad(n), do: String.pad_leading(to_string(n), 2, "0")
 end

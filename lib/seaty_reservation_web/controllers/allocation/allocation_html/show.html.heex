@@ -21,57 +21,172 @@
   </:actions>
 </.header>
 
-<div class="min-h-screen p-0 mt-4">
-  <!-- Rows 1-4: 24 seats each -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
-    <%= for row <- 1..4 do %>
-      <.row
-        row_number={row}
-        seat_count={24}
-        assigned={Enum.filter(@result.assigned, &(&1.row == row))}
-      />
-    <% end %>
-  </div>
-  <!-- Rows 5-9: 19 seats each -->
-  <div class="grid grid-cols-1 md:grid-cols-5 gap-0">
-    <%= for row <- 5..9 do %>
-      <.row
-        row_number={row}
-        seat_count={19}
-        assigned={Enum.filter(@result.assigned, &(&1.row == row))}
-      />
-    <% end %>
-  </div>
-  <!-- Rows 10-13: 4 seats each -->
-  <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
-    <%= for row <- 10..13 do %>
-      <.row
-        row_number={row}
-        seat_count={4}
-        assigned={Enum.filter(@result.assigned, &(&1.row == row))}
-      />
-    <% end %>
-  </div>
+<div class="border-b border-gray-200 mb-4">
+  <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+    <button type="button" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-blue-500 text-blue-600" onclick="showTab(0, 2)" id="tab-0">Allocation Details</button>
+    <button type="button" class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300" onclick="showTab(1, 2)" id="tab-1">Tickets</button>
+  </nav>
+</div>
 
-  <%= if @result.unallocated != [] do %>
-    <h2 class="text-2xl font-bold text-slate-800 mb-4">Not Allocated</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
-      <%= for entry <- @result.unallocated do %>
-        <div class={"rounded-lg border border-amber-300 p-2 #{SeatyReservationWeb.AllocationComponents.color_for_reservation(entry)}"}>
-          <div class="text-sm font-semibold text-amber-800">
-            <%= entry.code %>
-          </div>
-          <div class="text-sm font-semibold text-amber-800">
-            <%= entry.name %>
-          </div>
-          <div class="text-sm text-amber-700">
-            Group: <%= entry.group || "None" %>
-          </div>
-          <div class="text-sm text-amber-700">
-            Seats: <%= entry.seats %>
-          </div>
-        </div>
+<div id="tab-pane-0" class="block">
+  <div class="min-h-screen p-0 mt-4">
+    <!-- Rows 1-4: 24 seats each -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
+      <%= for row <- 1..4 do %>
+        <.row
+          row_number={row}
+          seat_count={24}
+          assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+        />
       <% end %>
     </div>
-  <% end %>
+    <!-- Rows 5-9: 19 seats each -->
+    <div class="grid grid-cols-1 md:grid-cols-5 gap-0">
+      <%= for row <- 5..9 do %>
+        <.row
+          row_number={row}
+          seat_count={19}
+          assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+        />
+      <% end %>
+    </div>
+    <!-- Rows 10-13: 4 seats each -->
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
+      <%= for row <- 10..13 do %>
+        <.row
+          row_number={row}
+          seat_count={4}
+          assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+        />
+      <% end %>
+    </div>
+
+    <%= if @result.unallocated != [] do %>
+      <h2 class="text-2xl font-bold text-slate-800 mb-4">Not Allocated</h2>
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-2">
+        <%= for entry <- @result.unallocated do %>
+          <div class={"rounded-lg border border-amber-300 p-2 #{SeatyReservationWeb.AllocationComponents.color_for_reservation(entry)}"}>
+            <div class="text-sm font-semibold text-amber-800">
+              <%= entry.code %>
+            </div>
+            <div class="text-sm font-semibold text-amber-800">
+              <%= entry.name %>
+            </div>
+            <div class="text-sm text-amber-700">
+              Group: <%= entry.group || "None" %>
+            </div>
+            <div class="text-sm text-amber-700">
+              Seats: <%= entry.seats %>
+            </div>
+          </div>
+        <% end %>
+      </div>
+    <% end %>
+  </div>
 </div>
+
+<div id="tab-pane-1" class="hidden">
+  <div class="min-h-screen p-0 mt-4">
+    <div class="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <%= for entry <- Enum.sort_by(@result.assigned, & &1.code) do %>
+        <.ticket_card
+          production_name={@production_name}
+          event_date={@event_date}
+          code={entry.code}
+          row={entry.row}
+          seat={entry.seat}
+        />
+      <% end %>
+    </div>
+  </div>
+  
+  <!-- Print-only container: 2 columns x 4 rows = 8 tickets per page -->
+  <div class="print-container" style="--rows: 5; --row-height:57mm">
+    <%= for entry <- Enum.sort_by(@result.assigned, & &1.code) do %>
+      <.ticket_card
+        production_name={@production_name}
+        event_date={@event_date}
+        code={entry.code}
+        row={entry.row}
+        seat={entry.seat}
+      />
+    <% end %>
+  </div>
+</div>
+
+<style>
+  .print-container { display: none; }
+  
+  @media print {
+    @page {
+      size: A4 portrait;
+      margin: 0mm;
+    }
+
+    body * {
+      visibility: hidden !important;
+    }
+
+    /* Show only tickets */
+    .print-container,
+    .print-container * {
+      visibility: visible !important;
+    }
+
+    .print-container {
+      display: grid !important;
+
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+
+      width: 200mm !important;
+      height: 287mm !important;
+
+      margin: 0 !important;
+      padding: 0 !important;
+
+      grid-template-columns: 100mm 100mm;
+      grid-template-rows: repeat(var(--rows), var(--row-height));
+
+      gap: 0;
+    }
+
+    .print-container .ticket-card {
+      width: 100% !important;
+      height: var(--row-height) !important;
+
+      box-sizing: border-box;
+
+      border: none !important;
+      border-radius: 0 !important;
+      box-shadow: none !important;
+
+      overflow: hidden;
+    }
+    
+    /* 1st and 2nd ticket selectors */
+    .print-container .ticket-card:nth-child(2n+1) {
+      border-left: 1px solid black !important;
+      border-top: 1px solid black !important;
+      border-right: 1px solid black !important;
+     }
+    .print-container .ticket-card:nth-child(2n) {
+      border-top: 1px solid black !important;
+      border-right: 1px solid black !important;
+     }
+  }
+</style>
+
+<script>
+function showTab(tabIndex, tabCount) {
+  for (let i = 0; i < tabCount; i++) {
+    document.getElementById('tab-' + i).className = 
+      'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300';
+    document.getElementById('tab-pane-' + i).className = 'hidden';
+  }
+  document.getElementById('tab-' + tabIndex).className = 
+    'whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-blue-500 text-blue-600';
+  document.getElementById('tab-pane-' + tabIndex).className = 'block';
+}
+</script>
