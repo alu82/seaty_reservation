@@ -17,7 +17,7 @@ defmodule SeatyReservationWeb.AllocationController do
   end
 
   def show(conn, %{"event_id" => _event_id, "id" => id}) do
-    allocation = Allocations.get_allocation!(id) |> SeatyReservation.Repo.preload(:event)
+    allocation = Allocations.get_allocation!(id) |> SeatyReservation.Repo.preload([:event, event: :production])
     is_up_to_date = Allocations.is_up_to_date(allocation)
     fully_allocated = Allocations.fully_allocated?(allocation)
     reservations = SeatyReservation.Reservations.get_reservations_by_event(allocation.event_id)
@@ -50,7 +50,9 @@ defmodule SeatyReservationWeb.AllocationController do
       allocation: allocation,
       is_up_to_date: is_up_to_date,
       fully_allocated: fully_allocated,
-      result: result_with_names
+      result: result_with_names,
+      production_name: allocation.event.production.name,
+      event_date: allocation.event.datetime
     )
   end
 
