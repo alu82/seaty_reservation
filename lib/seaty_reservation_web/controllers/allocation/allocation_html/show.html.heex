@@ -1,5 +1,5 @@
 <.header>
-  Allocation for <%= @allocation.event.code %>
+  <%= @production_name %> | <%= Calendar.strftime(@event_date, "%d.%m.%Y") %>
   <:subtitle>
     Created: <%= format_datetime(@allocation.inserted_at) %> | Up to date:
     <%= if @is_up_to_date do %>
