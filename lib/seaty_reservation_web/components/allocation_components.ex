@@ -181,4 +181,42 @@ defmodule SeatyReservationWeb.AllocationComponents do
   defp format_time(_), do: ""
 
   defp pad(n), do: String.pad_leading(to_string(n), 2, "0")
+
+  @doc """
+  Renders a reservations table for the allocation details page.
+
+  ## Attributes
+
+  * assigned - List of assigned seats (maps with :code, :name, :seats, :row, :seat)
+  """
+  def reservations_table(assigns) do
+    ~H"""
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reservation Code</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seats</th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <%= for {display_name, code, count} <- @assigned
+               |> Enum.group_by(fn e -> {e.name, e.code} end)
+               |> Enum.flat_map(fn { {name, code}, entries} ->
+                 name_parts = String.split(name) |> Enum.filter(&(String.length(&1) > 3))
+                 [{name, code, length(entries)} | Enum.map(name_parts, &{&1, code, length(entries)})]
+               end)
+               |> Enum.sort_by(fn {name, _code, _count} -> name end) do %>
+            <tr>
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= display_name %></td>
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= code %></td>
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= count %></td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+    """
+  end
 end
