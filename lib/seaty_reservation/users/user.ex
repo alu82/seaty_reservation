@@ -43,6 +43,26 @@ defmodule SeatyReservation.Users.User do
     |> validate_password(opts)
   end
 
+  def admin_changeset(user, attrs, opts \\ []) do
+    user
+    |> cast(attrs, [:email, :password, :role])
+    |> validate_email(opts)
+    |> maybe_validate_unique_email(opts)
+    |> validate_password_if_present(opts)
+  end
+
+  defp validate_password_if_present(changeset, opts) do
+    password = get_change(changeset, :password)
+    
+    if password do
+      changeset
+      |> validate_length(:password, min: 12, max: 72)
+      |> maybe_hash_password(opts)
+    else
+      changeset
+    end
+  end
+
   defp validate_email(changeset, opts) do
     changeset
     |> validate_required([:email])

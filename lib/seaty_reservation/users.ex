@@ -60,6 +60,32 @@ defmodule SeatyReservation.Users do
   """
   def get_user!(id), do: Repo.get!(User, id)
 
+
+  def list_users do
+    Repo.all(User)
+  end
+  def get_user(id), do: Repo.get(User, id)
+
+  def create_user(attrs) do
+    %User{}
+    |> User.admin_changeset(attrs)
+    |> Repo.insert()
+  end
+
+  def update_user(%User{} = user, attrs) do
+    user
+    |> User.admin_changeset(attrs)
+    |> Repo.update()
+  end
+
+  def delete_user(%User{} = user) do
+    Repo.delete(user)
+  end
+
+  def change_user(%User{} = user, attrs \\ %{}) do
+    User.admin_changeset(user, attrs, hash_password: false, validate_email: false)
+  end
+
   ## User registration
 
   @doc """

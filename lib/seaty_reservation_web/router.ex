@@ -101,4 +101,11 @@ defmodule SeatyReservationWeb.Router do
     get "/users/confirm/:token", UserConfirmationController, :edit
     post "/users/confirm/:token", UserConfirmationController, :update
   end
+
+  scope "/", SeatyReservationWeb do
+    pipe_through [:browser, :admin]
+
+    resources "/users", UserController
+  end
+
 end

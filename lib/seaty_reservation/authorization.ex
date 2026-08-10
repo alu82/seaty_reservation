@@ -66,7 +66,7 @@ defmodule SeatyReservation.Authorization do
   def update?(authorization, resource), do: allowed?(authorization, :update, resource)
   def delete?(authorization, resource), do: allowed?(authorization, :delete, resource)
 
-  defp allowed?(authorization, action, resource) do
+  def allowed?(authorization, action, resource) do
     authorization
     |> Map.get(action)
     |> Map.get(resource, false)
