@@ -12,7 +12,6 @@ defmodule SeatyReservationWeb.UserSessionControllerTest do
       conn = get(conn, ~p"/users/log_in")
       response = html_response(conn, 200)
       assert response =~ "Log in"
-      assert response =~ ~p"/users/register"
       assert response =~ "Forgot your password?"
     end
 

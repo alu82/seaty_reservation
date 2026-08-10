@@ -1,13 +1,6 @@
 <div class="mx-auto max-w-sm">
   <.header class="text-center">
-    Register for an account
-    <:subtitle>
-      Already registered?
-      <.link navigate={~p"/users/log_in"} class="font-semibold text-brand hover:underline">
-        Log in
-      </.link>
-      to your account now.
-    </:subtitle>
+    Register
   </.header>
 
   <.simple_form :let={f} for={@changeset} action={~p"/users/register"}>
