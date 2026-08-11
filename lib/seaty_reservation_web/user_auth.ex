@@ -213,6 +213,39 @@ defmodule SeatyReservationWeb.UserAuth do
     end
   end
 
+  @doc """
+  Checks if the current user is authorized for the given action and resource.
+  Requires :authorization metadata in the route with {action, resource} tuple.
+  Fails closed - denies access if metadata is missing.
+  """
+  def check_authorization(conn, _opts) do
+    case conn.private[:authorization] do
+      {action, resource} ->
+        authorize(conn, action, resource)
+
+      nil ->
+        forbidden(conn)
+    end
+  end
+
+  defp authorize(conn, action, resource) do
+    auth =
+      SeatyReservation.Authorization.can(conn.assigns.current_user.role)
+
+    if SeatyReservation.Authorization.allowed?(auth, action, resource) do
+      conn
+    else
+      forbidden(conn)
+    end
+  end
+
+  defp forbidden(conn) do
+    conn
+    |> put_flash(:error, "You are not authorized to do this.")
+    |> redirect(to: ~p"/")
+    |> halt()
+  end
+
   defp put_token_in_session(conn, token) do
     conn
     |> put_session(:user_token, token)

@@ -11,7 +11,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
     test "lists all events", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/events")
 
       assert html_response(conn, 200) =~ "Listing Events"
@@ -22,7 +22,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
     test "renders form", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/events/new")
 
       assert html_response(conn, 200) =~ "New Event"
@@ -37,7 +37,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> post(~p"/events", event: create_attrs)
 
       assert %{id: id} = redirected_params(conn)
@@ -50,7 +50,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> post(~p"/events", event: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "New Event"
@@ -63,7 +63,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
     test "renders form for editing chosen event", %{conn: conn, event: event} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/events/#{event}/edit")
 
       assert html_response(conn, 200) =~ "Edit Event"
@@ -78,7 +78,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/events/#{event}", event: update_attrs)
 
       assert redirected_to(conn) == ~p"/events/#{event}"
@@ -90,7 +90,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
     test "renders errors when data is invalid", %{conn: conn, event: event} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/events/#{event}", event: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "Edit Event"
@@ -103,7 +103,7 @@ defmodule SeatyReservationWeb.EventControllerTest do
     test "deletes chosen event", %{conn: conn, event: event} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> delete(~p"/events/#{event}")
 
       assert redirected_to(conn) == ~p"/events"
@@ -117,19 +117,6 @@ defmodule SeatyReservationWeb.EventControllerTest do
   defp create_event(_) do
     event = event_fixture()
     %{event: event}
-  end
-
-  defp auth_conn(conn) do
-    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
-
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-
-    put_req_header(
-      conn,
-      "authorization",
-      "Basic " <> Base.encode64("#{username}:#{password}")
-    )
   end
 
   defp create_production(_) do

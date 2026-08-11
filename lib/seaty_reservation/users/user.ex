@@ -53,7 +53,7 @@ defmodule SeatyReservation.Users.User do
 
   defp validate_password_if_present(changeset, opts) do
     password = get_change(changeset, :password)
-    
+
     if password do
       changeset
       |> validate_length(:password, min: 12, max: 72)

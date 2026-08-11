@@ -7,6 +7,5 @@ defmodule SeatyReservation.Repo.Migrations.AddRoleToUsers do
     end
 
     create index(:users, [:role])
-
   end
 end

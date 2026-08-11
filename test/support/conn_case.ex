@@ -61,4 +61,34 @@ defmodule SeatyReservationWeb.ConnCase do
     |> Phoenix.ConnTest.init_test_session(%{})
     |> Plug.Conn.put_session(:user_token, token)
   end
+
+  @doc """
+  Logs in an admin user for testing.
+
+  It returns an updated conn with an admin user session.
+  """
+  def admin_conn(conn) do
+    user = SeatyReservation.UsersFixtures.user_fixture(%{role: :admin})
+    log_in_user(conn, user)
+  end
+
+  @doc """
+  Logs in an editor user for testing.
+
+  It returns an updated conn with an editor user session.
+  """
+  def editor_conn(conn) do
+    user = SeatyReservation.UsersFixtures.user_fixture(%{role: :editor})
+    log_in_user(conn, user)
+  end
+
+  @doc """
+  Logs in a reader user for testing.
+
+  It returns an updated conn with a reader user session.
+  """
+  def reader_conn(conn) do
+    user = SeatyReservation.UsersFixtures.user_fixture(%{role: :reader})
+    log_in_user(conn, user)
+  end
 end

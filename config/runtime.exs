@@ -20,11 +20,6 @@ if System.get_env("PHX_SERVER") do
   config :seaty_reservation, SeatyReservationWeb.Endpoint, server: true
 end
 
-# basic auth setup
-config :seaty_reservation, :basic_auth,
-  username: System.get_env("SY_BASIC_AUTH_USER") || "seaty",
-  password: System.get_env("SY_BASIC_AUTH_PASSWORD") || "password"
-
 if config_env() == :prod do
   config :seaty_reservation, SeatyReservation.Mailer,
     adapter: Swoosh.Adapters.SMTP,

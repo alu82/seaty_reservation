@@ -3,6 +3,12 @@ defmodule SeatyReservationWeb.Router do
 
   import SeatyReservationWeb.UserAuth
 
+  alias SeatyReservation.Allocations.Allocation
+  alias SeatyReservation.Events.Event
+  alias SeatyReservation.Productions.Production
+  alias SeatyReservation.Reservations.Reservation
+  alias SeatyReservation.Users.User
+
   pipeline :browser do
     plug :accepts, ["html"]
     plug :fetch_session
@@ -14,16 +20,13 @@ defmodule SeatyReservationWeb.Router do
     plug :fetch_current_user
   end
 
-  pipeline :admin do
-    plug :require_basic_auth
-    plug :put_layout, html: {SeatyReservationWeb.Layouts, :admin}
+  pipeline :authorize do
+    plug :require_authenticated_user
+    plug :check_authorization
   end
 
-  defp require_basic_auth(conn, _opts) do
-    Plug.BasicAuth.basic_auth(conn,
-      username: System.fetch_env!("SY_BASIC_AUTH_USER"),
-      password: System.fetch_env!("SY_BASIC_AUTH_PASSWORD")
-    )
+  pipeline :authenticated do
+    plug :require_authenticated_user
   end
 
   scope "/", SeatyReservationWeb do
@@ -36,20 +39,145 @@ defmodule SeatyReservationWeb.Router do
   end
 
   scope "/", SeatyReservationWeb do
-    pipe_through [:browser, :admin]
+    pipe_through [:browser, :authenticated]
 
-    resources "/events", EventController
-    resources "/productions", ProductionController
-    get "/reservations", ReservationController, :index
-    get "/reservations_csv", ReservationController, :index_csv
-    get "/reservations/:id/edit", ReservationController, :edit
-    patch "/reservations/:id", ReservationController, :update
-    put "/reservations/:id", ReservationController, :update
-    patch "/reservations/:id/cancel", ReservationController, :cancel
-    delete "/reservations/:id", ReservationController, :delete
-    post "/events/:event_id/allocations", AllocationController, :create
-    get "/events/:event_id/allocations/:id", AllocationController, :show
-    delete "/events/:event_id/allocations/:id", AllocationController, :delete
+    get "/users/settings", UserSettingsController, :edit
+    put "/users/settings", UserSettingsController, :update
+    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
+  end
+
+  scope "/", SeatyReservationWeb do
+    pipe_through [:browser, :redirect_if_user_is_authenticated]
+
+    get "/users/register", UserRegistrationController, :new
+    post "/users/register", UserRegistrationController, :create
+    get "/users/log_in", UserSessionController, :new
+    post "/users/log_in", UserSessionController, :create
+    get "/users/reset_password", UserResetPasswordController, :new
+    post "/users/reset_password", UserResetPasswordController, :create
+    get "/users/reset_password/:token", UserResetPasswordController, :edit
+    put "/users/reset_password/:token", UserResetPasswordController, :update
+  end
+
+  scope "/", SeatyReservationWeb do
+    pipe_through [:browser]
+
+    delete "/users/log_out", UserSessionController, :delete
+    get "/users/confirm", UserConfirmationController, :new
+    post "/users/confirm", UserConfirmationController, :create
+    get "/users/confirm/:token", UserConfirmationController, :edit
+    post "/users/confirm/:token", UserConfirmationController, :update
+  end
+
+  scope "/", SeatyReservationWeb do
+    pipe_through [:browser, :authorize]
+
+    # Events
+    get "/events", EventController, :index,
+      private: %{authorization: {:index, Event}}
+
+    get "/events/new", EventController, :new,
+      private: %{authorization: {:create, Event}}
+
+    post "/events", EventController, :create,
+      private: %{authorization: {:create, Event}}
+
+    get "/events/:id", EventController, :show,
+      private: %{authorization: {:show, Event}}
+
+    get "/events/:id/edit", EventController, :edit,
+      private: %{authorization: {:update, Event}}
+
+    patch "/events/:id", EventController, :update,
+      private: %{authorization: {:update, Event}}
+
+    put "/events/:id", EventController, :update,
+      private: %{authorization: {:update, Event}}
+
+    delete "/events/:id", EventController, :delete,
+      private: %{authorization: {:delete, Event}}
+
+    # Productions
+    get "/productions", ProductionController, :index,
+      private: %{authorization: {:index, Production}}
+
+    get "/productions/new", ProductionController, :new,
+      private: %{authorization: {:create, Production}}
+
+    post "/productions", ProductionController, :create,
+      private: %{authorization: {:create, Production}}
+
+    get "/productions/:id", ProductionController, :show,
+      private: %{authorization: {:show, Production}}
+
+    get "/productions/:id/edit", ProductionController, :edit,
+      private: %{authorization: {:update, Production}}
+
+    patch "/productions/:id", ProductionController, :update,
+      private: %{authorization: {:update, Production}}
+
+    put "/productions/:id", ProductionController, :update,
+      private: %{authorization: {:update, Production}}
+
+    delete "/productions/:id", ProductionController, :delete,
+      private: %{authorization: {:delete, Production}}
+
+    # Reservations
+    get "/reservations", ReservationController, :index,
+      private: %{authorization: {:index, Reservation}}
+
+    get "/reservations_csv", ReservationController, :index_csv,
+      private: %{authorization: {:index, Reservation}}
+
+    get "/reservations/:id/edit", ReservationController, :edit,
+      private: %{authorization: {:update, Reservation}}
+
+    patch "/reservations/:id", ReservationController, :update,
+      private: %{authorization: {:update, Reservation}}
+
+    put "/reservations/:id", ReservationController, :update,
+      private: %{authorization: {:update, Reservation}}
+
+    patch "/reservations/:id/cancel", ReservationController, :cancel,
+      private: %{authorization: {:update, Reservation}}
+
+    delete "/reservations/:id", ReservationController, :delete,
+      private: %{authorization: {:delete, Reservation}}
+
+    # Allocations
+    post "/events/:event_id/allocations", AllocationController, :create,
+      private: %{authorization: {:create, Allocation}}
+
+    get "/events/:event_id/allocations/:id", AllocationController, :show,
+      private: %{authorization: {:show, Allocation}}
+
+    delete "/events/:event_id/allocations/:id", AllocationController, :delete,
+      private: %{authorization: {:delete, Allocation}}
+
+    # Users
+    get "/users", UserController, :index,
+      private: %{authorization: {:index, User}}
+
+    get "/users/new", UserController, :new,
+      private: %{authorization: {:create, User}}
+
+    post "/users", UserController, :create,
+      private: %{authorization: {:create, User}}
+
+    get "/users/:id", UserController, :show,
+      private: %{authorization: {:show, User}}
+
+    get "/users/:id/edit", UserController, :edit,
+      private: %{authorization: {:update, User}}
+
+    patch "/users/:id", UserController, :update,
+      private: %{authorization: {:update, User}}
+
+    put "/users/:id", UserController, :update,
+      private: %{authorization: {:update, User}}
+
+    delete "/users/:id", UserController, :delete,
+      private: %{authorization: {:delete, User}}
   end
 
   # Enable LiveDashboard and Swoosh mailbox preview in development
@@ -68,44 +196,4 @@ defmodule SeatyReservationWeb.Router do
       forward "/mailbox", Plug.Swoosh.MailboxPreview
     end
   end
-
-  ## Authentication routes
-
-  scope "/", SeatyReservationWeb do
-    pipe_through [:browser, :redirect_if_user_is_authenticated]
-
-    get "/users/register", UserRegistrationController, :new
-    post "/users/register", UserRegistrationController, :create
-    get "/users/log_in", UserSessionController, :new
-    post "/users/log_in", UserSessionController, :create
-    get "/users/reset_password", UserResetPasswordController, :new
-    post "/users/reset_password", UserResetPasswordController, :create
-    get "/users/reset_password/:token", UserResetPasswordController, :edit
-    put "/users/reset_password/:token", UserResetPasswordController, :update
-  end
-
-  scope "/", SeatyReservationWeb do
-    pipe_through [:browser, :require_authenticated_user]
-
-    get "/users/settings", UserSettingsController, :edit
-    put "/users/settings", UserSettingsController, :update
-    get "/users/settings/confirm_email/:token", UserSettingsController, :confirm_email
-  end
-
-  scope "/", SeatyReservationWeb do
-    pipe_through [:browser]
-
-    delete "/users/log_out", UserSessionController, :delete
-    get "/users/confirm", UserConfirmationController, :new
-    post "/users/confirm", UserConfirmationController, :create
-    get "/users/confirm/:token", UserConfirmationController, :edit
-    post "/users/confirm/:token", UserConfirmationController, :update
-  end
-
-  scope "/", SeatyReservationWeb do
-    pipe_through [:browser, :admin]
-
-    resources "/users", UserController
-  end
-
 end

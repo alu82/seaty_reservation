@@ -41,7 +41,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     test "lists all reservations", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/reservations")
 
       assert html_response(conn, 200) =~ "Listing Reservations"
@@ -90,7 +90,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     test "renders form for editing chosen reservation", %{conn: conn, reservation: reservation} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/reservations/#{reservation}/edit")
 
       assert html_response(conn, 200) =~ "Edit Reservation"
@@ -107,7 +107,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/reservations/#{reservation}", reservation: attrs)
 
       assert redirected_to(conn) == ~p"/reservations/?event_id=#{reservation.event_id}"
@@ -123,7 +123,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/reservations/#{reservation}", reservation: attrs)
 
       assert html_response(conn, 200) =~ "Edit Reservation"
@@ -136,7 +136,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     test "deletes chosen reservation", %{conn: conn, reservation: reservation} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> delete(~p"/reservations/#{reservation}")
 
       assert redirected_to(conn) == ~p"/reservations"
@@ -156,7 +156,7 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
     } do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> patch(~p"/reservations/#{reservation}/cancel")
 
       assert redirected_to(conn) == ~p"/reservations/#{reservation}/edit"
@@ -174,18 +174,5 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   defp create_reservation(_) do
     reservation = reservation_fixture()
     %{reservation: reservation}
-  end
-
-  defp auth_conn(conn) do
-    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
-
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-
-    put_req_header(
-      conn,
-      "authorization",
-      "Basic " <> Base.encode64("#{username}:#{password}")
-    )
   end
 end

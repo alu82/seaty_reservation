@@ -11,7 +11,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "lists all users", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> get(~p"/users")
 
       assert html_response(conn, 200) =~ "Listing Users"
@@ -22,7 +22,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "renders form", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> get(~p"/users/new")
 
       assert html_response(conn, 200) =~ "New User"
@@ -33,7 +33,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "redirects to show when data is valid", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> post(~p"/users", user: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
@@ -46,7 +46,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> post(~p"/users", user: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "New User"
@@ -59,7 +59,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "renders form for editing chosen user", %{conn: conn, user: user} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> get(~p"/users/#{user}/edit")
 
       assert html_response(conn, 200) =~ "Edit User"
@@ -72,7 +72,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "redirects when data is valid", %{conn: conn, user: user} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> put(~p"/users/#{user}", user: @update_attrs)
 
       assert redirected_to(conn) == ~p"/users/#{user}"
@@ -84,7 +84,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "renders errors when data is invalid", %{conn: conn, user: user} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> put(~p"/users/#{user}", user: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "Edit User"
@@ -97,7 +97,7 @@ defmodule SeatyReservationWeb.UserControllerTest do
     test "deletes chosen user", %{conn: conn, user: user} do
       conn =
         conn
-        |> auth_conn()
+        |> admin_conn()
         |> delete(~p"/users/#{user}")
 
       assert redirected_to(conn) == ~p"/users"
@@ -111,17 +111,5 @@ defmodule SeatyReservationWeb.UserControllerTest do
   defp create_user(_) do
     user = user_fixture()
     %{user: user}
-  end
-
-  defp auth_conn(conn) do
-    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-
-    put_req_header(
-      conn,
-      "authorization",
-      "Basic " <> Base.encode64("#{username}:#{password}")
-    )
   end
 end
