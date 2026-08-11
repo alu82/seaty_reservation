@@ -11,7 +11,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "lists all productions", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/productions")
 
       assert html_response(conn, 200) =~ "Listing Productions"
@@ -22,7 +22,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "renders form", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/productions/new")
 
       assert html_response(conn, 200) =~ "New Production"
@@ -33,7 +33,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "redirects to show when data is valid", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> post(~p"/productions", production: @create_attrs)
 
       assert %{id: id} = redirected_params(conn)
@@ -46,7 +46,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "renders errors when data is invalid", %{conn: conn} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> post(~p"/productions", production: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "New Production"
@@ -59,7 +59,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "renders form for editing chosen production", %{conn: conn, production: production} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> get(~p"/productions/#{production}/edit")
 
       assert html_response(conn, 200) =~ "Edit Production"
@@ -72,7 +72,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "redirects when data is valid", %{conn: conn, production: production} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/productions/#{production}", production: @update_attrs)
 
       assert redirected_to(conn) == ~p"/productions/#{production}"
@@ -84,7 +84,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "renders errors when data is invalid", %{conn: conn, production: production} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/productions/#{production}", production: @invalid_attrs)
 
       assert html_response(conn, 200) =~ "Edit Production"
@@ -97,7 +97,7 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
     test "deletes chosen production", %{conn: conn, production: production} do
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> delete(~p"/productions/#{production}")
 
       assert redirected_to(conn) == ~p"/productions"
@@ -111,17 +111,5 @@ defmodule SeatyReservationWeb.ProductionControllerTest do
   defp create_production(_) do
     production = production_fixture()
     %{production: production}
-  end
-
-  defp auth_conn(conn) do
-    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-
-    put_req_header(
-      conn,
-      "authorization",
-      "Basic " <> Base.encode64("#{username}:#{password}")
-    )
   end
 end

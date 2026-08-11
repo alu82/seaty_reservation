@@ -80,6 +80,5 @@ defmodule SeatyReservation.GroupPriorityTest do
     uures1 = Reservations.get_reservation_by_code(ures1.code)
 
     assert uures1.prio == 1000
-
   end
 end

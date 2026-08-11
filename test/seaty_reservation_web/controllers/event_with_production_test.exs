@@ -7,7 +7,7 @@ defmodule SeatyReservationWeb.EventWithProductionTest do
   describe "new event form" do
     test "includes production dropdown", %{conn: conn} do
       production = production_fixture()
-      conn = conn |> auth_conn() |> get(~p"/events/new")
+      conn = conn |> editor_conn() |> get(~p"/events/new")
 
       assert html_response(conn, 200) =~ "Production"
       assert html_response(conn, 200) =~ production.name
@@ -20,7 +20,7 @@ defmodule SeatyReservationWeb.EventWithProductionTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> post(~p"/events",
           event: %{
             active: "true",
@@ -40,7 +40,7 @@ defmodule SeatyReservationWeb.EventWithProductionTest do
       production = production_fixture()
       event = event_fixture(%{production_id: production.id})
 
-      conn = conn |> auth_conn() |> get(~p"/events/#{event}/edit")
+      conn = conn |> editor_conn() |> get(~p"/events/#{event}/edit")
 
       assert html_response(conn, 200) =~ production.name
     end
@@ -51,7 +51,7 @@ defmodule SeatyReservationWeb.EventWithProductionTest do
       production = production_fixture()
       _event = event_fixture(%{production_id: production.id})
 
-      conn = conn |> auth_conn() |> get(~p"/events")
+      conn = conn |> editor_conn() |> get(~p"/events")
 
       assert html_response(conn, 200) =~ production.name
     end
@@ -62,22 +62,9 @@ defmodule SeatyReservationWeb.EventWithProductionTest do
       production = production_fixture()
       event = event_fixture(%{production_id: production.id})
 
-      conn = conn |> auth_conn() |> get(~p"/events/#{event}")
+      conn = conn |> editor_conn() |> get(~p"/events/#{event}")
 
       assert html_response(conn, 200) =~ production.name
     end
-  end
-
-  defp auth_conn(conn) do
-    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
-
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-
-    put_req_header(
-      conn,
-      "authorization",
-      "Basic " <> Base.encode64("#{username}:#{password}")
-    )
   end
 end

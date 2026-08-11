@@ -11,18 +11,6 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
     "contact" => "test@example.com"
   }
 
-  defp auth_conn(conn) do
-    basic_auth = Application.get_env(:seaty_reservation, :basic_auth)
-    username = basic_auth[:username]
-    password = basic_auth[:password]
-
-    put_req_header(
-      conn,
-      "authorization",
-      "Basic " <> Base.encode64("#{username}:#{password}")
-    )
-  end
-
   describe "capacity guard in create" do
     test "create reservation fails when exceeding capacity", %{conn: conn} do
       event = event_fixture(%{total_seats: 10})
@@ -36,7 +24,6 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
         |> post(~p"/reservations", reservation: attrs)
 
       # Should redirect back to new with error
@@ -57,7 +44,6 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
         |> post(~p"/reservations", reservation: attrs)
 
       # Should redirect to show
@@ -81,7 +67,6 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
         |> post(~p"/reservations", reservation: attrs)
 
       # Should redirect to show
@@ -97,7 +82,6 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
         |> post(~p"/reservations", reservation: attrs)
 
       assert redirected_to(conn) == ~p"/reservations/new"
@@ -124,7 +108,7 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/reservations/#{reservation}", reservation: attrs)
 
       # Should redirect back to edit with error
@@ -148,7 +132,7 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/reservations/#{reservation}", reservation: attrs)
 
       assert redirected_to(conn) == ~p"/reservations/?event_id=#{event.id}"
@@ -166,7 +150,7 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
 
       conn =
         conn
-        |> auth_conn()
+        |> editor_conn()
         |> put(~p"/reservations/#{reservation}", reservation: attrs)
 
       assert redirected_to(conn) == ~p"/reservations/?event_id=#{reservation.event_id}"

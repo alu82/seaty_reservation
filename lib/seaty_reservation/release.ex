@@ -11,6 +11,33 @@ defmodule SeatyReservation.Release do
     end
   end
 
+  def create_first_admin([admin_email, admin_password]) do
+    load_app()
+
+    alias SeatyReservation.Users
+
+    admin_exists? = Users.list_users() |> Enum.any?(fn user -> user.role == :admin end)
+
+    if !admin_exists? do
+      IO.puts("Creating admin user...")
+
+      case Users.create_user(%{
+        email: admin_email,
+        password: admin_password,
+        role: :admin
+      }) do
+        {:ok, _user} ->
+          IO.puts("✓ Admin user created: #{admin_email}")
+
+        {:error, changeset} ->
+          IO.puts("✗ Failed to create admin user: #{inspect(changeset.errors)}")
+          raise "Admin user creation failed"
+      end
+    else
+      IO.puts("✓ Admin user already exists, skipping creation")
+    end
+  end
+
   defp repos do
     Application.fetch_env!(@app, :ecto_repos)
   end
