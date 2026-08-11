@@ -29,6 +29,20 @@ create and migrate to schema with
 mix ecto.migrate
 ```
 
+## Create first Admin User
+
+After running migrations, seed the database with an admin user:
+
+```sh
+mix run -e "SeatyReservation.Release.create_first_admin(["admin@example", "xxxx"])"
+```
+
+```sh
+/opt/seaty/bin/seaty_reservation rpc 'SeatyReservation.Release.create_first_admin(["admin@example", "xxxx"])'
+```
+
+This creates the first admin user with full access rights. The password and email are passed via environment variables to avoid storing secrets in the repository. Change the password afterwards via the frontend.
+
 ## DB Migration
 
 ```sh
