@@ -7,6 +7,13 @@ defmodule SeatyReservation.Authorization do
 
   defstruct role: nil, show: %{}, index: %{}, create: %{}, update: %{}, delete: %{}
 
+
+  def can(:anonymous) do
+    grant(:anonymous)
+    |> create(Reservation)
+    |> show(Reservation)
+  end
+
   def can(:user) do
     grant(:user)
     |> create(Reservation)

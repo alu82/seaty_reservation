@@ -20,8 +20,7 @@ defmodule SeatyReservationWeb.Router do
     plug :fetch_current_user
   end
 
-  pipeline :authorize do
-    plug :require_authenticated_user
+  pipeline :authorized do
     plug :check_authorization
   end
 
@@ -30,12 +29,19 @@ defmodule SeatyReservationWeb.Router do
   end
 
   scope "/", SeatyReservationWeb do
-    pipe_through [:browser]
+    pipe_through [:browser, :authorized]
 
-    get "/", ReservationController, :new
-    get "/reservations/new", ReservationController, :new
-    get "/reservations/:id", ReservationController, :show
-    post "/reservations", ReservationController, :create
+    get "/", ReservationController, :new,
+      private: %{authorization: {:create, Reservation}}
+
+    get "/reservations/new", ReservationController, :new,
+      private: %{authorization: {:create, Reservation}}
+
+    get "/reservations/:id", ReservationController, :show,
+      private: %{authorization: {:show, Reservation}}
+
+    post "/reservations", ReservationController, :create,
+      private: %{authorization: {:create, Reservation}}
   end
 
   scope "/", SeatyReservationWeb do
@@ -70,7 +76,7 @@ defmodule SeatyReservationWeb.Router do
   end
 
   scope "/", SeatyReservationWeb do
-    pipe_through [:browser, :authorize]
+    pipe_through [:browser, :authenticated, :authorized]
 
     # Events
     get "/events", EventController, :index,
