@@ -229,18 +229,13 @@ defmodule SeatyReservationWeb.UserAuth do
   end
 
   defp authorize(conn, action, resource) do
-    IO.inspect(conn.assigns.current_user, label: "the current user")
-
     role =
       case conn.assigns.current_user do
         nil -> :anonymous
         user -> user.role
       end
 
-    IO.inspect(role)
     auth = SeatyReservation.Authorization.can(role)
-
-    IO.inspect(auth, label: "the auth")
 
     if SeatyReservation.Authorization.allowed?(auth, action, resource) do
       conn
