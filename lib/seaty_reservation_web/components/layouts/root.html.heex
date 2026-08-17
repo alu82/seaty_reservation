@@ -14,10 +14,31 @@
   <body class="bg-white antialiased">
     <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
       <%= if @current_user do %>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          {@current_user.email}
+        <li class="hidden md:block">
+          <.link
+            href={~p"/productions"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Productions
+          </.link>
         </li>
-        <li>
+        <li class="hidden md:block">
+          <.link
+            href={~p"/events"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Events
+          </.link>
+        </li>
+        <li class="hidden md:block">
+          <.link
+            href={~p"/reservations"}
+            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
+          >
+            Reservations
+          </.link>
+        </li>
+        <li class="hidden md:block">
           <.link
             href={~p"/users/settings"}
             class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
@@ -25,7 +46,7 @@
             Settings
           </.link>
         </li>
-        <li>
+        <li class="hidden md:block">
           <.link
             href={~p"/users/log_out"}
             method="delete"
@@ -34,8 +55,59 @@
             Logout
           </.link>
         </li>
+
+        <details class="md:hidden relative">
+          <summary class="cursor-pointer text-zinc-900 text-2xl list-none">
+            ☰
+          </summary>
+          <nav class="absolute right-0 mt-4 w-48 bg-white rounded-lg shadow-lg p-4">
+            <ul class="flex flex-col gap-4 text-zinc-900 text-base">
+              <li>
+                <.link
+                  href={~p"/productions"}
+                  class="hover:text-zinc-700"
+                >
+                  Productions
+                </.link>
+              </li>
+              <li>
+                <.link
+                  href={~p"/events"}
+                  class="hover:text-zinc-700"
+                >
+                  Events
+                </.link>
+              </li>
+              <li>
+                <.link
+                  href={~p"/reservations"}
+                  class="hover:text-zinc-700"
+                >
+                  Reservations
+                </.link>
+              </li>
+              <li>
+                <.link
+                  href={~p"/users/settings"}
+                  class="hover:text-zinc-700"
+                >
+                  Settings
+                </.link>
+              </li>
+              <li>
+                <.link
+                  href={~p"/users/log_out"}
+                  method="delete"
+                  class="hover:text-zinc-700"
+                >
+                  Logout
+                </.link>
+              </li>
+            </ul>
+          </nav>
+        </details>
       <% else %>
-        <li>
+        <li class="hidden md:block">
           <.link
             href={~p"/users/log_in"}
             class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
@@ -43,6 +115,24 @@
             Login
           </.link>
         </li>
+
+        <details class="md:hidden relative">
+          <summary class="cursor-pointer text-zinc-900 text-2xl list-none">
+            ☰
+          </summary>
+          <nav class="absolute right-0 mt-4 w-48 bg-white rounded-lg shadow-lg p-4">
+            <ul class="flex flex-col gap-4 text-zinc-900 text-base">
+              <li>
+                <.link
+                  href={~p"/users/log_in"}
+                  class="hover:text-zinc-700"
+                >
+                  Login
+                </.link>
+              </li>
+            </ul>
+          </nav>
+        </details>
       <% end %>
     </ul>
     <%= @inner_content %>
