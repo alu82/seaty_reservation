@@ -118,6 +118,34 @@ reserved + requested <= total_seats
 
 Seat allocation is handled by the `Allocations` context. Allocations are persisted to the database and can be created, viewed, and deleted through the event detail page.
 
+### Authorization
+
+Access is role-based, enforced by the `Authorization` context and two router pipelines:
+
+- `:authenticated` — requires a logged-in user (`UserAuth.require_authenticated_user/2`).
+- `:authorized` — checks the per-route permission declared via `private: %{authorization: {:action, Schema}}` (`UserAuth.check_authorization/2`).
+
+Guest reservation routes (`/`, `/reservations/new`, `/reservations/:id`, `POST /reservations`) use `:authorized` only, so anonymous guests may create and view their own reservations by token. All admin routes (events, productions, reservations management, allocations, users) require both pipelines.
+
+Roles (`User.role`, `Ecto.Enum`, defined in `Authorization.can/1`):
+
+- `anonymous` — create/show `Reservation`
+- `user` — same as anonymous (default for new accounts)
+- `reader` — read events, productions, reservations, allocations
+- `editor` — full CRUD on events, productions, reservations, allocations
+- `admin` — full CRUD including users
+
+Permission grants are declared in `Authorization.can/1`. Do not expose admin actions on routes missing the `:authorized` pipeline, and keep new admin routes under the `:authenticated` + `:authorized` scope.
+
+## Getting Started
+
+```sh
+mix setup     # deps, DB, migrate, seed, assets
+mix phx.server
+```
+
+SQLite database file; migrations live in `priv/repo/migrations`.
+
 ## Development
 
 When implementing changes:
