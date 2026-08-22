@@ -11,7 +11,7 @@ defmodule SeatyReservation.Allocations do
   alias SeatyReservation.Allocations.Allocation
   alias SeatyReservation.Room
 
-  @distance_range 8
+  @default_distance_range 8
   import Ecto.Query, warn: false
 
   @doc """
@@ -21,13 +21,13 @@ defmodule SeatyReservation.Allocations do
     - :assigned - list of %{row: integer, seat: integer, code: string, group: integer}
     - :unallocated - list of %{code: string, group: integer, seats: integer}
   """
-  def allocate_event(event_id) do
+  def allocate_event(event_id, distance_range \\ @default_distance_range) do
     event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
     reservations = Reservations.get_reservations_by_event(event_id_int)
-    allocate_event_from_reservations(reservations)
+    allocate_event_from_reservations(reservations, distance_range)
   end
 
-  defp allocate_event_from_reservations(reservations) do
+  defp allocate_event_from_reservations(reservations, distance_range) do
     # Filter out reservations with 0 seats
     active_reservations =
       reservations
@@ -48,7 +48,7 @@ defmodule SeatyReservation.Allocations do
 
     # Allocate groups with retry mechanism using recursion
     {assigned, not_allocated, _final_location} =
-      allocate_groups_recursive(groups, code_to_group, active_reservations, location, 0, [])
+      allocate_groups_recursive(groups, code_to_group, active_reservations, location, 0, [], distance_range)
 
     # Flatten assigned list and sort by row ascending, then seat ascending
     assigned_list =
@@ -100,7 +100,8 @@ defmodule SeatyReservation.Allocations do
          reservations,
          location,
          idx,
-         assigned_indices
+         assigned_indices,
+         distance_range
        ) do
     if idx >= length(groups) do
       # Build not_allocated list from groups that weren't assigned
@@ -129,12 +130,13 @@ defmodule SeatyReservation.Allocations do
           reservations,
           location,
           idx + 1,
-          assigned_indices
+          assigned_indices,
+          distance_range
         )
       else
         row_wishes = get_row_wishes(reservations, MapSet.new(group_seats))
 
-        case allocate_group(location, group_seats, row_wishes) do
+        case allocate_group(location, group_seats, row_wishes, distance_range) do
           {true, new_loc, placed_seats} ->
             # Extract allocation info from placed seats
             alloc_info =
@@ -152,7 +154,8 @@ defmodule SeatyReservation.Allocations do
                 new_loc,
                 # Restart from beginning
                 0,
-                [idx | assigned_indices]
+                [idx | assigned_indices],
+                distance_range
               )
 
             {[alloc_info | a], na, l}
@@ -165,7 +168,8 @@ defmodule SeatyReservation.Allocations do
               reservations,
               location,
               idx + 1,
-              assigned_indices
+              assigned_indices,
+              distance_range
             )
         end
       end
@@ -197,10 +201,10 @@ defmodule SeatyReservation.Allocations do
     |> Enum.uniq()
   end
 
-  defp allocate_group(location, group_seats, row_wishes) do
+  defp allocate_group(location, group_seats, row_wishes, distance_range) do
     number_of_seats = length(group_seats)
     options = find_all_options(location, number_of_seats)
-    filtered_options = find_options(options, row_wishes)
+    filtered_options = find_options(options, row_wishes, distance_range)
     valid_options = validate_options(location, filtered_options)
 
     case valid_options do
@@ -267,7 +271,7 @@ defmodule SeatyReservation.Allocations do
     end)
   end
 
-  defp find_options(options, row_wishes) do
+  defp find_options(options, row_wishes, distance_range) do
     case options do
       [] ->
         []
@@ -280,7 +284,7 @@ defmodule SeatyReservation.Allocations do
           min_distance = Enum.min_by(options, &elem(&1, 3)) |> elem(3)
 
           Enum.filter(options, fn {_, _, _, distance} ->
-            distance <= min_distance + @distance_range
+            distance <= min_distance + distance_range
           end)
         end
     end
@@ -319,7 +323,7 @@ defmodule SeatyReservation.Allocations do
   Creates an allocation for the given reservations.
   """
   def create_allocation(reservations) when is_list(reservations) do
-    allocate_event_from_reservations(reservations)
+    allocate_event_from_reservations(reservations, @default_distance_range)
   end
 
   def create_allocation(attrs) when is_map(attrs) do
@@ -330,9 +334,9 @@ defmodule SeatyReservation.Allocations do
   Persists an allocation for the given event.
   Computes the allocation and saves it to the database.
   """
-  def persist_allocation(event_id) do
+  def persist_allocation(event_id, distance_range \\ @default_distance_range) do
     event_id_int = if is_binary(event_id), do: String.to_integer(event_id), else: event_id
-    result = allocate_event(event_id_int)
+    result = allocate_event(event_id_int, distance_range)
 
     %Allocation{event_id: event_id_int, result: result}
     |> Allocation.changeset(%{})

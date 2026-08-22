@@ -2,8 +2,21 @@ defmodule SeatyReservationWeb.AllocationController do
   use SeatyReservationWeb, :controller
   alias SeatyReservation.Allocations
 
-  def create(conn, %{"event_id" => event_id}) do
-    case Allocations.persist_allocation(event_id) do
+  def create(conn, %{"event_id" => event_id} = params) do
+    distance_range =
+      case params["distance_range"] do
+        nil -> nil
+        val -> String.to_integer(val)
+      end
+
+    persist_result =
+      if distance_range do
+        Allocations.persist_allocation(event_id, distance_range)
+      else
+        Allocations.persist_allocation(event_id)
+      end
+
+    case persist_result do
       {:ok, _allocation} ->
         conn
         |> put_flash(:info, "Allocation created successfully.")
