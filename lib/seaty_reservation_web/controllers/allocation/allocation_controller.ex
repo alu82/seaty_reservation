@@ -59,11 +59,24 @@ defmodule SeatyReservationWeb.AllocationController do
         end)
     }
 
+    assigned_set = MapSet.new(result_with_names.assigned, &{&1.row, &1.seat})
+
+    unassigned_seats =
+      SeatyReservation.Room.row_numbers()
+      |> Enum.flat_map(fn row ->
+        seat_count = SeatyReservation.Room.seats(row)
+
+        for seat <- 1..seat_count, not MapSet.member?(assigned_set, {row, seat}) do
+          %{row: row, seat: seat, code: nil}
+        end
+      end)
+
     render(conn, :show,
       allocation: allocation,
       is_up_to_date: is_up_to_date,
       fully_allocated: fully_allocated,
       result: result_with_names,
+      unassigned_seats: unassigned_seats,
       production_name: allocation.event.production.name,
       event_date: allocation.event.datetime
     )

@@ -79,6 +79,15 @@
           seat={entry.seat}
         />
       <% end %>
+      <%= for entry <- Enum.sort_by(@unassigned_seats, &{&1.row, &1.seat}) do %>
+        <.ticket_card
+          production_name={@production_name}
+          event_date={@event_date}
+          code={nil}
+          row={entry.row}
+          seat={entry.seat}
+        />
+      <% end %>
     </div>
   </div>
   
@@ -89,6 +98,15 @@
         production_name={@production_name}
         event_date={@event_date}
         code={entry.code}
+        row={entry.row}
+        seat={entry.seat}
+      />
+    <% end %>
+    <%= for entry <- Enum.sort_by(@unassigned_seats, &{&1.row, &1.seat}) do %>
+      <.ticket_card
+        production_name={@production_name}
+        event_date={@event_date}
+        code={nil}
         row={entry.row}
         seat={entry.seat}
       />
