@@ -2,6 +2,7 @@ defmodule SeatyReservation.AllocationsTest do
   use SeatyReservation.DataCase
 
   alias SeatyReservation.Allocations
+  alias SeatyReservation.Room
 
   describe "allocations" do
     test "allocate_event/1 returns assigned and unallocated reservations" do
@@ -396,6 +397,43 @@ defmodule SeatyReservation.AllocationsTest do
 
       # Now allocation should not be up to date
       refute SeatyReservation.Allocations.is_up_to_date(allocation)
+    end
+
+    test "two 4-seat reservations allocate into category-1 rows" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+
+      _r1 =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 4,
+          "group" => 1,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      _r2 =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 4,
+          "group" => 2,
+          "code" => "R002",
+          "prio" => 95
+        })
+
+      result = Allocations.allocate_event(event.id)
+
+      assert length(result.assigned) == 8
+      assert length(result.unallocated) == 0
+
+      category_1_rows =
+        Room.rows()
+        |> Enum.filter(fn {_row, %{category: c}} -> c == 1 end)
+        |> Enum.map(fn {row, _} -> row end)
+
+      assigned_rows = Enum.map(result.assigned, & &1.row) |> Enum.uniq()
+
+      assert assigned_rows -- category_1_rows == [],
+             "expected all assigned rows #{inspect(assigned_rows)} to be category-1 rows #{inspect(category_1_rows)}"
     end
   end
 end

@@ -9,6 +9,7 @@ defmodule SeatyReservation.Allocations do
   alias SeatyReservation.Reservations
   alias SeatyReservation.Repo
   alias SeatyReservation.Allocations.Allocation
+  alias SeatyReservation.Room
 
   @distance_range 8
   import Ecto.Query, warn: false
@@ -33,10 +34,7 @@ defmodule SeatyReservation.Allocations do
       |> Enum.filter(fn r -> r.seats > 0 end)
       |> Enum.sort_by(fn r -> {-r.prio, r.code} end)
 
-    # Build room location: 13 rows
-    # 4 rows of 24 seats (index 0-3)
-    # 5 rows of 19 seats (index 4-8)
-    # 4 rows of 4 seats (index 9-12)
+    # Build room location: 0-indexed list of rows (see SeatyReservation.Room).
     location = build_location()
 
     # Group reservations: reservations with group == nil are each in their own group
@@ -175,13 +173,10 @@ defmodule SeatyReservation.Allocations do
   end
 
   def build_location do
-    # 4 rows of 24 seats
-    rows_1_4 = for _ <- 1..4, do: List.duplicate(nil, 24)
-    # 5 rows of 19 seats
-    rows_5_9 = for _ <- 1..5, do: List.duplicate(nil, 19)
-    # 4 rows of 4 seats
-    rows_10_13 = for _ <- 1..4, do: List.duplicate(nil, 4)
-    rows_1_4 ++ rows_5_9 ++ rows_10_13
+    # 0-indexed flat list of rows, one entry per row with nil placeholders per seat.
+    # Layout (seat counts per row) comes from SeatyReservation.Room.
+    Room.seat_counts()
+    |> Enum.map(fn seat_count -> List.duplicate(nil, seat_count) end)
   end
 
   defp get_row_wishes(reservations, reservation_codes) do
@@ -306,7 +301,7 @@ defmodule SeatyReservation.Allocations do
         true
       else
         cond do
-          row_nr < 4 and number_of_seats == free_in_row - 1 -> false
+          row_nr <= Room.first_section_last_index() and number_of_seats == free_in_row - 1 -> false
           rem(number_of_seats, 2) == 0 && rem(seat_nr, 2) == 1 -> false
           true -> true
         end
