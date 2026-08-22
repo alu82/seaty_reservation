@@ -309,20 +309,10 @@ defmodule SeatyReservation.Allocations do
     end)
   end
 
+  # Base distance comes from the Room row layout (category-based, see Room).
+  # row_nr is 0-indexed (location index); Room.base_distance is 1-indexed.
   defp get_distance(row_nr, seat_nr) do
-    distance = seat_nr
-
-    # Row-based adjustments (matching Python notebook)
-    # if row_nr not in [1,2]: distance += 12
-    distance = if row_nr in [1, 2], do: distance, else: distance + 12
-    # if row_nr > 3: distance += 30
-    distance = if row_nr > 3, do: distance + 30, else: distance
-    # if row_nr in [4,8,9,10,11,12]: distance += 2
-    distance = if row_nr in [4, 8, 9, 10, 11, 12], do: distance + 2, else: distance
-    # if row_nr > 8: distance += 30
-    distance = if row_nr > 8, do: distance + 30, else: distance
-
-    distance
+    Room.base_distance(row_nr + 1) + seat_nr
   end
 
   @doc """

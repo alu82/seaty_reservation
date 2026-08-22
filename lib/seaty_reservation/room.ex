@@ -5,7 +5,7 @@ defmodule SeatyReservation.Room do
   The room is keyed by 1-indexed row number. Each row carries:
   - `seats`    - number of physical seats in that row
   - `category` - pricing/category tier (used e.g. by allocation distance logic)
-  - `section`  - visual grouping for rendering (grid block)
+  - `base_distance` - fixed distance offset, derived per category (see @base_distances)
 
   All layout numbers live here. Consumers derive what they need; none
   hardcode row counts or seat counts.
@@ -28,6 +28,9 @@ defmodule SeatyReservation.Room do
     13 => %{seats: 4, category: 5, section: 3}
   }
 
+  # Base distance per category: 1 -> 0, 2 -> 10, 3 -> 40, 4 -> 46, 5 -> 70.
+  @base_distances %{1 => 0, 2 => 10, 3 => 40, 4 => 44, 5 => 70}
+
   @doc "Full row map, 1-indexed by row number."
   def rows, do: @rows
 
@@ -39,6 +42,9 @@ defmodule SeatyReservation.Room do
 
   @doc "Section of a row (1-indexed)."
   def section(row) when is_integer(row), do: @rows[row].section
+
+  @doc "Base distance of a row (1-indexed)."
+  def base_distance(row) when is_integer(row), do: @base_distances[@rows[row].category]
 
   @doc "Total number of rows."
   def total_rows, do: map_size(@rows)
