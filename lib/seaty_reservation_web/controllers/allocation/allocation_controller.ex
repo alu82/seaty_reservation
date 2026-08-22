@@ -2,8 +2,21 @@ defmodule SeatyReservationWeb.AllocationController do
   use SeatyReservationWeb, :controller
   alias SeatyReservation.Allocations
 
-  def create(conn, %{"event_id" => event_id}) do
-    case Allocations.persist_allocation(event_id) do
+  def create(conn, %{"event_id" => event_id} = params) do
+    distance_range =
+      case params["distance_range"] do
+        nil -> nil
+        val -> String.to_integer(val)
+      end
+
+    persist_result =
+      if distance_range do
+        Allocations.persist_allocation(event_id, distance_range)
+      else
+        Allocations.persist_allocation(event_id)
+      end
+
+    case persist_result do
       {:ok, _allocation} ->
         conn
         |> put_flash(:info, "Allocation created successfully.")
@@ -46,11 +59,24 @@ defmodule SeatyReservationWeb.AllocationController do
         end)
     }
 
+    assigned_set = MapSet.new(result_with_names.assigned, &{&1.row, &1.seat})
+
+    unassigned_seats =
+      SeatyReservation.Room.row_numbers()
+      |> Enum.flat_map(fn row ->
+        seat_count = SeatyReservation.Room.seats(row)
+
+        for seat <- 1..seat_count, not MapSet.member?(assigned_set, {row, seat}) do
+          %{row: row, seat: seat, code: nil}
+        end
+      end)
+
     render(conn, :show,
       allocation: allocation,
       is_up_to_date: is_up_to_date,
       fully_allocated: fully_allocated,
       result: result_with_names,
+      unassigned_seats: unassigned_seats,
       production_name: allocation.event.production.name,
       event_date: allocation.event.datetime
     )

@@ -8,9 +8,6 @@
     <.link href={~p"/reservations?event_id=#{@event.id}"}>
       <.button>Reservations</.button>
     </.link>
-    <.link href={~p"/events/#{@event.id}/allocations"} method="post">
-      <.button>Create Allocation</.button>
-    </.link>
   </:actions>
 </.header>
 
@@ -25,6 +22,17 @@
 </.list>
 
 <h3 class="text-xl font-bold mt-20 mb-0  ">Allocations</h3>
+
+<.form for={nil} action={~p"/events/#{@event.id}/allocations"} method="post" class="mt-4 mb-4 flex items-end gap-3">
+  <.input
+    type="select"
+    name="distance_range"
+    label="Distance range"
+    value="8"
+    options={[{"6", "6"}, {"8", "8"}, {"10", "10"}, {"12", "12"}, {"14", "14"}, {"16", "16"}, {"18", "18"}]}
+  />
+  <.button type="submit">Create Allocation</.button>
+</.form>
 
 <%= if @allocations != [] do %>
   <.table

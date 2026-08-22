@@ -31,36 +31,17 @@
 
 <div id="tab-pane-0" class="block">
   <div class="min-h-screen p-0 mt-4">
-    <!-- Rows 1-4: 24 seats each -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
-      <%= for row <- 1..4 do %>
-        <.row
-          row_number={row}
-          seat_count={24}
-          assigned={Enum.filter(@result.assigned, &(&1.row == row))}
-        />
-      <% end %>
-    </div>
-    <!-- Rows 5-9: 19 seats each -->
-    <div class="grid grid-cols-1 md:grid-cols-5 gap-0">
-      <%= for row <- 5..9 do %>
-        <.row
-          row_number={row}
-          seat_count={19}
-          assigned={Enum.filter(@result.assigned, &(&1.row == row))}
-        />
-      <% end %>
-    </div>
-    <!-- Rows 10-13: 4 seats each -->
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-0">
-      <%= for row <- 10..13 do %>
-        <.row
-          row_number={row}
-          seat_count={4}
-          assigned={Enum.filter(@result.assigned, &(&1.row == row))}
-        />
-      <% end %>
-    </div>
+    <%= for {_section, rows} <- SeatyReservation.Room.sections() do %>
+      <div class={"grid grid-cols-1 md:grid-cols-#{length(rows)} gap-0"}>
+        <%= for {row, seats} <- rows do %>
+          <.row
+            row_number={row}
+            seat_count={seats}
+            assigned={Enum.filter(@result.assigned, &(&1.row == row))}
+          />
+        <% end %>
+      </div>
+    <% end %>
 
     <%= if @result.unallocated != [] do %>
       <h2 class="text-2xl font-bold text-slate-800 mb-4">Not Allocated</h2>
@@ -98,6 +79,15 @@
           seat={entry.seat}
         />
       <% end %>
+      <%= for entry <- Enum.sort_by(@unassigned_seats, &{&1.row, &1.seat}) do %>
+        <.ticket_card
+          production_name={@production_name}
+          event_date={@event_date}
+          code={nil}
+          row={entry.row}
+          seat={entry.seat}
+        />
+      <% end %>
     </div>
   </div>
   
@@ -108,6 +98,15 @@
         production_name={@production_name}
         event_date={@event_date}
         code={entry.code}
+        row={entry.row}
+        seat={entry.seat}
+      />
+    <% end %>
+    <%= for entry <- Enum.sort_by(@unassigned_seats, &{&1.row, &1.seat}) do %>
+      <.ticket_card
+        production_name={@production_name}
+        event_date={@event_date}
+        code={nil}
         row={entry.row}
         seat={entry.seat}
       />

@@ -11,6 +11,13 @@ module.exports = {
     "../lib/*_web.ex",
     "../lib/*_web/**/*.*ex"
   ],
+  // ponytail: safelist dynamic grid-cols (runtime interpolation evades Tailwind JIT scan)
+  safelist: [
+    {
+      pattern: /grid-cols-(1|4|5)/,
+      variants: ["md", "lg"],
+    },
+  ],
   theme: {
     extend: {
       colors: {
