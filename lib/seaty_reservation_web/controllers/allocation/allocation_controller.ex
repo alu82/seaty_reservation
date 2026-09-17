@@ -35,6 +35,7 @@ defmodule SeatyReservationWeb.AllocationController do
     fully_allocated = Allocations.fully_allocated?(allocation)
     reservations = SeatyReservation.Reservations.get_reservations_by_event(allocation.event_id)
     code_to_name = Map.new(reservations, &{&1.code, &1.name})
+    active_reservations = Enum.filter(reservations, &(&1.seats > 0))
 
     result = allocation.result
 
@@ -78,7 +79,8 @@ defmodule SeatyReservationWeb.AllocationController do
       result: result_with_names,
       unassigned_seats: unassigned_seats,
       production_name: allocation.event.production.name,
-      event_date: allocation.event.datetime
+      event_date: allocation.event.datetime,
+      active_reservations: active_reservations
     )
   end
 

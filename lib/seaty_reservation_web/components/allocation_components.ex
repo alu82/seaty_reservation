@@ -164,6 +164,19 @@ defmodule SeatyReservationWeb.AllocationComponents do
     """
   end
 
+  def reservation_card(assigns) do
+    ~H"""
+    <div class="reservation-card flex flex-col items-start justify-start gap-1 border border-slate-300 rounded-lg p-5 bg-white text-left leading-tight shadow-sm">
+      <div class="flex items-baseline gap-2">
+        <span class="text-2xl font-bold text-slate-800"><%= @reservation.code %></span>
+        <span class="text-xl font-semibold text-slate-700"><%= @reservation.seats %> Karten</span>
+      </div>
+      <div class="text-xl text-slate-700"><%= @reservation.name %></div>
+      <div class="text-lg text-slate-700"><%= @reservation.internal_comment %></div>
+    </div>
+    """
+  end
+
   defp row_color(current_row, row) do
     if current_row == row, do: "#2563eb", else: "#cbd5e1"
   end
