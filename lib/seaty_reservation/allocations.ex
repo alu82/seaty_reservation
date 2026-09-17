@@ -380,12 +380,9 @@ defmodule SeatyReservation.Allocations do
         where: r.event_id == ^allocation.event_id,
         select: max(r.updated_at)
 
-    max_updated_at = Repo.one(query)
-
-    if max_updated_at do
-      allocation.inserted_at >= max_updated_at
-    else
-      true
+    case Repo.one(query) do
+      nil -> true
+      max_updated_at -> NaiveDateTime.compare(allocation.inserted_at, max_updated_at) in [:eq, :gt]
     end
   end
 

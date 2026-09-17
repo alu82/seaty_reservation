@@ -399,6 +399,33 @@ defmodule SeatyReservation.AllocationsTest do
       refute SeatyReservation.Allocations.is_up_to_date(allocation)
     end
 
+    test "is_up_to_date/1 returns false when reservation is created after allocation" do
+      event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
+      {:ok, allocation} = SeatyReservation.Allocations.persist_allocation(event.id)
+
+      reservation =
+        SeatyReservation.ReservationsFixtures.reservation_fixture(%{
+          "event_id" => event.id,
+          "seats" => 2,
+          "code" => "R001",
+          "prio" => 100
+        })
+
+      allocation_time = ~N[2026-08-22 19:54:21]
+      reservation_time = ~N[2026-09-17 20:36:30]
+
+      Repo.update_all(from(a in SeatyReservation.Allocations.Allocation, where: a.id == ^allocation.id),
+        set: [inserted_at: allocation_time]
+      )
+
+      Repo.update_all(from(r in SeatyReservation.Reservations.Reservation, where: r.id == ^reservation.id),
+        set: [updated_at: reservation_time]
+      )
+
+      allocation = Allocations.get_allocation!(allocation.id)
+      refute Allocations.is_up_to_date(allocation)
+    end
+
     test "two 4-seat reservations allocate into category-1 rows" do
       event = SeatyReservation.EventsFixtures.event_fixture(%{total_seats: 200})
 
