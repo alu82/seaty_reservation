@@ -8,7 +8,7 @@ defmodule SeatyReservation.Users.UserNotifier do
     email =
       new()
       |> to(recipient)
-      |> from({"SeatyReservation", "contact@example.com"})
+      |> from({"SeatyReservation", Application.fetch_env!(:seaty_reservation, :smtp_user)})
       |> subject(subject)
       |> text_body(body)
 

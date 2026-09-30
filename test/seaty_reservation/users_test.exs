@@ -367,6 +367,15 @@ defmodule SeatyReservation.UsersTest do
       %{user: user_fixture()}
     end
 
+    test "uses the configured SMTP mailbox as sender", %{user: user} do
+      assert {:ok, email} =
+               Users.deliver_user_confirmation_instructions(user, fn token ->
+                 "https://example.com/users/confirm/#{token}"
+               end)
+
+      assert email.from == {"SeatyReservation", Application.fetch_env!(:seaty_reservation, :smtp_user)}
+    end
+
     test "sends token through notification", %{user: user} do
       token =
         extract_user_token(fn url ->
