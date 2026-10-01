@@ -199,10 +199,24 @@
 
       position: absolute !important;
       top: 0 !important;
-      left: 0 !important;
+      left: 5mm !important;
+      width: 200mm !important;
       
       margin: 0 !important;
       padding: 0 !important;
+     }
+
+     #tab-pane-3.block .print-container table {
+       width: 100%;
+       table-layout: fixed;
+     }
+
+     #tab-pane-3.block .print-container th,
+     #tab-pane-3.block .print-container td {
+       padding: 1mm 2mm;
+       font-size: 10px;
+       white-space: normal;
+       overflow-wrap: anywhere;
      }
 
     #tab-pane-2.block .reservation-cards,

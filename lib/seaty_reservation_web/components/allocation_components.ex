@@ -209,20 +209,22 @@ defmodule SeatyReservationWeb.AllocationComponents do
         <thead class="bg-gray-50">
           <tr>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reservation Name</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Reservation Code</th>
             <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Seats</th>
           </tr>
         </thead>
         <tbody class="bg-white divide-y divide-gray-200">
-          <%= for {display_name, code, count} <- @assigned
+          <%= for {display_name, reservation_name, code, count} <- @assigned
                |> Enum.group_by(fn e -> {e.name, e.code} end)
                |> Enum.flat_map(fn { {name, code}, entries} ->
                  name_parts = String.split(name) |> Enum.filter(&(String.length(&1) > 3))
-                 [{name, code, length(entries)} | Enum.map(name_parts, &{&1, code, length(entries)})]
+                 [{name, name, code, length(entries)} | Enum.map(name_parts, &{&1, name, code, length(entries)})]
                end)
-               |> Enum.sort_by(fn {name, _code, _count} -> String.downcase(name) end) do %>
+               |> Enum.sort_by(fn {name, _reservation_name, _code, _count} -> String.downcase(name) end) do %>
             <tr>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= display_name %></td>
+              <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= reservation_name %></td>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= code %></td>
               <td class="px-6 py-2 whitespace-nowrap text-sm text-gray-900"><%= count %></td>
             </tr>
