@@ -12,8 +12,8 @@
     </script>
   </head>
   <body class="bg-white antialiased">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_user do %>
+    <%= if @current_user do %>
+      <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
         <li class="hidden md:block">
           <.link
             href={~p"/productions"}
@@ -106,35 +106,8 @@
             </ul>
           </nav>
         </details>
-      <% else %>
-        <li class="hidden md:block">
-          <.link
-            href={~p"/users/log_in"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Login
-          </.link>
-        </li>
-
-        <details class="md:hidden relative">
-          <summary class="cursor-pointer text-zinc-900 text-2xl list-none">
-            ☰
-          </summary>
-          <nav class="absolute right-0 mt-4 w-48 bg-white rounded-lg shadow-lg p-4">
-            <ul class="flex flex-col gap-4 text-zinc-900 text-base">
-              <li>
-                <.link
-                  href={~p"/users/log_in"}
-                  class="hover:text-zinc-700"
-                >
-                  Login
-                </.link>
-              </li>
-            </ul>
-          </nav>
-        </details>
-      <% end %>
-    </ul>
+      </ul>
+    <% end %>
     <%= @inner_content %>
   </body>
 </html>

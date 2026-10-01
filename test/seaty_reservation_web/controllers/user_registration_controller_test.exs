@@ -8,7 +8,7 @@ defmodule SeatyReservationWeb.UserRegistrationControllerTest do
       conn = get(conn, ~p"/users/register")
       response = html_response(conn, 200)
       assert response =~ "Register"
-      assert response =~ ~p"/users/log_in"
+      refute response =~ ~p"/users/log_in"
       assert response =~ ~p"/users/register"
     end
 

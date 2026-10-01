@@ -49,6 +49,13 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   end
 
   describe "new reservation" do
+    test "hides the navigation and login link from guests", %{conn: conn} do
+      document = conn |> get(~p"/") |> html_response(200) |> Floki.parse_document!()
+
+      assert Floki.find(document, "body > ul") == []
+      assert Floki.find(document, "a[href='/users/log_in']") == []
+    end
+
     test "renders form", %{conn: conn} do
       conn = get(conn, ~p"/reservations/new")
       html = html_response(conn, 200)
