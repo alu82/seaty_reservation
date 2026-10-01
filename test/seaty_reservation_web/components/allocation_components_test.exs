@@ -1,6 +1,25 @@
 defmodule SeatyReservationWeb.AllocationComponentsTest do
   use ExUnit.Case
   alias SeatyReservationWeb.AllocationComponents
+  require Phoenix.LiveViewTest
+
+  test "reservation names are sorted without regard to case" do
+    assigned = [
+      %{name: "amy", code: "R001"},
+      %{name: "Zoe", code: "R002"},
+      %{name: "bob", code: "R003"}
+    ]
+
+    names =
+      Phoenix.LiveViewTest.render_component(&AllocationComponents.reservations_table/1,
+        assigned: assigned
+      )
+      |> Floki.parse_document!()
+      |> Floki.find("tbody tr td:first-child")
+      |> Enum.map(&Floki.text/1)
+
+    assert names == ["amy", "bob", "Zoe"]
+  end
 
   describe "color_for_reservation/1" do
     test "reservations with same group get same color" do
