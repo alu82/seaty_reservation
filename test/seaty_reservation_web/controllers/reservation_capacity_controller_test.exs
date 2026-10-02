@@ -84,7 +84,7 @@ defmodule SeatyReservationWeb.ReservationCapacityControllerTest do
         conn
         |> post(~p"/reservations", reservation: attrs)
 
-      assert redirected_to(conn) == ~p"/reservations/new"
+      assert html_response(conn, 200) =~ "Darf nicht leer sein."
       # Check that an email was NOT sent
       refute_email_sent()
     end

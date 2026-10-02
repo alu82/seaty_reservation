@@ -43,9 +43,8 @@ defmodule SeatyReservationWeb.ReservationController do
     # Check if event_id is present and valid
     cond do
       is_nil(event_id) or event_id == "" ->
-        conn
-        |> put_flash(:error, gettext("Bitte wählen Sie eine Aufführung aus."))
-        |> redirect(to: ~p"/reservations/new")
+        {:error, changeset} = Reservations.create_reservation(reservation_params)
+        render_invalid_reservation(conn, changeset)
 
       true ->
         event = Events.get_event!(event_id)
@@ -68,7 +67,7 @@ defmodule SeatyReservationWeb.ReservationController do
               |> redirect(to: ~p"/reservations/#{reservation}?token=#{reservation.token}")
 
             {:error, %Ecto.Changeset{} = changeset} ->
-              render(conn, :new, changeset: changeset, events: get_events_for_dropdown())
+              render_invalid_reservation(conn, changeset)
           end
         else
           conn
@@ -79,6 +78,13 @@ defmodule SeatyReservationWeb.ReservationController do
           |> redirect(to: ~p"/reservations/new")
         end
     end
+  end
+
+  defp render_invalid_reservation(conn, changeset) do
+    render(conn, :new,
+      changeset: %{changeset | action: :insert},
+      events: get_events_for_dropdown()
+    )
   end
 
   def show(conn, %{"id" => id, "token" => token}) do

@@ -49,9 +49,27 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
   end
 
   describe "new reservation" do
+    test "hides the navigation and login link from guests", %{conn: conn} do
+      document = conn |> get(~p"/") |> html_response(200) |> Floki.parse_document!()
+
+      assert Floki.find(document, "body > ul") == []
+      assert Floki.find(document, "a[href='/users/log_in']") == []
+    end
+
     test "renders form", %{conn: conn} do
       conn = get(conn, ~p"/reservations/new")
-      assert html_response(conn, 200) =~ "Neue Reservierung anlegen"
+      html = html_response(conn, 200)
+      assert html =~ "Neue Reservierung anlegen"
+      document = Floki.parse_document!(html)
+
+      for selector <- [
+            "#event-select",
+            "#reservation_seats",
+            "#reservation_name",
+            "#reservation_contact"
+          ] do
+        assert Floki.attribute(document, selector, "required") != []
+      end
     end
   end
 
@@ -78,9 +96,31 @@ defmodule SeatyReservationWeb.ReservationControllerTest do
       assert email.to == [{"some name", "test@example.com"}]
     end
 
-    test "renders errors when data is invalid", %{conn: conn} do
+    test "renders required field errors when no event is selected", %{conn: conn} do
       conn = post(conn, ~p"/reservations", reservation: @invalid_attrs)
-      assert redirected_to(conn) == ~p"/reservations/new"
+      html = html_response(conn, 200)
+      document = Floki.parse_document!(html)
+
+      assert Floki.text(Floki.find(document, "#event-select + p")) =~ "Darf nicht leer sein."
+      assert html =~ "Ein Fehler ist aufgetreten."
+    end
+
+    test "renders required field errors when an event is selected", %{conn: conn} do
+      event =
+        event_fixture(%{datetime: NaiveDateTime.add(NaiveDateTime.utc_now(), 86_400, :second)})
+      attrs = Map.put(@invalid_attrs, "event_id", Integer.to_string(event.id))
+
+      conn = post(conn, ~p"/reservations", reservation: attrs)
+      html = html_response(conn, 200)
+      document = Floki.parse_document!(html)
+
+      for selector <- [
+            "#reservation_seats + p",
+            "#reservation_name + p",
+            "#reservation_contact + p"
+          ] do
+        assert Floki.text(Floki.find(document, selector)) =~ "Darf nicht leer sein."
+      end
     end
   end
 
